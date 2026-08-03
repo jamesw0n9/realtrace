@@ -16,6 +16,15 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 .n{display:flex;align-items:center;gap:2px}
 .n a{padding:8px 14px;font-size:12px;font-weight:500;color:#64748B;letter-spacing:.04em;border-radius:6px;transition:all .25s;text-decoration:none}
 .n a:hover{color:#F1F5F9;background:#334155}
+.lang-wrap{position:relative;margin-left:10px}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#94A3B8;background:transparent;border:1px solid #334155;border-radius:999px;cursor:pointer;font-family:inherit;transition:all .25s;white-space:nowrap}
+.lang-btn:hover{color:#D4A017;border-color:#D4A017}
+.lang-caret{font-size:10px;opacity:.7}
+.lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:160px;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:300;flex-direction:column;gap:2px}
+.lang-menu.open{display:flex}
+.lang-menu button{display:block;width:100%;text-align:left;padding:8px 12px;font-size:13px;color:#CBD5E1;background:transparent;border:none;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .2s}
+.lang-menu button:hover{background:#334155;color:#D4A017}
+.os-tag{font-size:12px;color:#64748B}
 .main-wrap{flex:1;display:flex;flex-direction:column;max-width:1400px;margin:0 auto;width:100%;padding:24px 40px;min-height:0}
 .mode-bar{display:flex;align-items:center;padding:0 0 10px;gap:8px;flex-shrink:0;min-height:36px}
 .mode-badge{font-size:13px;font-weight:600;color:#D4A017;padding:4px 12px;border-radius:4px;background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.2);white-space:nowrap}
@@ -62,28 +71,6 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 .toast-success{background:#10B981}
 .toast-error{background:#EF4444}
 .toast-info{background:#D4A017;color:#0F172A}
-.cm-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.cm-overlay.active{display:flex}
-.cm-box{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:24px;max-width:640px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:modalIn 0.25s ease}
-.cm-box h2{font-size:16px;font-weight:700;color:#F1F5F9;margin-bottom:4px}
-.cm-box .sub{font-size:12px;color:#64748B;margin-bottom:16px}
-.cm-chain{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:14px;margin-bottom:10px}
-.cm-chain-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.cm-chain-h .name{font-size:13px;font-weight:600;color:#D4A017}
-.cm-chain-h .badge{font-size:10px;color:#94A3B8;background:#334155;padding:2px 8px;border-radius:4px}
-.cm-chain-detail{font-size:11px;color:#94A3B8;line-height:1.8;font-family:Consolas,monospace}
-.cm-chain-actions{display:flex;gap:6px;margin-top:8px}
-.cm-chain-actions button{font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid #334155;background:transparent;color:#94A3B8;cursor:pointer;font-family:inherit}
-.cm-chain-actions button:hover{border-color:#D4A017;color:#D4A017}
-.cm-empty{text-align:center;padding:24px;color:#64748B;font-size:12px}
-.cm-empty .icon{font-size:32px;display:block;margin-bottom:8px}
-.cm-ft{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid #334155}
-.cm-ft button{flex:1;padding:9px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all 0.2s}
-.cm-ft .primary{background:#D4A017;color:#0F172A}
-.cm-ft .primary:hover{background:#E5B82E}
-.cm-ft .secondary{background:#334155;color:#94A3B8}
-.cm-ft .secondary:hover{background:#475569;color:#F1F5F9}
-.cm-ft .danger{background:#DC2626;color:#fff}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#334155;border-radius:2px}
@@ -91,13 +78,12 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <link rel="stylesheet" href="rt-theme.css">
 </head>
 <body>
-<div id="h"><div class="hi"><a href="./" class="l"><span class="li">R</span>真迹·Realtrace</a><div class="n"><span style="font-size:12px;color:#64748B;">Realtrace 开源版</span></div></div></div>
+<div id="h"><div class="hi"><a href="./" class="l"><span class="li">R</span>真迹·Realtrace</a><div class="n"><span class="os-tag" data-i18n="osTag">Realtrace 开源版</span><div class="lang-wrap"><button class="lang-btn" id="langBtn" type="button"><span id="langBtnText">中文</span><span class="lang-caret">▾</span></button><div class="lang-menu" id="langMenu"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">English</button><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="ko">한국어</button><button type="button" data-lang="fr">Français</button><button type="button" data-lang="de">Deutsch</button></div></div></div></div></div>
 <div class="main-wrap">
   <div class="mode-bar">
-    <span class="mode-badge" id="modeBadge">✏️ 匿名写作</span>
+    <span class="mode-badge" id="modeBadge" data-i18n="modeAnon">✏️ 匿名写作</span>
     <span id="writerStats" style="font-size:13px;color:#94A3B8;"></span><span class="mode-spacer"></span>
-    <button class="mode-btn" id="importBtn" onclick="importRtFile()">📂 导入 .rt 续写</button>
-    <button class="mode-btn" id="chainBtn" onclick="showChainManager()">🔗 链管理</button>
+    <button class="mode-btn" id="importBtn" onclick="importRtFile()" data-i18n="importBtn">📂 导入 .rt 续写</button>
   </div>
   <div id="timelineBar" style="display:none">
     <div class="timeline-scroll" id="timelineScroll"><div class="timeline-track" id="timelineTrack"></div></div>
@@ -115,19 +101,6 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
   <div class="m-footnote" id="modalFootnote" style="display:none"></div>
 </div>
 </div>
-<!-- Chain Manager -->
-<div class="cm-overlay" id="chainMgrOverlay">
-<div class="cm-box">
-  <h2>🔗 链管理</h2>
-  <div class="sub">管理已导入的创作链，支持合并、查看详情和导出</div>
-  <div id="chainList"></div>
-  <div class="cm-ft">
-    <button class="secondary" onclick="loadChainIntoMgr()">📂 加载 .rt 链</button>
-    <button class="primary" onclick="mergeSelectedChains()" id="mergeBtn">🔀 合并选中</button>
-    <button class="danger" onclick="closeChainMgr()">关闭</button>
-  </div>
-</div>
-</div>
 <script src="../core/lib/tweetnacl.min.js"></script>
 <script src="../core/rt-crypto.js"></script>
 <script src="../core/key-vault.js"></script>
@@ -140,10 +113,129 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <script src="../core/rt-export.js"></script>
 <script src="../core/rt-lighthead.js"></script>
 <script>
+var I18N = {
+  zh: {
+    osTag:'Realtrace 开源版', modeAnon:'✏️ 匿名写作', importBtn:'📂 导入 .rt 续写',
+    imported:'已导入 {n} 个印章', importFail:'导入失败',
+    stampUnit:'章', duration:'创作时长', sec:'秒', min:'分', hour:'时',
+    modalTitle:'提示', modalDesc:'描述',
+    privacyTitle:'隐私与安全须知',
+    privacyDesc:'• 所有创作数据默认存储在本地<br>• 封章使用 Ed25519 加密签名，内容不上传服务器<br>• 可选择将链文件上传至服务器托管（需登录）<br>• 离线 .rt 文件请自行妥善保管<br><br>继续使用即代表您理解并接受上述条款。',
+    gotIt:'我知道了',
+    sealConfirmTitle:'确认封章上链',
+    sealConfirmDesc:'封章后将生成加密签名链，内容将被记录且无法修改。<br><br>⚠️ 请确认：<br>• 创作内容为本人原创<br>• 已检查无敏感信息<br>• 确认封章上链',
+    cancel:'取消', confirmSeal:'确认封章',
+    sealDoneDownload:'封章成功，已下载 .rt + .txt',
+    pageTitle:'真迹 · 创作封章认证', _langName:'中文'
+  },
+  en: {
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonymous writing', importBtn:'📂 Import .rt to continue',
+    imported:'Imported {n} stamps', importFail:'Import failed',
+    stampUnit:'stamps', duration:'Writing time', sec:'s', min:'m', hour:'h',
+    modalTitle:'Notice', modalDesc:'Description',
+    privacyTitle:'Privacy & Security Notice',
+    privacyDesc:'• All creation data is stored locally by default<br>• Sealing uses Ed25519 signatures; content never leaves your device<br>• You may optionally upload the chain file for cloud hosting (login required)<br>• Keep offline .rt files safe yourself<br><br>By continuing, you understand and accept these terms.',
+    gotIt:'Got it',
+    sealConfirmTitle:'Confirm Sealing',
+    sealConfirmDesc:'Sealing generates an encrypted signature chain; the content is recorded and cannot be modified.<br><br>⚠️ Please confirm:<br>• The content is your original work<br>• No sensitive information is included<br>• You agree to seal and anchor',
+    cancel:'Cancel', confirmSeal:'Confirm',
+    sealDoneDownload:'Sealed — .rt + .txt downloaded',
+    pageTitle:'RealTrace · Creation Seal', _langName:'English'
+  },
+  ja: {
+    osTag:'Realtrace オープンソース版', modeAnon:'✏️ 匿名で執筆', importBtn:'📂 .rt を読み込んで続きを書く',
+    imported:'{n} 個のスタンプを読み込みました', importFail:'読み込みに失敗しました',
+    stampUnit:'スタンプ', duration:'執筆時間', sec:'秒', min:'分', hour:'時間',
+    modalTitle:'お知らせ', modalDesc:'説明',
+    privacyTitle:'プライバシーとセキュリティの注意事項',
+    privacyDesc:'• 創作データはデフォルトでローカルに保存されます<br>• 封章は Ed25519 署名を使用し、内容はサーバーに送信されません<br>• チェーンファイルをサーバーにアップロードして管理することも可能です（ログインが必要）<br>• オフラインの .rt ファイルはご自身で安全に保管してください<br><br>続行することで、上記の条項を理解し承諾したものとみなされます。',
+    gotIt:'了解しました',
+    sealConfirmTitle:'封章を確定',
+    sealConfirmDesc:'封章後は暗号署名チェーンが生成され、内容が記録され変更できなくなります。<br><br>⚠️ ご確認ください：<br>• 内容は本人のオリジナル作品です<br>• 機密情報が含まれていないことを確認しました<br>• 封章してチェーンに記録することに同意します',
+    cancel:'キャンセル', confirmSeal:'封章を確定',
+    sealDoneDownload:'封章完了、.rt + .txt をダウンロードしました',
+    pageTitle:'真迹 · 創作封章認証', _langName:'日本語'
+  },
+  ko: {
+    osTag:'Realtrace 오픈소스', modeAnon:'✏️ 익명 작성', importBtn:'📂 .rt 가져와 이어쓰기',
+    imported:'스탬프 {n}개를 가져왔습니다', importFail:'가져오기 실패',
+    stampUnit:'스탬프', duration:'작성 시간', sec:'초', min:'분', hour:'시간',
+    modalTitle:'알림', modalDesc:'설명',
+    privacyTitle:'개인정보 및 보안 안내',
+    privacyDesc:'• 모든 창작 데이터는 기본적으로 로컬에 저장됩니다<br>• 봉인은 Ed25519 서명을 사용하며, 내용은 서버에 업로드되지 않습니다<br>• 체인 파일을 서버에 업로드하여 관리할 수 있습니다 (로그인 필요)<br>• 오프라인 .rt 파일은 직접 안전하게 보관하세요<br><br>계속 사용하면 위 약관을 이해하고 수락한 것으로 간주됩니다.',
+    gotIt:'확인했습니다',
+    sealConfirmTitle:'봉인 확정',
+    sealConfirmDesc:'봉인하면 암호화 서명 체인이 생성되며 내용이 기록되어 수정할 수 없습니다.<br><br>⚠️ 확인하세요:<br>• 창작 내용은 본인의 원작입니다<br>• 민감한 정보가 없음을 확인했습니다<br>• 봉인 및 체인 기록에 동의합니다',
+    cancel:'취소', confirmSeal:'확인',
+    sealDoneDownload:'봉인 완료 — .rt + .txt 다운로드됨',
+    pageTitle:'RealTrace · 창작 봉인', _langName:'한국어'
+  },
+  fr: {
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Écriture anonyme', importBtn:'📂 Importer .rt pour continuer',
+    imported:'{n} tampons importés', importFail:'Échec de l\'import',
+    stampUnit:'tampons', duration:'Durée d\'écriture', sec:'s', min:'m', hour:'h',
+    modalTitle:'Avis', modalDesc:'Description',
+    privacyTitle:'Avis de confidentialité et de sécurité',
+    privacyDesc:'• Toutes les données de création sont stockées localement par défaut<br>• Le scellement utilise des signatures Ed25519 ; le contenu n\'est jamais envoyé au serveur<br>• Vous pouvez éventuellement héberger le fichier de chaîne (connexion requise)<br>• Conservez vous-même vos fichiers .rt hors ligne en lieu sûr<br><br>En continuant, vous comprenez et acceptez ces conditions.',
+    gotIt:'Compris',
+    sealConfirmTitle:'Confirmer le scellement',
+    sealConfirmDesc:'Le scellement génère une chaîne de signatures chiffrées ; le contenu est enregistré et ne peut plus être modifié.<br><br>⚠️ Veuillez confirmer :<br>• Le contenu est votre création originale<br>• Aucune information sensible incluse<br>• Vous acceptez de sceller et d\'ancrer',
+    cancel:'Annuler', confirmSeal:'Confirmer',
+    sealDoneDownload:'Scellé — .rt + .txt téléchargés',
+    pageTitle:'RealTrace · Scellement de création', _langName:'Français'
+  },
+  de: {
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonym schreiben', importBtn:'📂 .rt importieren und fortsetzen',
+    imported:'{n} Stempel importiert', importFail:'Import fehlgeschlagen',
+    stampUnit:'Stempel', duration:'Schreibzeit', sec:'s', min:'min', hour:'h',
+    modalTitle:'Hinweis', modalDesc:'Beschreibung',
+    privacyTitle:'Datenschutz- und Sicherheitshinweis',
+    privacyDesc:'• Alle Schreibdaten werden standardmäßig lokal gespeichert<br>• Versiegelung nutzt Ed25519-Signaturen; Inhalte verlassen nie Ihr Gerät<br>• Sie können die Chain-Datei optional hochladen (Anmeldung erforderlich)<br>• Bewahren Sie Offline-.rt-Dateien selbst sicher auf<br><br>Durch die Fortsetzung akzeptieren Sie diese Bedingungen.',
+    gotIt:'Verstanden',
+    sealConfirmTitle:'Versiegelung bestätigen',
+    sealConfirmDesc:'Durch die Versiegelung wird eine verschlüsselte Signaturkette erzeugt; der Inhalt wird aufgezeichnet und kann nicht mehr geändert werden.<br><br>⚠️ Bitte bestätigen Sie:<br>• Der Inhalt ist Ihr eigenes Originalwerk<br>• Keine sensiblen Informationen enthalten<br>• Sie stimmen der Versiegelung und Verankerung zu',
+    cancel:'Abbrechen', confirmSeal:'Bestätigen',
+    sealDoneDownload:'Versiegelt — .rt + .txt heruntergeladen',
+    pageTitle:'RealTrace · Schöpfungssiegel', _langName:'Deutsch'
+  }
+};
+
+var curLang = 'zh';
+function t(key, params) {
+  var s = (I18N[curLang] && I18N[curLang][key] !== undefined) ? I18N[curLang][key] : (I18N.zh[key] !== undefined ? I18N.zh[key] : key);
+  if (params) { for (var k in params) { s = s.split('{'+k+'}').join(String(params[k])); } }
+  return s;
+}
+function applyLang(lang) {
+  if (!I18N[lang]) lang = 'zh';
+  curLang = lang;
+  var dict = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.title = dict.pageTitle || document.title;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+  var lbl = document.getElementById('langBtnText');
+  if (lbl) lbl.textContent = dict._langName || lang.toUpperCase();
+  try { localStorage.setItem('rt_writer_lang', lang); } catch(e) {}
+  if (_rtWriterBox && typeof _rtWriterBox.setLang === 'function') _rtWriterBox.setLang(lang);
+}
+
+(function(){
+  var btn = document.getElementById('langBtn');
+  var menu = document.getElementById('langMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
+  document.addEventListener('click', function(){ menu.classList.remove('open'); });
+  menu.addEventListener('click', function(e){ e.stopPropagation(); });
+  menu.querySelectorAll('[data-lang]').forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); menu.classList.remove('open'); });
+  });
+})();
 var _rtIdentity = { mode:'anonymous', kp:null, publicKeyHex:'', sessionId:'' };
 var _rtWriterBox = null;
 var _timelineTimer = null;
-var _chainMgr = { chains: [] };
 function showNotification(msg, type) {
   type = type || 'info';
   var c = document.querySelector('.toast-container');
@@ -171,13 +263,9 @@ async function importRtFile() {
       var content = RtExport.extractContent ? RtExport.extractContent(pkg) : '';
       var ta = document.getElementById('rtTextarea');
       if (ta && content) ta.value = content;
-      if (pkg.stamps && pkg.stamps.length > 0) {
-        _chainMgr.chains.push({ sessionId: pkg.sessionId, stamps: pkg.stamps, stampCount: pkg.stamps.length, publicKey: pkg.publicKey || '', contentLength: pkg.contentLength || 0, sealedAt: pkg.sealedAt || '', fileName: f.name, hasContent: !!(pkg.contentRaw || pkg.content) });
-        renderChainList();
-      }
-      showNotification('已导入 '+(pkg.totalStamps||(pkg.stamps?pkg.stamps.length:0))+' 个印章', 'success');
+      showNotification(t('imported',{n:(pkg.totalStamps||(pkg.stamps?pkg.stamps.length:0))}), 'success');
       renderTimeline();
-    } catch(e) { showNotification('导入失败: '+e.message, 'error'); }
+    } catch(e) { showNotification(t('importFail')+': '+e.message, 'error'); }
     this.value = '';
   };
   input.click();
@@ -205,101 +293,15 @@ function renderTimeline() {
   try { var scroll = document.getElementById('timelineScroll'); if (scroll) scroll.scrollLeft = scroll.scrollWidth; } catch(e) {}
   var dur = '';
   if (arr.length >= 2) {
-    try { var t0 = new Date(arr[0].ts || arr[0].ts || 0).getTime(); var t1 = new Date(arr[arr.length-1].ts || arr[arr.length-1].ts || 0).getTime(); if (t0 && t1 && t1 > t0) { var s = Math.floor((t1 - t0) / 1000); if (s < 60) dur = s + '秒'; else if (s < 3600) dur = Math.floor(s/60) + '分' + (s%60) + '秒'; else dur = Math.floor(s/3600) + '时' + Math.floor((s%3600)/60) + '分'; } } catch(e) {}
+    try { var t0 = new Date(arr[0].ts || arr[0].ts || 0).getTime(); var t1 = new Date(arr[arr.length-1].ts || arr[arr.length-1].ts || 0).getTime(); if (t0 && t1 && t1 > t0) { var s = Math.floor((t1 - t0) / 1000); if (s < 60) dur = s + t('sec'); else if (s < 3600) dur = Math.floor(s/60) + t('min') + (s%60) + t('sec'); else dur = Math.floor(s/3600) + t('hour') + Math.floor((s%3600)/60) + t('min'); } } catch(e) {}
   }
-  if (stats) stats.innerHTML = '<strong>' + arr.length + '</strong> 章' + (dur ? ' | 创作时长 <strong>' + dur + '</strong>' : '');
-}
-function showChainManager() { document.getElementById('chainMgrOverlay').classList.add('active'); renderChainList(); }
-function closeChainMgr() { document.getElementById('chainMgrOverlay').classList.remove('active'); }
-function renderChainList() {
-  var list = document.getElementById('chainList');
-  if (!list) return;
-  if (_chainMgr.chains.length === 0) { list.innerHTML = '<div class="cm-empty"><span class="icon">📭</span>暂无链，请导入 .rt 文件</div>'; return; }
-  var h = '';
-  for (var i = 0; i < _chainMgr.chains.length; i++) {
-    var c = _chainMgr.chains[i];
-    h += '<div class="cm-chain"><div class="cm-chain-h"><span class="name">#' + (i+1) + ' ' + (c.fileName || c.sessionId.substring(0,12)) + '</span><span class="badge">' + c.stampCount + ' 章</span></div>';
-    h += '<div class="cm-chain-detail">Session: <span class="hl">' + c.sessionId.substring(0,16) + '...</span></div>';
-    h += '<div class="cm-chain-actions"><button onclick="exportChain(' + i + ')">导出</button><button onclick="previewChainContent(' + i + ')">详情</button><button onclick="removeChain(' + i + ')" style="color:#EF4444">移除</button></div></div>';
-  }
-  list.innerHTML = h;
-  var btn = document.getElementById('chainBtn');
-  if (btn) { btn.textContent = '\U0001f517 \u94fe\u7ba1\u7406' + (_chainMgr.chains.length > 0 ? ' (' + _chainMgr.chains.length + ')' : ''); }
-}
-function loadChainIntoMgr() {
-  var input = document.createElement('input'); input.type = 'file'; input.accept = '.rt';
-  input.onchange = async function(e) {
-    var f = e.target.files[0]; if (!f) return;
-    try {
-      var pkg = await RtExport.loadRtFile(f);
-      if (_chainMgr.chains.some(function(c) { return c.sessionId === pkg.sessionId; })) { showNotification('该链已加载', 'info'); return; }
-      _chainMgr.chains.push({ sessionId: pkg.sessionId, stamps: pkg.stamps, stampCount: pkg.stamps.length, publicKey: pkg.publicKey || '', contentLength: pkg.contentLength || 0, sealedAt: pkg.sealedAt || '', fileName: f.name, hasContent: !!(pkg.contentRaw || pkg.content) });
-      showNotification('已加载链: ' + f.name, 'success'); renderChainList();
-    } catch(e) { showNotification('加载失败: ' + e.message, 'error'); }
-  }; input.click();
-}
-function exportChain(idx) {
-  if (idx < 0 || idx >= _chainMgr.chains.length) return;
-  var c = _chainMgr.chains[idx];
-  var pkg = { rtVersion: '2.0', format: 'pure-chain', sessionId: c.sessionId, publicKey: c.publicKey, stamps: c.stamps, totalStamps: c.stampCount, sealedAt: c.sealedAt || new Date().toISOString() };
-  var blob = new Blob([JSON.stringify(pkg, null, 2)], { type: 'application/json' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href = url; a.download = 'chain-' + c.sessionId.substring(0, 8) + '.rt';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-function previewChainContent(idx) {
-  if (idx < 0 || idx >= _chainMgr.chains.length) return;
-  var c = _chainMgr.chains[idx];
-  showModal({ icon: '📄', title: '链 #' + (idx+1) + ' 内容', desc: '此链包含 ' + c.stampCount + ' 个封章。<br>完整内容需加载含内容的 .rt 文件。', actions: [{ label: '关闭', class: 'btn-primary', value: 'ok' }] });
-}
-function removeChain(idx) {
-  if (idx < 0 || idx >= _chainMgr.chains.length) return;
-  _chainMgr.chains.splice(idx, 1); renderChainList(); showNotification('已移除链', 'info');
-}
-function mergeSelectedChains() {
-  if (_chainMgr.chains.length < 2) { showNotification('需要至少 2 条链才能合并', 'error'); return; }
-  var desc = '选择要合并的链（系统将按时间顺序合并所有封章）：<br><br>';
-  for (var i = 0; i < _chainMgr.chains.length; i++) {
-    var c = _chainMgr.chains[i];
-    desc += '<label style="display:block;margin:4px 0;font-size:12px;color:#CBD5E1;cursor:pointer">' +
-      '<input type="checkbox" id="cm_cb_' + i + '" checked style="margin-right:6px">' +
-      '#' + (i+1) + ' ' + (c.fileName || c.sessionId.substring(0,12)) + ' (' + c.stampCount + ' 章)</label>';
-  }
-  showModal({ icon: '🔀', title: '合并链', desc: desc, actions: [{ label: '取消', class: 'btn-secondary', value: 'cancel' }, { label: '确认合并', class: 'btn-primary', value: 'merge' }] }).then(function(choice) {
-    if (choice !== 'merge') return;
-    var selected = [];
-    for (var j = 0; j < _chainMgr.chains.length; j++) {
-      var cb = document.getElementById('cm_cb_' + j);
-      if (cb && cb.checked) selected.push(_chainMgr.chains[j]);
-    }
-    if (selected.length < 2) { showNotification('至少选择 2 条链', 'error'); return; }
-    doMergeChains(selected);
-  });
-}
-function doMergeChains(chains) {
-  try {
-    var allStamps = [];
-    for (var i = 0; i < chains.length; i++) {
-      for (var j = 0; j < chains[i].stamps.length; j++) { allStamps.push({ stamp: chains[i].stamps[j], sourceChain: i, sourceSession: chains[i].sessionId }); }
-    }
-    allStamps.sort(function(a, b) { var ta = new Date(a.stamp.timestamp || a.stamp.ts || 0).getTime(); var tb = new Date(b.stamp.timestamp || b.stamp.ts || 0).getTime(); return ta - tb; });
-    if (allStamps.length === 0) { showNotification('没有可合并的封章', 'error'); return; }
-    var mergedSessionId = 'merged-' + Date.now().toString(36);
-    var mergedStamps = allStamps.map(function(item, idx) { var s = JSON.parse(JSON.stringify(item.stamp)); s.index = idx; s.sessionId = mergedSessionId; s._mergedFrom = item.sourceSession; return s; });
-    var mergedPkg = { rtVersion: '2.0', format: 'pure-chain', sessionId: mergedSessionId, publicKey: chains[0].publicKey || '', stamps: mergedStamps, totalStamps: mergedStamps.length, sealedAt: new Date().toISOString(), _mergedFrom: chains.map(function(c) { return c.sessionId; }), _mergeInfo: { chainCount: chains.length, sorted: true, byTimestamp: true } };
-    var jsonStr = JSON.stringify(mergedPkg, null, 2);
-    var blob = new Blob([jsonStr], { type: 'application/json' }); var url = URL.createObjectURL(blob);
-    var a = document.createElement('a'); a.href = url; a.download = 'merge-' + mergedSessionId.substring(0, 8) + '.rt';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-    _chainMgr.chains.push({ sessionId: mergedSessionId, stamps: mergedStamps, stampCount: mergedStamps.length, publicKey: chains[0].publicKey || '', contentLength: 0, sealedAt: new Date().toISOString(), fileName: 'merge-' + mergedSessionId.substring(0, 8) + '.rt', isMerged: true });
-    renderChainList(); showNotification('合并完成: ' + allStamps.length + ' 章', 'success');
-  } catch(e) { showNotification('合并失败: ' + e.message, 'error'); }
+  if (stats) stats.innerHTML = '<strong>' + arr.length + '</strong> ' + t('stampUnit') + (dur ? ' | ' + t('duration') + ' <strong>' + dur + '</strong>' : '');
 }
 function showModal(opts) {
   return new Promise(function(resolve) {
     var overlay = document.getElementById('modalOverlay');
     document.getElementById('modalIcon').textContent = opts.icon || '⚠';
-    document.getElementById('modalTitle').textContent = opts.title || '提示';
+    document.getElementById('modalTitle').textContent = opts.title || t('modalTitle');
     document.getElementById('modalDesc').innerHTML = opts.desc || '';
     var detail = document.getElementById('modalDetail');
     if (opts.detail) { detail.style.display = 'block'; detail.innerHTML = opts.detail; } else { detail.style.display = 'none'; }
@@ -361,16 +363,16 @@ async function doFinalSeal(result) {
       sessionStorage.setItem('rt_cert_id', result.certificateId || '');
     } catch(e) {}
 
-    showToast('\u5c01\u7ae0\u6210\u529f\uff0c\u5df2\u4e0b\u8f7d .rt + .txt', 'success');
+    showToast(t('sealDoneDownload'), 'success');
   } catch(e) { console.warn('\u5bfc\u51fa\u5931\u8d25:', e); }
   setTimeout(function(){ window.location.href = '../verify/index.html'; }, 800);
 }
 document.addEventListener('DOMContentLoaded', function() {
   showModal({
     icon: '🛡️',
-    title: '隐私与安全须知',
-    desc: '• 所有创作数据默认存储在本地<br>• 封章使用 Ed25519 加密签名，内容不上传服务器<br>• 可选择将链文件上传至服务器托管（需登录）<br>• 离线 .rt 文件请自行妥善保管<br><br>继续使用即代表您理解并接受上述条款。',
-    actions: [{ label: '我知道了', class: 'btn-primary', value: 'ok' }]
+    title: t('privacyTitle'),
+    desc: t('privacyDesc'),
+    actions: [{ label: t('gotIt'), class: 'btn-primary', value: 'ok' }]
   });
 
   try {
@@ -384,11 +386,11 @@ document.addEventListener('DOMContentLoaded', function() {
       _rtWriterBox.seal = function() {
         showModal({
           icon: '🔐',
-          title: '确认封章上链',
-          desc: '封章后将生成加密签名链，内容将被记录且无法修改。<br><br>⚠️ 请确认：<br>• 创作内容为本人原创<br>• 已检查无敏感信息<br>• 确认封章上链',
+          title: t('sealConfirmTitle'),
+          desc: t('sealConfirmDesc'),
           actions: [
-            { label: '取消', class: 'btn-secondary', value: 'cancel' },
-            { label: '确认封章', class: 'btn-primary', value: 'confirm' }
+            { label: t('cancel'), class: 'btn-secondary', value: 'cancel' },
+            { label: t('confirmSeal'), class: 'btn-primary', value: 'confirm' }
           ]
         }).then(function(choice) {
           if (choice === 'confirm') { origSeal.call(_rtWriterBox); }
@@ -396,13 +398,17 @@ document.addEventListener('DOMContentLoaded', function() {
       };
     }
   } catch(e) { console.error('WriterBox:', e); }
+  applyLang(curLang);
 
   if (_timelineTimer) clearInterval(_timelineTimer);
   _timelineTimer = setInterval(renderTimeline, 2000);
 });
+
+applyLang((function(){ try { return localStorage.getItem('rt_writer_lang') || 'zh'; } catch(e){ return 'zh'; } })());
 </script>
 </body>
 </html>
+
 
 
 

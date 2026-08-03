@@ -29,6 +29,24 @@ window.RtWriterBox = (function() {
   }
   var C = window.RtWriter = window.RtWriter || {};
 
+  // ======== 多语言字典（六语：zh/en/ja/ko/fr/de） ========
+  var _WB_I18N = {
+    zh: { placeholder:'在此输入创作内容...', sealBtn:'封章上链', stampLabel:'印章', charLabel:'字符', needContent:'请先输入内容', stampFail:'打章失败', sealing:'封章中...', sealSuccess:'封章成功', sealFailed:'封章失败', unknownError:'未知错误', sealSuccessOffline:'封章成功（离线）', pasteDetected:'检测到大量粘贴行为', noDragDrop:'不支持拖拽上传' },
+    en: { placeholder:'Start writing here...', sealBtn:'Seal & Anchor', stampLabel:'stamps', charLabel:'chars', needContent:'Please enter content first', stampFail:'Stamping failed', sealing:'Sealing...', sealSuccess:'Sealed successfully', sealFailed:'Sealing failed', unknownError:'Unknown error', sealSuccessOffline:'Sealed successfully (offline)', pasteDetected:'Large paste detected', noDragDrop:'Drag & drop is not supported' },
+    ja: { placeholder:'ここに創作内容を入力...', sealBtn:'封章してチェーンに記録', stampLabel:'スタンプ', charLabel:'文字', needContent:'先に内容を入力してください', stampFail:'スタンプ処理に失敗しました', sealing:'封章中...', sealSuccess:'封章成功', sealFailed:'封章失敗', unknownError:'不明なエラー', sealSuccessOffline:'封章成功（オフライン）', pasteDetected:'大量の貼り付けを検出しました', noDragDrop:'ドラッグ＆ドロップには対応していません' },
+    ko: { placeholder:'여기에 창작 내용을 입력하세요...', sealBtn:'봉인 및 체인 기록', stampLabel:'스탬프', charLabel:'문자', needContent:'먼저 내용을 입력하세요', stampFail:'스탬프 생성 실패', sealing:'봉인 중...', sealSuccess:'봉인 성공', sealFailed:'봉인 실패', unknownError:'알 수 없는 오류', sealSuccessOffline:'봉인 성공 (오프라인)', pasteDetected:'대량 붙여넣기가 감지되었습니다', noDragDrop:'드래그 앤 드롭은 지원되지 않습니다' },
+    fr: { placeholder:'Commencez à écrire ici...', sealBtn:'Sceller & ancrer', stampLabel:'tampons', charLabel:'caractères', needContent:'Veuillez d\'abord saisir du contenu', stampFail:'Échec du tamponnage', sealing:'Scellement...', sealSuccess:'Scellement réussi', sealFailed:'Échec du scellement', unknownError:'Erreur inconnue', sealSuccessOffline:'Scellé avec succès (hors ligne)', pasteDetected:'Collage massif détecté', noDragDrop:'Glisser-déposer non pris en charge' },
+    de: { placeholder:'Beginnen Sie hier zu schreiben...', sealBtn:'Versiegeln & verankern', stampLabel:'Stempel', charLabel:'Zeichen', needContent:'Bitte zuerst Inhalt eingeben', stampFail:'Stempeln fehlgeschlagen', sealing:'Versiegele...', sealSuccess:'Erfolgreich versiegelt', sealFailed:'Versiegelung fehlgeschlagen', unknownError:'Unbekannter Fehler', sealSuccessOffline:'Erfolgreich versiegelt (offline)', pasteDetected:'Großes Einfügen erkannt', noDragDrop:'Drag & Drop wird nicht unterstützt' }
+  };
+  var _wbLang = 'zh';
+  function _t(key) {
+    var d = _WB_I18N[_wbLang] || _WB_I18N.zh;
+    var v = d[key];
+    if (v === undefined) v = _WB_I18N.zh[key];
+    return v !== undefined ? v : key;
+  }
+
+
   // ======== 作为数据追踪模块 ========
   
   // ======== createInstance: 全功能写作框创建 ========
@@ -42,7 +60,7 @@ window.RtWriterBox = (function() {
     if (!area) {
       area = document.createElement('textarea');
       area.id = 'rtTextarea';
-      area.placeholder = '\u5728\u6b64\u8f93\u5165\u521b\u4f5c\u5185\u5bb9...';
+      area.placeholder = _t('placeholder');
       area.style.cssText = 'width:100%;min-height:300px;background:#1E293B;color:#F1F5F9;border:1px solid #334155;border-radius:8px;padding:16px;font-size:15px;line-height:1.8;resize:vertical;';
       el.insertBefore(area, el.firstChild);
     }
@@ -50,7 +68,7 @@ window.RtWriterBox = (function() {
     if (!btn) {
       btn = document.createElement('button');
       btn.id = 'sealBtn';
-      btn.textContent = '\u5c01\u7ae0\u4e0a\u94fe';
+      btn.textContent = _t('sealBtn');
       btn.style.cssText = 'padding:10px 24px;border-radius:8px;border:none;background:#D4A017;color:#0F172A;font-weight:700;cursor:pointer;margin-top:12px;font-size:14px;';
       el.appendChild(btn);
     }
@@ -70,7 +88,7 @@ window.RtWriterBox = (function() {
     }
     function updateStats() {
       var el = document.getElementById('writerStats');
-      if (el) el.innerHTML = '<span style="color:#D4A017;font-weight:700;">\u5370\u7ae0: ' + state.stamps.length + '</span> | <span style="color:#94A3B8;">\u5b57\u7b26: ' + (area.value || '').replace(/\s/g,'').length + '</span>';
+      if (el) el.innerHTML = '<span style="color:#D4A017;font-weight:700;">' + _t('stampLabel') + ': ' + state.stamps.length + '</span> | <span style="color:#94A3B8;">' + _t('charLabel') + ': ' + (area.value || '').replace(/\s/g,'').length + '</span>';
     }
     async function doStamp_impl() {
       await ensureKey();
@@ -85,24 +103,24 @@ window.RtWriterBox = (function() {
       } catch(e) { console.error('[WB] doStamp error:', e); }
     }
     async function sealNow() {
-      if (area.value.trim().length === 0) { showToast('\u8bf7\u5148\u8f93\u5165\u5185\u5bb9', 'error'); return; }
+      if (area.value.trim().length === 0) { showToast(_t('needContent'), 'error'); return; }
       try {
         if (state.stamps.length < 1) await doStamp_impl();
-        if (state.stamps.length < 1) { showToast('\u6253\u7ae0\u5931\u8d25', 'error'); return; }
-        clearInterval(state.timerInterval); btn.disabled = true; btn.textContent = '\u5c01\u7ae0\u4e2d...';
+        if (state.stamps.length < 1) { showToast(_t('stampFail'), 'error'); return; }
+        clearInterval(state.timerInterval); btn.disabled = true; btn.textContent = _t('sealing');
         var contentHash = await StampChain.computeContentHash(area.value);
         var pubKey = (state.stamps.length > 0 ? state.stamps[state.stamps.length-1].publicKey : '') || (state.kp ? await StampChain.exportPubHex(state.kp.publicKey) : '');
         if (state.apiBase) {
           var resp = await fetch(state.apiBase + '/seal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contentHash, sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps }) });
           var data = await resp.json();
-          if (data.success && data.certificateId) { showToast('\u5c01\u7ae0\u6210\u529f: ' + data.certificateId, 'success'); if (state.onSeal) state.onSeal(data); }
-          else { showToast('\u5c01\u7ae0\u5931\u8d25: ' + (data.error || '\u672a\u77e5\u9519\u8bef'), 'error'); }
+          if (data.success && data.certificateId) { showToast(_t('sealSuccess') + ': ' + data.certificateId, 'success'); if (state.onSeal) state.onSeal(data); }
+          else { showToast(_t('sealFailed') + ': ' + (data.error || _t('unknownError')), 'error'); }
         } else {
           // 离线模式：无 apiBase 时纯本地封章，不请求服务器，直接走本地导出 + 跳转离线认证
-          showToast('\u5c01\u7ae0\u6210\u529f\uff08\u79bb\u7ebf\uff09', 'success');
+          showToast(_t('sealSuccessOffline'), 'success');
           if (state.onSeal) state.onSeal({ success: true, certificateId: 'offline-' + state.sessionId.substring(0, 8), sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps });
         }
-      } catch(e) { showToast('\u5c01\u7ae0\u5931\u8d25: ' + e.message, 'error'); }
+      } catch(e) { showToast(_t('sealFailed') + ': ' + e.message, 'error'); }
       btn.textContent = '\u5c01\u7ae0\u4e0a\u94fe'; btn.disabled = false;
     }
     area.addEventListener('input', function() {
@@ -124,12 +142,19 @@ window.RtWriterBox = (function() {
       var text = (e.clipboardData || window.clipboardData).getData('text') || '';
       state.pasteCharTotal += text.length;
       if (text.length > state.maxBurstPaste) state.maxBurstPaste = text.length;
-      if (state.pasteCharTotal > 200 && !state.pasteWarned) { state.pasteWarned = true; showToast('\u68c0\u6d4b\u5230\u5927\u91cf\u7c98\u8d34\u884c\u4e3a', 'info'); }
+      if (state.pasteCharTotal > 200 && !state.pasteWarned) { state.pasteWarned = true; showToast(_t('pasteDetected'), 'info'); }
     });
-    area.addEventListener('drop', function(e) { e.preventDefault(); showToast('\u4e0d\u652f\u6301\u62d6\u62fd\u4e0a\u4f20', 'error'); });
+    area.addEventListener('drop', function(e) { e.preventDefault(); showToast(_t('noDragDrop'), 'error'); });
     btn.addEventListener('click', sealNow);
     updateStats();
-    return { seal: sealNow, getState: function() { return state; }, destroy: function() { el.innerHTML = ''; } };
+    function setLang(lang) {
+      if (!_WB_I18N[lang]) return;
+      _wbLang = lang;
+      area.placeholder = _t('placeholder');
+      btn.textContent = _t('sealBtn');
+      updateStats();
+    }
+    return { seal: sealNow, getState: function() { return state; }, setLang: setLang, destroy: function() { el.innerHTML = ''; } };
   }
 
 C.Core = {
