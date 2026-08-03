@@ -360,15 +360,11 @@ footer{border-top:1px solid var(--line);padding:40px 0 60px;text-align:center}
 <section>
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-eyebrow" data-i18n="rmEyebrow">Roadmap</div>
-      <h2 class="sec-title" data-i18n="rmTitle">版本迭代路线</h2>
+      <div class="sec-eyebrow" data-i18n="rmEyebrow">当前版本</div>
+      <h2 class="sec-title" data-i18n="rmTitle">本版本功能</h2>
     </div>
     <div class="timeline">
-      <div class="tl done reveal"><h4><span class="ver">v0.1.0</span><span data-i18n="rm1t">MVP · 当前</span></h4><p data-i18n="rm1d">实时打章 · 防篡改链 · 离线验证 · 创世链锚定（个人免费）</p></div>
-      <div class="tl reveal"><h4><span class="ver">v1.0</span><span data-i18n="rm2t">轻量续写 + 链管理</span></h4><p data-i18n="rm2d">轻量头增量续写（不上传整链）· 链合并 / 拆分 / 分叉检测</p></div>
-      <div class="tl reveal"><h4><span class="ver">v1.1</span><span data-i18n="rm3t">时间与身份锚定</span></h4><p data-i18n="rm3d">TSA 时间戳（司法级时间证明）· 人脸身份锚定（Plus / Pro）</p></div>
-      <div class="tl reveal"><h4><span class="ver">v2.0</span><span data-i18n="rm4t">零知识验证</span></h4><p data-i18n="rm4d">snarkjs/circom 零知识证明 · 异步密语原语</p></div>
-      <div class="tl reveal"><h4><span class="ver">v3.0</span><span data-i18n="rm5t">联合授权平台</span></h4><p data-i18n="rm5d">平台 SDK · 独立支链分发 · 按链计费 · 平台水印 / 人脸扩展</p></div>
+      <div class="tl done reveal"><h4><span class="ver">v0.1.0</span><span data-i18n="rm1t">MVP · 已发布</span></h4><p data-i18n="rm1d">实时打章 · 防篡改链 · 离线验证 · 创世链锚定（个人免费）</p></div>
     </div>
   </div>
 </section>
@@ -459,12 +455,8 @@ var I18N = {
     techEyebrow:'Technology', techTitle:'零依赖，可审计', techSub:'纯前端核心，无构建依赖，全部逻辑开源可审计。',
     techCore:'核心库', techChain:'链规格（摘要）',
     techL1:'签名：Ed25519（RFC 8032）', techL2:'链哈希：SHA-256 因果链', techL3:'文件：.rt（ZIP 容器：chain.json + meta.json）', techL4:'版本：链上记录 appVersion，可追溯',
-    rmEyebrow:'Roadmap', rmTitle:'版本迭代路线',
-    rm1t:'MVP · 当前', rm1d:'实时打章 · 防篡改链 · 离线验证 · 创世链锚定（个人免费）',
-    rm2t:'轻量续写 + 链管理', rm2d:'轻量头增量续写（不上传整链）· 链合并 / 拆分 / 分叉检测',
-    rm3t:'时间与身份锚定', rm3d:'TSA 时间戳（司法级时间证明）· 人脸身份锚定（Plus / Pro）',
-    rm4t:'零知识验证', rm4d:'snarkjs/circom 零知识证明 · 异步密语原语',
-    rm5t:'联合授权平台', rm5d:'平台 SDK · 独立支链分发 · 按链计费 · 平台水印 / 人脸扩展',
+    rmEyebrow:'当前版本', rmTitle:'本版本功能',
+    rm1t:'MVP · 已发布', rm1d:'实时打章 · 防篡改链 · 离线验证 · 创世链锚定（个人免费）',
     licEyebrow:'License', licTitle:'个人免费，商业授权', licSub:'AGPL-3.0 + 商业双许可——开源引流，商业共赢。',
     licFreeT:'个人创作者', licFree1:'自建 / 自签创作链完全免费', licFree2:'锚定官方创世链个人免费', licFree3:'可离线自证，无需注册', licFree4:'AGPL-3.0 开源可审计', licFreeBtn:'获取源码',
     licBizT:'企业 / 联合授权平台', licBizPrice:'按授权', licBiz1:'官方 SDK + 独立支链分发', licBiz2:'平台水印 / 人脸识别等增值能力', licBiz3:'闭源集成与商业服务授权', licBiz4:'按链计费，防刷链', licBizBtn:'商业合作',
@@ -498,12 +490,8 @@ var I18N = {
     techEyebrow:'Technology', techTitle:'Zero-dependency, auditable', techSub:'Pure frontend core, no build dependencies, fully open source.',
     techCore:'Core libraries', techChain:'Chain spec (summary)',
     techL1:'Signature: Ed25519 (RFC 8032)', techL2:'Chain hash: SHA-256 causal chain', techL3:'File: .rt (ZIP container: chain.json + meta.json)', techL4:'Version: appVersion recorded on chain',
-    rmEyebrow:'Roadmap', rmTitle:'Version roadmap',
-    rm1t:'MVP · current', rm1d:'Real-time stamping · tamper-evident chain · offline verification · genesis anchoring (free)',
-    rm2t:'Light resume + chain management', rm2d:'Lightweight incremental resume (no full-chain upload) · merge / split / fork detection',
-    rm3t:'Time & identity anchoring', rm3d:'TSA timestamps (legal-grade time proof) · face identity anchoring (Plus / Pro)',
-    rm4t:'Zero-knowledge verification', rm4d:'snarkjs/circom ZK proofs · async cipher primitives',
-    rm5t:'Partner platforms', rm5d:'Platform SDK · independent branch-chain distribution · per-chain billing · platform watermark / face extensions',
+    rmEyebrow:'Current release', rmTitle:'What this version includes',
+    rm1t:'MVP · released', rm1d:'Real-time stamping · tamper-evident chain · offline verification · genesis anchoring (free)',
     licEyebrow:'License', licTitle:'Free for individuals, licensed for business', licSub:'AGPL-3.0 + commercial dual license.',
     licFreeT:'Individual creators', licFree1:'Self-hosted / self-signed chains are completely free', licFree2:'Official genesis anchoring free for individuals', licFree3:'Offline self-verification, no registration', licFree4:'AGPL-3.0 open source, auditable', licFreeBtn:'Get Source',
     licBizT:'Enterprises / partner platforms', licBizPrice:'By license', licBiz1:'Official SDK + independent branch chains', licBiz2:'Platform watermark / face recognition add-ons', licBiz3:'Closed-source integration & commercial hosting license', licBiz4:'Per-chain billing, anti-abuse', licBizBtn:'Partner with us',
