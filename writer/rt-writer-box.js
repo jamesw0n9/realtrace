@@ -8,6 +8,25 @@
 // 提供为后续追加数据追踪存档存储功能
 // 最终注入到宿主页面 DOM 中
 window.RtWriterBox = (function() {
+  // ======== showToast fallback：宿主页面未定义时提供轻量 Toast ========
+  if (typeof window.showToast !== 'function') {
+    window.showToast = function(msg, type) {
+      try {
+        var t = document.getElementById('rtToast');
+        if (!t) {
+          t = document.createElement('div');
+          t.id = 'rtToast';
+          t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 18px;border-radius:8px;color:#fff;font-size:14px;background:#334155;box-shadow:0 4px 12px rgba(0,0,0,.3);transition:opacity .3s;';
+          document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        t.style.background = (type === 'error') ? '#B91C1C' : (type === 'success') ? '#15803D' : '#334155';
+        t.style.opacity = '1';
+        clearTimeout(window.__rtToastTimer);
+        window.__rtToastTimer = setTimeout(function(){ t.style.opacity = '0'; }, 2500);
+      } catch(e) { console.log('[WB]', msg); }
+    };
+  }
   var C = window.RtWriter = window.RtWriter || {};
 
   // ======== 作为数据追踪模块 ========
@@ -62,7 +81,7 @@ window.RtWriterBox = (function() {
         state._chain = result.chain; state.sessionId = stamp.sessionId;
         state.prevChainHash = stamp.hash || stamp.chainHash || '';
         state.stamps.push(stamp); updateStats();
-        await fetch(state.apiBase + '/stamp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: stamp.sessionId, index: stamp.index, timestamp: stamp.timestamp, nonce: stamp.nonce, salt: stamp.salt, contentHash: stamp.contentHash || '', prevChainHash: stamp.prevChainHash || '', signature: stamp.signature, publicKey: stamp.publicKey }) }).catch(()=>{});
+        if (state.apiBase) { await fetch(state.apiBase + '/stamp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: stamp.sessionId, index: stamp.index, timestamp: stamp.timestamp, nonce: stamp.nonce, salt: stamp.salt, contentHash: stamp.contentHash || '', prevChainHash: stamp.prevChainHash || '', signature: stamp.signature, publicKey: stamp.publicKey }) }).catch(()=>{}); }
       } catch(e) { console.error('[WB] doStamp error:', e); }
     }
     async function sealNow() {
@@ -73,10 +92,16 @@ window.RtWriterBox = (function() {
         clearInterval(state.timerInterval); btn.disabled = true; btn.textContent = '\u5c01\u7ae0\u4e2d...';
         var contentHash = await StampChain.computeContentHash(area.value);
         var pubKey = (state.stamps.length > 0 ? state.stamps[state.stamps.length-1].publicKey : '') || (state.kp ? await StampChain.exportPubHex(state.kp.publicKey) : '');
-        var resp = await fetch(state.apiBase + '/seal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contentHash, sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps }) });
-        var data = await resp.json();
-        if (data.success && data.certificateId) { showToast('\u5c01\u7ae0\u6210\u529f: ' + data.certificateId, 'success'); if (state.onSeal) state.onSeal(data); }
-        else { showToast('\u5c01\u7ae0\u5931\u8d25: ' + (data.error || '\u672a\u77e5\u9519\u8bef'), 'error'); }
+        if (state.apiBase) {
+          var resp = await fetch(state.apiBase + '/seal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contentHash, sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps }) });
+          var data = await resp.json();
+          if (data.success && data.certificateId) { showToast('\u5c01\u7ae0\u6210\u529f: ' + data.certificateId, 'success'); if (state.onSeal) state.onSeal(data); }
+          else { showToast('\u5c01\u7ae0\u5931\u8d25: ' + (data.error || '\u672a\u77e5\u9519\u8bef'), 'error'); }
+        } else {
+          // 离线模式：无 apiBase 时纯本地封章，不请求服务器，直接走本地导出 + 跳转离线认证
+          showToast('\u5c01\u7ae0\u6210\u529f\uff08\u79bb\u7ebf\uff09', 'success');
+          if (state.onSeal) state.onSeal({ success: true, certificateId: 'offline-' + state.sessionId.substring(0, 8), sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps });
+        }
       } catch(e) { showToast('\u5c01\u7ae0\u5931\u8d25: ' + e.message, 'error'); }
       btn.textContent = '\u5c01\u7ae0\u4e0a\u94fe'; btn.disabled = false;
     }
