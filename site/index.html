@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RealTrace · 真迹 — 为每一份人类创作留下不可伪造的在场证明</title>
+<meta name="description" content="RealTrace 用 Ed25519 密码学签名链，为每一份人类创作留下不可伪造的在场证明。实时打章 · 防篡改链 · 完全离线 · 创世链锚定。">
+<style>
+:root{
+  --bg:#04060d; --bg2:#0a1020; --bg3:#0e1630;
+  --gold:#f2c46d; --gold2:#e8a94c; --cyan:#5fd4e6; --red:#ff5d5d;
+  --txt:#e8ecf6; --dim:#9aa6c3; --line:rgba(255,255,255,.09);
+  --card:rgba(255,255,255,.035); --card-line:rgba(255,255,255,.1);
+  --mono:'Consolas','SF Mono',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;line-height:1.7;overflow-x:hidden}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:0 24px}
+::selection{background:rgba(242,196,109,.3)}
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(4,6,13,.72);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
+.brand .logo{width:26px;height:26px;filter:drop-shadow(0 0 8px rgba(242,196,109,.55))}
+.brand .rt{background:linear-gradient(120deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:19px}
+.nav-right{display:flex;align-items:center;gap:18px}
+.lang-btn{cursor:pointer;font-size:13px;color:var(--dim);border:1px solid var(--line);padding:5px 12px;border-radius:999px;transition:.25s}
+.lang-btn:hover{color:var(--gold);border-color:var(--gold)}
+.gh-link{font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.hero{min-height:92vh;display:flex;align-items:center;position:relative;padding:70px 0 40px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(900px 500px at 75% 20%,rgba(242,196,109,.10),transparent 60%),radial-gradient(700px 500px at 15% 80%,rgba(95,212,230,.08),transparent 60%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;letter-spacing:2px;color:var(--gold);border:1px solid rgba(242,196,109,.35);padding:6px 14px;border-radius:999px;background:rgba(242,196,109,.06);margin-bottom:22px}
+.kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-size:clamp(34px,5.2vw,58px);line-height:1.18;font-weight:800;letter-spacing:-.5px}
+.hero h1 .gold{background:linear-gradient(120deg,var(--gold),var(--gold2) 60%,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.type-line{margin-top:20px;font-size:clamp(17px,2vw,21px);color:var(--dim);min-height:30px;font-family:var(--mono)}
+.type-line .caret{display:inline-block;width:9px;background:var(--gold);animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hero-desc{margin-top:18px;color:var(--dim);max-width:540px;font-size:16px}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:12px;font-weight:700;font-size:15px;transition:.25s;cursor:pointer;border:none}
+.btn-gold{background:linear-gradient(120deg,var(--gold),var(--gold2));color:#14100a;box-shadow:0 8px 30px rgba(242,196,109,.28)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(242,196,109,.4)}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--txt);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.hero-meta{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px}
+.tag{font-family:var(--mono);font-size:12px;color:var(--dim);border:1px solid var(--line);padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03)}
+.chain-viz{position:relative;height:430px;display:flex;align-items:center;justify-content:center}
+.chain-viz svg{width:100%;height:100%;overflow:visible}
+.node{fill:rgba(242,196,109,.14);stroke:var(--gold);stroke-width:1.4;transition:.3s}
+.node:hover{fill:rgba(242,196,109,.32)}
+.node.core{fill:rgba(95,212,230,.14);stroke:var(--cyan)}
+.node-label{fill:var(--dim);font-family:var(--mono);font-size:11px}
+.edge{stroke:rgba(242,196,109,.4);stroke-width:1.6;stroke-dasharray:5 5;animation:dash 1.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-20}}
+.glow{filter:drop-shadow(0 0 12px rgba(242,196,109,.6))}
+section{padding:92px 0;position:relative}
+.sec-head{text-align:center;max-width:760px;margin:0 auto 56px}
+.sec-eyebrow{font-size:13px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+.sec-title{font-size:clamp(26px,3.6vw,40px);font-weight:800;letter-spacing:-.3px}
+.sec-sub{color:var(--dim);margin-top:14px;font-size:16px}
+.problem{background:linear-gradient(180deg,transparent,rgba(255,93,93,.045),transparent)}
+.problem-card{max-width:880px;margin:0 auto;border:1px solid rgba(255,93,93,.25);border-radius:18px;padding:44px 48px;background:rgba(255,93,93,.04);position:relative;overflow:hidden}
+.problem-card::before{content:'⚠';position:absolute;font-size:120px;right:-10px;top:-30px;opacity:.07}
+.problem-card h3{font-size:24px;color:var(--red);margin-bottom:16px;font-weight:800}
+.problem-card p{color:var(--dim);margin-bottom:14px;font-size:16.5px}
+.problem-card p b{color:var(--txt)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:10px}
+.step{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:30px 26px;position:relative;transition:.3s}
+.step:hover{transform:translateY(-4px);border-color:rgba(242,196,109,.4)}
+.step .no{font-family:var(--mono);font-size:13px;color:var(--gold);letter-spacing:1px}
+.step h4{font-size:19px;margin:10px 0 8px}
+.step p{color:var(--dim);font-size:14.5px}
+.step .code{margin-top:14px;font-family:var(--mono);font-size:12px;background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--cyan);word-break:break-all}
+.chain-strip{display:flex;align-items:center;justify-content:center;gap:0;margin-top:54px;flex-wrap:wrap}
+.cs-node{display:flex;flex-direction:column;align-items:center;gap:8px}
+.cs-dot{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;border:1.6px solid var(--gold);background:rgba(242,196,109,.1);color:var(--gold);position:relative;animation:pulse 2.4s infinite}
+.cs-dot.s0{animation-delay:0s}.cs-dot.s1{animation-delay:.3s}.cs-dot.s2{animation-delay:.6s}.cs-dot.s3{animation-delay:.9s}.cs-dot.s4{animation-delay:1.2s}.cs-dot.s5{animation-delay:1.5s}
+.cs-link{width:56px;height:1.6px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:30px;position:relative}
+.cs-link::after{content:'';position:absolute;left:0;top:-2.2px;width:6px;height:6px;border-radius:50%;background:var(--gold);animation:flow 1.4s linear infinite}
+@keyframes flow{from{left:0;opacity:0}15%{opacity:1}to{left:100%;opacity:0}}
+.cs-cap{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.chain-strip .note{width:100%;text-align:center;margin-top:26px;font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+.chain-strip .note code{color:var(--cyan)}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feat{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:28px 24px;transition:.3s;position:relative;overflow:hidden}
+.feat::after{content:'';position:absolute;left:0;bottom:0;height:2.5px;width:0;background:linear-gradient(90deg,var(--gold),var(--cyan));transition:.4s}
+.feat:hover{transform:translateY(-4px);border-color:rgba(95,212,230,.45)}
+.feat:hover::after{width:100%}
+.feat .ic{font-size:30px;margin-bottom:14px}
+.feat h4{font-size:18px;margin-bottom:8px}
+.feat p{color:var(--dim);font-size:14px}
+.demo{background:linear-gradient(180deg,transparent,rgba(95,212,230,.04),transparent)}
+.demo-box{max-width:920px;margin:0 auto;border:1px solid var(--card-line);border-radius:20px;background:rgba(10,16,32,.7);overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.demo-top{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.demo-top .dot{width:11px;height:11px;border-radius:50%}
+.demo-top .dot.r{background:#ff5f57}.demo-top .dot.y{background:#febc2e}.demo-top .dot.g{background:#28c840}
+.demo-title{margin-left:10px;font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+.demo-body{display:grid;grid-template-columns:1fr 300px}
+#demoArea{width:100%;min-height:300px;resize:vertical;background:transparent;border:none;outline:none;color:var(--txt);font-size:16px;line-height:1.9;padding:24px;font-family:inherit}
+#demoArea::placeholder{color:#56618a}
+.demo-side{border-left:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:14px;background:rgba(0,0,0,.2)}
+.demo-stat{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.demo-stat b{color:var(--gold);font-size:20px;display:block;margin-top:2px}
+.stamp-log{flex:1;overflow:auto;max-height:220px;font-family:var(--mono);font-size:11.5px;color:var(--cyan);border:1px solid var(--line);border-radius:8px;padding:10px;background:rgba(0,0,0,.35)}
+.stamp-log div{padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.05)}
+.demo-actions{display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--line);align-items:center}
+.demo-actions .btn{padding:10px 20px;font-size:14px}
+.verify-msg{font-family:var(--mono);font-size:12.5px;margin-left:auto;color:var(--dim)}
+.verify-msg.ok{color:#37d67a}
+.verify-msg.err{color:var(--red)}
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.tech-card{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:26px}
+.tech-card h4{font-size:17px;margin-bottom:12px;color:var(--gold)}
+.tech-card ul{list-style:none}
+.tech-card li{color:var(--dim);font-size:14px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.06)}
+.tech-card li:last-child{border:none}
+.tech-card code{font-family:var(--mono);color:var(--cyan);font-size:12.5px}
+.timeline{max-width:820px;margin:0 auto;position:relative;padding-left:34px}
+.timeline::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold),var(--cyan))}
+.tl{position:relative;padding:0 0 34px 26px}
+.tl::before{content:'';position:absolute;left:-29px;top:6px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:2.5px solid var(--gold)}
+.tl.done::before{background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.tl h4{font-size:17px;display:flex;align-items:center;gap:10px}
+.tl .ver{font-family:var(--mono);font-size:12px;color:var(--gold);border:1px solid rgba(242,196,109,.4);padding:1px 8px;border-radius:5px}
+.tl.done .ver{color:#37d67a;border-color:rgba(55,214,122,.4)}
+.tl p{color:var(--dim);font-size:14.5px;margin-top:6px}
+.lic-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.lic{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:30px;transition:.3s}
+.lic:hover{transform:translateY(-4px)}
+.lic.free{border-color:rgba(55,214,122,.35)}
+.lic.biz{border-color:rgba(242,196,109,.35)}
+.lic h4{font-size:19px;margin-bottom:6px}
+.lic .price{font-size:26px;font-weight:800;margin:8px 0 14px}
+.lic.free .price{color:#37d67a}
+.lic.biz .price{color:var(--gold)}
+.lic ul{list-style:none;margin-bottom:18px}
+.lic li{color:var(--dim);font-size:14px;padding:5px 0;position:relative;padding-left:20px}
+.lic li::before{content:'✓';position:absolute;left:0;color:var(--gold)}
+.lic .btn{width:100%;justify-content:center}
+.final{text-align:center;padding:100px 0}
+.final h2{font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:16px}
+.final p{color:var(--dim);max-width:620px;margin:0 auto 34px;font-size:16px}
+footer{border-top:1px solid var(--line);padding:40px 0 60px;text-align:center}
+.footer-links{display:flex;justify-content:center;gap:26px;margin-bottom:16px;font-size:14px}
+.footer-copy{color:#5b6585;font-size:13px}
+.footer-copy .rt{color:var(--gold)}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:960px){
+  .hero-grid{grid-template-columns:1fr}
+  .chain-viz{height:300px}
+  .steps,.features,.tech-grid,.lic-grid{grid-template-columns:1fr}
+  .demo-body{grid-template-columns:1fr}
+  .demo-side{border-left:none;border-top:1px solid var(--line)}
+}
+@media(max-width:560px){
+  section{padding:64px 0}
+  .problem-card{padding:30px 24px}
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#f2c46d" stroke-width="1.6"/><circle cx="12" cy="12" r="3.4" fill="#f2c46d"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6" stroke="#5fd4e6" stroke-width="1.4"/></svg>
+      <span class="rt">RealTrace</span>
+    </div>
+    <div class="nav-right">
+      <a class="lang-btn" id="langToggle" href="javascript:void(0)">EN</a>
+      <a class="gh-link" href="https://github.com/jamesw0n9/realtrace" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker"><span class="dot"></span><span data-i18n="kicker">Ed25519 签名链 · 人类创作认证</span></div>
+      <h1><span data-i18n="h1a">为每一份</span> <span class="gold" data-i18n="h1b">人类创作</span><br><span data-i18n="h1c">留下不可伪造的</span> <span class="gold" data-i18n="h1d">在场证明</span></h1>
+      <div class="type-line"><span id="typer"></span><span class="caret">&nbsp;</span></div>
+      <p class="hero-desc" data-i18n="heroDesc">RealTrace 用密码学签名链证明「内容确实是人类实时写出来的」，而不是 AI 生成的。实时打章、防篡改、完全离线——让每一篇真正由人写出的文字，都能被认出来、被证明、被尊重。</p>
+      <div class="cta-row">
+        <a class="btn btn-gold" href="https://github.com/jamesw0n9/realtrace" target="_blank" rel="noopener" data-i18n="ctaStar">★ GitHub 仓库</a>
+        <a class="btn btn-ghost" href="#demo" data-i18n="ctaDemo">▶ 在线演示</a>
+        <a class="btn btn-ghost" href="https://github.com/jamesw0n9/realtrace/releases/tag/v0.1.0" target="_blank" rel="noopener" data-i18n="ctaRelease">⬇ v0.1.0 MVP</a>
+      </div>
+      <div class="hero-meta">
+        <span class="tag">Ed25519</span><span class="tag">SHA-256</span><span class="tag">零内容上传</span><span class="tag">离线可验证</span><span class="tag">开源</span>
+      </div>
+    </div>
+    <div class="chain-viz">
+      <svg viewBox="0 0 420 420" aria-hidden="true">
+        <defs>
+          <linearGradient id="eg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f2c46d"/><stop offset="1" stop-color="#5fd4e6"/></linearGradient>
+        </defs>
+        <line class="edge" x1="210" y1="60" x2="330" y2="150"/>
+        <line class="edge" x1="330" y1="150" x2="300" y2="290"/>
+        <line class="edge" x1="300" y1="290" x2="150" y2="340"/>
+        <line class="edge" x1="150" y1="340" x2="70" y2="230"/>
+        <line class="edge" x1="70" y1="230" x2="90" y2="110"/>
+        <line class="edge" x1="90" y1="110" x2="210" y2="60"/>
+        <line class="edge" x1="210" y1="60" x2="210" y2="205" style="stroke:url(#eg)"/>
+        <circle class="node glow" cx="210" cy="60" r="34"/>
+        <text class="node-label" x="210" y="64" text-anchor="middle">stamp 0</text>
+        <circle class="node" cx="330" cy="150" r="28"/><text class="node-label" x="330" y="154" text-anchor="middle">stamp 1</text>
+        <circle class="node" cx="300" cy="290" r="28"/><text class="node-label" x="300" y="294" text-anchor="middle">stamp 2</text>
+        <circle class="node" cx="150" cy="340" r="28"/><text class="node-label" x="150" y="344" text-anchor="middle">stamp 3</text>
+        <circle class="node" cx="70" cy="230" r="28"/><text class="node-label" x="70" y="234" text-anchor="middle">stamp 4</text>
+        <circle class="node" cx="90" cy="110" r="28"/><text class="node-label" x="90" y="114" text-anchor="middle">stamp 5</text>
+        <circle class="node core" cx="210" cy="205" r="44"/>
+        <text class="node-label" x="210" y="198" text-anchor="middle" style="fill:#5fd4e6">SEAL</text>
+        <text class="node-label" x="210" y="213" text-anchor="middle" style="fill:#5fd4e6">封章 · 锚定</text>
+        <text class="node-label" x="210" y="395" text-anchor="middle" style="fill:#5b6585">prevChainHash 因果链 · 不可篡改</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section class="problem">
+  <div class="wrap">
+    <div class="problem-card reveal">
+      <h3 data-i18n="probTitle">2022 年 11 月，ChatGPT 诞生。</h3>
+      <p data-i18n="probP1">从那一天起，<b>互联网上的一切，都不再可信。</b>到今天——你读到的每十篇文字中，可能有八篇出自 AI 之手。新闻、评论、论文、代码、合同、诉状……没有人能凭肉眼分辨人类的原创与机器的伪造。</p>
+      <p data-i18n="probP2">最可怕的不是 AI 会写东西，而是当一切都可以被伪造时，<b>真实反而成了奢侈品</b>。人类创作的价值，正在被无声地稀释到无从辨认。</p>
+      <p data-i18n="probP3">每一篇真正由人写出的文字，都承载着一个人的思考、情感与选择——<b>这种尊严，值得被捍卫。</b></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow" data-i18n="howEyebrow">How it works</div>
+      <h2 class="sec-title" data-i18n="howTitle">写作即认证，过程即证据</h2>
+      <p class="sec-sub" data-i18n="howSub">不需要上传内容，不需要注册登录——打开即写，写下即证。</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="no">STEP 01</div>
+        <h4 data-i18n="s1t">实时打章</h4>
+        <p data-i18n="s1d">写作过程中自动生成 Ed25519 签名 stamp，记录打字节奏、字符变化等行为特征，全程离线。</p>
+        <div class="code">stamp = Sign_Ed25519(chainHash)</div>
+      </div>
+      <div class="step reveal">
+        <div class="no">STEP 02</div>
+        <h4 data-i18n="s2t">防篡改链</h4>
+        <p data-i18n="s2d">每个 stamp 引用前一个的链哈希，任何回顾性修改在数学上可检测。</p>
+        <div class="code">chainHash = SHA-256(sessionId ‖ index ‖ salt ‖ contentHash ‖ prevChainHash ‖ nonce)</div>
+      </div>
+      <div class="step reveal">
+        <div class="no">STEP 03</div>
+        <h4 data-i18n="s3t">封章上链</h4>
+        <p data-i18n="s3d">封章后下载 .rt 链文件 + 内容文件，可选择把链根哈希锚定到官方创世链（个人免费）。</p>
+        <div class="code">seal → genesis chain · 公开可审计</div>
+      </div>
+    </div>
+    <div class="chain-strip reveal">
+      <div class="cs-node"><div class="cs-dot s0">#0</div><span class="cs-cap">stamp 0</span></div>
+      <div class="cs-link"></div>
+      <div class="cs-node"><div class="cs-dot s1">#1</div><span class="cs-cap">stamp 1</span></div>
+      <div class="cs-link"></div>
+      <div class="cs-node"><div class="cs-dot s2">#2</div><span class="cs-cap">stamp 2</span></div>
+      <div class="cs-link"></div>
+      <div class="cs-node"><div class="cs-dot s3">#3</div><span class="cs-cap">stamp 3</span></div>
+      <div class="cs-link"></div>
+      <div class="cs-node"><div class="cs-dot s4">#4</div><span class="cs-cap">stamp 4</span></div>
+      <div class="cs-link"></div>
+      <div class="cs-node"><div class="cs-dot s5">#5</div><span class="cs-cap">SEAL</span></div>
+      <div class="note"><code>prevChainHash</code> 因果序 · <code>Ed25519</code> 私钥签名 · <code>nonce</code> 防伪造</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow" data-i18n="featEyebrow">Features</div>
+      <h2 class="sec-title" data-i18n="featTitle">为真实创作而生</h2>
+    </div>
+    <div class="features">
+      <div class="feat reveal"><div class="ic">⚡</div><h4 data-i18n="f1t">实时打章</h4><p data-i18n="f1d">写作过程即打章，无需任何操作，每个 stamp 都是创作发生的加密证据。</p></div>
+      <div class="feat reveal"><div class="ic">🔗</div><h4 data-i18n="f2t">防篡改链</h4><p data-i18n="f2d">哈希因果链 + Ed25519 签名，任何回顾性修改在数学上可检测。</p></div>
+      <div class="feat reveal"><div class="ic">🕶️</div><h4 data-i18n="f3t">零内容上传</h4><p data-i18n="f3d">正文只存在你的本地，链上仅记录内容哈希与行为特征，隐私默认保护。</p></div>
+      <div class="feat reveal"><div class="ic">📴</div><h4 data-i18n="f4t">完全离线</h4><p data-i18n="f4d">打章、验章全部本地完成，.rt 链文件完全由你掌控，可自行加密备份。</p></div>
+      <div class="feat reveal"><div class="ic">🧬</div><h4 data-i18n="f5t">行为指纹</h4><p data-i18n="f5d">打字节奏 / 停顿 / 删除量等特征（HMAC 行为链），供可信度分析。</p></div>
+      <div class="feat reveal"><div class="ic">🌐</div><h4 data-i18n="f6t">创世链锚定</h4><p data-i18n="f6d">封章后把链根哈希提交到官方创世链，形成公开可审计的溯源记录，个人免费。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="demo" id="demo">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow" data-i18n="demoEyebrow">Live demo</div>
+      <h2 class="sec-title" data-i18n="demoTitle">试着写下点什么</h2>
+      <p class="sec-sub" data-i18n="demoSub">输入即打章——每个 stamp 都是真实 SHA-256 + Ed25519 签名链的一环。</p>
+    </div>
+    <div class="demo-box reveal">
+      <div class="demo-top">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="demo-title">realtrace-writer — 写作框</span>
+      </div>
+      <div class="demo-body">
+        <textarea id="demoArea" placeholder="在这里开始写作… 停下来观察右侧的 stamp 链在生长。" data-i18n-placeholder="demoPh"></textarea>
+        <div class="demo-side">
+          <div class="demo-stat"><span data-i18n="statStamp">stamp 数</span><b id="statStamp">0</b></div>
+          <div class="demo-stat"><span data-i18n="statChar">可视字符</span><b id="statChar">0</b></div>
+          <div class="demo-stat"><span data-i18n="statChain">链哈希</span><b id="statChain" style="font-size:11px;color:var(--cyan)">—</b></div>
+          <div class="stamp-log" id="stampLog"></div>
+        </div>
+      </div>
+      <div class="demo-actions">
+        <button class="btn btn-gold" id="demoSeal" data-i18n="demoSealBtn">🔒 封章验证</button>
+        <span class="verify-msg" id="verifyMsg"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow" data-i18n="techEyebrow">Technology</div>
+      <h2 class="sec-title" data-i18n="techTitle">零依赖，可审计</h2>
+      <p class="sec-sub" data-i18n="techSub">纯前端核心，无构建依赖，全部逻辑开源可审计。</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card reveal">
+        <h4 data-i18n="techCore">核心库</h4>
+        <ul>
+          <li><code>stamp.js</code> — 打章核心（链哈希 + 签名）</li>
+          <li><code>rt-crypto.js</code> — Ed25519 / 哈希工具库</li>
+          <li><code>rt-verifier.js</code> — 离线链验证器</li>
+          <li><code>rt-export.js</code> — .rt 链文件打包 / 解析</li>
+        </ul>
+      </div>
+      <div class="tech-card reveal">
+        <h4 data-i18n="techChain">链规格（摘要）</h4>
+        <ul>
+          <li data-i18n="techL1">签名：Ed25519（RFC 8032）</li>
+          <li data-i18n="techL2">链哈希：SHA-256 因果链</li>
+          <li data-i18n="techL3">文件：.rt（ZIP 容器：chain.json + meta.json）</li>
+          <li data-i18n="techL4">版本：链上记录 appVersion，可追溯</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow" data-i18n="rmEyebrow">Roadmap</div>
+      <h2 class="sec-title" data-i18n="rmTitle">版本迭代路线</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl done reveal"><h4><span class="ver">v0.1.0</span><span data-i18n="rm1t">MVP · 当前</span></h4><p data-i18n="rm1d">实时打章 · 防篡改链 · 离线验证 · 创世链锚定（个人免费）</p></div>
+      <div class="tl reveal"><h4><span class="ver">v1.0</span><span data-i18n="rm2t">轻量续写 + 链管理</span></h4><p data-i18n="rm2d">轻量头增量续写（不上传整链）· 链合并 / 拆分 / 分叉检测</p></div>
+      <div class="tl reveal"><h4><span class="ver">v1.1</span><span data-i18n="rm3t">时间与身份锚定</span></h4><p data-i18n="rm3d">TSA 时间戳（司法级时间证明）· 人脸身份锚定（Plus / Pro）</p></div>
+      <div class="tl reveal"><h4><span class="ver">v2.0</span><span data-i18n="rm4t">零知识验证</span></h4><p data-i18n="rm4d">snarkjs/circom 零知识证明 · 异步密语原语</p></div>
+      <div class="tl reveal"><h4><span class="ver">v3.0</span><span data-i18n="rm5t">联合授权平台</span></h4><p data-i18n="rm5d">平台 SDK · 独立支链分发 · 按链计费 · 平台水印 / 人脸扩展</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow" data-i18n="licEyebrow">License</div>
+      <h2 class="sec-title" data-i18n="licTitle">个人免费，商业授权</h2>
+      <p class="sec-sub" data-i18n="licSub">AGPL-3.0 + 商业双许可——开源引流，商业共赢。</p>
+    </div>
+    <div class="lic-grid">
+      <div class="lic free reveal">
+        <h4 data-i18n="licFreeT">个人创作者</h4>
+        <div class="price">Free</div>
+        <ul>
+          <li data-i18n="licFree1">自建 / 自签创作链完全免费</li>
+          <li data-i18n="licFree2">锚定官方创世链个人免费</li>
+          <li data-i18n="licFree3">可离线自证，无需注册</li>
+          <li data-i18n="licFree4">AGPL-3.0 开源可审计</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://github.com/jamesw0n9/realtrace" target="_blank" rel="noopener" data-i18n="licFreeBtn">获取源码</a>
+      </div>
+      <div class="lic biz reveal">
+        <h4 data-i18n="licBizT">企业 / 联合授权平台</h4>
+        <div class="price" data-i18n="licBizPrice">按授权</div>
+        <ul>
+          <li data-i18n="licBiz1">官方 SDK + 独立支链分发</li>
+          <li data-i18n="licBiz2">平台水印 / 人脸识别等增值能力</li>
+          <li data-i18n="licBiz3">闭源集成与商业服务授权</li>
+          <li data-i18n="licBiz4">按链计费，防刷链</li>
+        </ul>
+        <a class="btn btn-gold" href="https://github.com/jamesw0n9/realtrace" target="_blank" rel="noopener" data-i18n="licBizBtn">商业合作</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 data-i18n="finalT">在 AI 可以模仿一切的时代<br>人类创作的尊严，值得被捍卫</h2>
+    <p data-i18n="finalD">立即体验：打开写作工具，写下你的第一篇真迹。不需要账号，不需要上传，写下即证。</p>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn btn-gold" href="https://github.com/jamesw0n9/realtrace" target="_blank" rel="noopener" data-i18n="ctaStar2">★ Star us on GitHub</a>
+      <a class="btn btn-ghost" href="https://github.com/jamesw0n9/realtrace/releases/tag/v0.1.0" target="_blank" rel="noopener" data-i18n="ctaRelease2">下载 v0.1.0</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-links">
+      <a href="https://github.com/jamesw0n9/realtrace" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/jamesw0n9/realtrace/releases" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/jamesw0n9/realtrace/blob/main/docs/ROADMAP.md" target="_blank" rel="noopener">Roadmap</a>
+      <a href="https://github.com/jamesw0n9/realtrace/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+    </div>
+    <div class="footer-copy">© 2026 <span class="rt">RealTrace · 真迹</span> — 为每一份人类创作留下在场证明 · AGPL-3.0 + Commercial</div>
+  </div>
+</footer>
+
+<script>
+var I18N = {
+  zh: {
+    kicker:'Ed25519 签名链 · 人类创作认证',
+    h1a:'为每一份', h1b:'人类创作', h1c:'留下不可伪造的', h1d:'在场证明',
+    heroDesc:'RealTrace 用密码学签名链证明「内容确实是人类实时写出来的」，而不是 AI 生成的。实时打章、防篡改、完全离线——让每一篇真正由人写出的文字，都能被认出来、被证明、被尊重。',
+    ctaStar:'★ GitHub 仓库', ctaDemo:'▶ 在线演示', ctaRelease:'⬇ v0.1.0 MVP',
+    probTitle:'2022 年 11 月，ChatGPT 诞生。',
+    probP1:'从那一天起，互联网上的一切，都不再可信。到今天——你读到的每十篇文字中，可能有八篇出自 AI 之手。新闻、评论、论文、代码、合同、诉状……没有人能凭肉眼分辨人类的原创与机器的伪造。',
+    probP2:'最可怕的不是 AI 会写东西，而是当一切都可以被伪造时，真实反而成了奢侈品。人类创作的价值，正在被无声地稀释到无从辨认。',
+    probP3:'每一篇真正由人写出的文字，都承载着一个人的思考、情感与选择——这种尊严，值得被捍卫。',
+    howEyebrow:'How it works', howTitle:'写作即认证，过程即证据', howSub:'不需要上传内容，不需要注册登录——打开即写，写下即证。',
+    s1t:'实时打章', s1d:'写作过程中自动生成 Ed25519 签名 stamp，记录打字节奏、字符变化等行为特征，全程离线。',
+    s2t:'防篡改链', s2d:'每个 stamp 引用前一个的链哈希，任何回顾性修改在数学上可检测。',
+    s3t:'封章上链', s3d:'封章后下载 .rt 链文件 + 内容文件，可选择把链根哈希锚定到官方创世链（个人免费）。',
+    featEyebrow:'Features', featTitle:'为真实创作而生',
+    f1t:'实时打章', f1d:'写作过程即打章，无需任何操作，每个 stamp 都是创作发生的加密证据。',
+    f2t:'防篡改链', f2d:'哈希因果链 + Ed25519 签名，任何回顾性修改在数学上可检测。',
+    f3t:'零内容上传', f3d:'正文只存在你的本地，链上仅记录内容哈希与行为特征，隐私默认保护。',
+    f4t:'完全离线', f4d:'打章、验章全部本地完成，.rt 链文件完全由你掌控，可自行加密备份。',
+    f5t:'行为指纹', f5d:'打字节奏 / 停顿 / 删除量等特征（HMAC 行为链），供可信度分析。',
+    f6t:'创世链锚定', f6d:'封章后把链根哈希提交到官方创世链，形成公开可审计的溯源记录，个人免费。',
+    demoEyebrow:'Live demo', demoTitle:'试着写下点什么', demoSub:'输入即打章——每个 stamp 都是真实 SHA-256 + Ed25519 签名链的一环。',
+    demoPh:'在这里开始写作… 停下来观察右侧的 stamp 链在生长。',
+    statStamp:'stamp 数', statChar:'可视字符', statChain:'链哈希',
+    demoSealBtn:'🔒 封章验证',
+    techEyebrow:'Technology', techTitle:'零依赖，可审计', techSub:'纯前端核心，无构建依赖，全部逻辑开源可审计。',
+    techCore:'核心库', techChain:'链规格（摘要）',
+    techL1:'签名：Ed25519（RFC 8032）', techL2:'链哈希：SHA-256 因果链', techL3:'文件：.rt（ZIP 容器：chain.json + meta.json）', techL4:'版本：链上记录 appVersion，可追溯',
+    rmEyebrow:'Roadmap', rmTitle:'版本迭代路线',
+    rm1t:'MVP · 当前', rm1d:'实时打章 · 防篡改链 · 离线验证 · 创世链锚定（个人免费）',
+    rm2t:'轻量续写 + 链管理', rm2d:'轻量头增量续写（不上传整链）· 链合并 / 拆分 / 分叉检测',
+    rm3t:'时间与身份锚定', rm3d:'TSA 时间戳（司法级时间证明）· 人脸身份锚定（Plus / Pro）',
+    rm4t:'零知识验证', rm4d:'snarkjs/circom 零知识证明 · 异步密语原语',
+    rm5t:'联合授权平台', rm5d:'平台 SDK · 独立支链分发 · 按链计费 · 平台水印 / 人脸扩展',
+    licEyebrow:'License', licTitle:'个人免费，商业授权', licSub:'AGPL-3.0 + 商业双许可——开源引流，商业共赢。',
+    licFreeT:'个人创作者', licFree1:'自建 / 自签创作链完全免费', licFree2:'锚定官方创世链个人免费', licFree3:'可离线自证，无需注册', licFree4:'AGPL-3.0 开源可审计', licFreeBtn:'获取源码',
+    licBizT:'企业 / 联合授权平台', licBizPrice:'按授权', licBiz1:'官方 SDK + 独立支链分发', licBiz2:'平台水印 / 人脸识别等增值能力', licBiz3:'闭源集成与商业服务授权', licBiz4:'按链计费，防刷链', licBizBtn:'商业合作',
+    finalT:'在 AI 可以模仿一切的时代\n人类创作的尊严，值得被捍卫', finalD:'立即体验：打开写作工具，写下你的第一篇真迹。不需要账号，不需要上传，写下即证。',
+    ctaStar2:'★ Star us on GitHub', ctaRelease2:'下载 v0.1.0'
+  },
+  en: {
+    kicker:'Ed25519 signature chain · Human creation authentication',
+    h1a:'For every', h1b:'human creation', h1c:'an unforgeable', h1d:'proof of presence',
+    heroDesc:'RealTrace proves with a cryptographic signature chain that content was genuinely written by a human, in real time — not generated by AI. Real-time stamping, tamper-evident, fully offline. Every word truly written by a person can be recognized, proven, and respected.',
+    ctaStar:'★ GitHub Repo', ctaDemo:'▶ Live Demo', ctaRelease:'⬇ v0.1.0 MVP',
+    probTitle:'November 2022. ChatGPT was born.',
+    probP1:'From that day on, nothing on the internet can be fully trusted. Today, 8 out of 10 texts you read may be AI-generated. News, reviews, papers, code, contracts, filings… no one can tell human originality from machine forgery with the naked eye.',
+    probP2:'The scariest part is not that AI can write. It is that when everything can be forged, authenticity becomes a luxury. The value of human creation is being silently diluted into indistinguishability.',
+    probP3:'Every text truly written by a human carries thought, emotion, and choice — that dignity deserves to be defended.',
+    howEyebrow:'How it works', howTitle:'Writing is certification, process is evidence', howSub:'No uploads, no accounts — open, write, and it is already proven.',
+    s1t:'Real-time stamping', s1d:'Ed25519 signature stamps are generated automatically as you type, recording rhythm and character changes. Fully offline.',
+    s2t:'Tamper-evident chain', s2d:'Each stamp references the previous chain hash. Any retroactive modification is mathematically detectable.',
+    s3t:'Seal & anchor', s3d:'Seal to download the .rt chain file plus content file. Optionally anchor the chain root to the official genesis chain (free for individuals).',
+    featEyebrow:'Features', featTitle:'Built for authentic creation',
+    f1t:'Real-time stamping', f1d:'Stamps are created as you write — no action needed. Each stamp is cryptographic evidence that creation happened.',
+    f2t:'Tamper-evident chain', f2d:'Causal hash chain + Ed25519 signatures. Any retroactive change is mathematically detectable.',
+    f3t:'Zero content upload', f3d:'Your text stays local. Only content hashes and behavior features go on the chain. Privacy by default.',
+    f4t:'Fully offline', f4d:'Stamping and verification run locally. The .rt chain file is entirely yours — encrypt and back it up yourself.',
+    f5t:'Behavior fingerprint', f5d:'Typing rhythm, pauses, deletions (HMAC behavior chain) for credibility analysis.',
+    f6t:'Genesis chain anchoring', f6d:'Seal and anchor your chain root to the official genesis chain — a public, auditable trail. Free for individuals.',
+    demoEyebrow:'Live demo', demoTitle:'Try writing something', demoSub:'Type and watch the chain grow — every stamp is a real SHA-256 + Ed25519 link.',
+    demoPh:'Start writing here… pause and watch the stamp chain grow on the right.',
+    statStamp:'stamps', statChar:'characters', statChain:'chain hash',
+    demoSealBtn:'🔒 Seal & Verify',
+    techEyebrow:'Technology', techTitle:'Zero-dependency, auditable', techSub:'Pure frontend core, no build dependencies, fully open source.',
+    techCore:'Core libraries', techChain:'Chain spec (summary)',
+    techL1:'Signature: Ed25519 (RFC 8032)', techL2:'Chain hash: SHA-256 causal chain', techL3:'File: .rt (ZIP container: chain.json + meta.json)', techL4:'Version: appVersion recorded on chain',
+    rmEyebrow:'Roadmap', rmTitle:'Version roadmap',
+    rm1t:'MVP · current', rm1d:'Real-time stamping · tamper-evident chain · offline verification · genesis anchoring (free)',
+    rm2t:'Light resume + chain management', rm2d:'Lightweight incremental resume (no full-chain upload) · merge / split / fork detection',
+    rm3t:'Time & identity anchoring', rm3d:'TSA timestamps (legal-grade time proof) · face identity anchoring (Plus / Pro)',
+    rm4t:'Zero-knowledge verification', rm4d:'snarkjs/circom ZK proofs · async cipher primitives',
+    rm5t:'Partner platforms', rm5d:'Platform SDK · independent branch-chain distribution · per-chain billing · platform watermark / face extensions',
+    licEyebrow:'License', licTitle:'Free for individuals, licensed for business', licSub:'AGPL-3.0 + commercial dual license.',
+    licFreeT:'Individual creators', licFree1:'Self-hosted / self-signed chains are completely free', licFree2:'Official genesis anchoring free for individuals', licFree3:'Offline self-verification, no registration', licFree4:'AGPL-3.0 open source, auditable', licFreeBtn:'Get Source',
+    licBizT:'Enterprises / partner platforms', licBizPrice:'By license', licBiz1:'Official SDK + independent branch chains', licBiz2:'Platform watermark / face recognition add-ons', licBiz3:'Closed-source integration & commercial hosting license', licBiz4:'Per-chain billing, anti-abuse', licBizBtn:'Partner with us',
+    finalT:'In an age when AI can imitate everything,\nthe dignity of human creation deserves defending', finalD:'Try it now: open the writer and write your first RealTrace. No account, no upload — just write, and it is proven.',
+    ctaStar2:'★ Star us on GitHub', ctaRelease2:'Download v0.1.0'
+  }
+};
+var curLang = 'zh';
+function applyLang(lang){
+  curLang = lang;
+  var dict = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var key = el.getAttribute('data-i18n-placeholder');
+    if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+  });
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('langToggle').textContent = lang === 'zh' ? 'EN' : '中文';
+  typeLines = lang === 'zh' ? ['实时打章 → Ed25519 签名链 → 离线验证', '零内容上传 · 隐私默认保护', '开源 · AGPL-3.0 + 商业双许可'] : ['Stamp in real time → Ed25519 chain → verify offline', 'Zero content upload · privacy by default', 'Open source · AGPL-3.0 + commercial'];
+  typeIdx = 0; typeChar = 0; typed = ''; clearInterval(typeTimer); startType();
+}
+document.getElementById('langToggle').addEventListener('click', function(){ applyLang(curLang === 'zh' ? 'en' : 'zh'); });
+
+var typeLines = ['实时打章 → Ed25519 签名链 → 离线验证', '零内容上传 · 隐私默认保护', '开源 · AGPL-3.0 + 商业双许可'];
+var typeIdx = 0, typeChar = 0, typed = '', typeTimer = null;
+var typerEl = document.getElementById('typer');
+function startType(){
+  if (typeIdx >= typeLines.length) typeIdx = 0;
+  var line = typeLines[typeIdx];
+  typeTimer = setInterval(function(){
+    if (typeChar < line.length){
+      typed += line[typeChar]; typeChar++;
+      typerEl.textContent = typed;
+    } else {
+      clearInterval(typeTimer);
+      setTimeout(function(){
+        typed = ''; typeChar = 0; typeIdx++;
+        typerEl.textContent = '';
+        startType();
+      }, 2200);
+    }
+  }, 42);
+}
+startType();
+
+var canvas = document.getElementById('bg'), ctx = canvas.getContext('2d');
+var W, H, particles = [];
+function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+function makeParticles(){
+  particles = [];
+  var n = Math.min(70, Math.floor(W * H / 22000));
+  for (var i = 0; i < n; i++){
+    particles.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.6+.4, vx: (Math.random()-.5)*.25, vy: (Math.random()-.5)*.25, c: Math.random() > .82 ? '242,196,109' : '95,212,230' });
+  }
+}
+makeParticles();
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  for (var i = 0; i < particles.length; i++){
+    var p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -1;
+    if (p.y < 0 || p.y > H) p.vy *= -1;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7);
+    ctx.fillStyle = 'rgba(' + p.c + ',.5)'; ctx.fill();
+    for (var j = i+1; j < particles.length; j++){
+      var q = particles[j], dx = p.x-q.x, dy = p.y-q.y, d = dx*dx+dy*dy;
+      if (d < 120*120){
+        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+        ctx.strokeStyle = 'rgba(140,160,220,' + (0.10*(1-d/(120*120))) + ')'; ctx.lineWidth = 1; ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+var demo = { stamps: [], prevHash: '', sessionId: 'demo-' + Date.now().toString(36), salt: Math.random().toString(36).slice(2,10) };
+var demoArea = document.getElementById('demoArea');
+var stampLog = document.getElementById('stampLog');
+var lastStamp = 0;
+var MIN_GAP = 3000;
+async function sha256Hex(str){
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+function stampNow(){
+  var now = Date.now();
+  if (now - lastStamp < MIN_GAP) return;
+  lastStamp = now;
+  (async function(){
+    var contentHash = demoArea.value.trim() ? await sha256Hex(demoArea.value.trim()) : 'empty';
+    var index = demo.stamps.length;
+    var nonce = Math.floor(Math.random()*1e9).toString(36);
+    var chainHash = await sha256Hex(demo.sessionId + '|' + index + '|' + demo.salt + '|' + contentHash + '|' + demo.prevHash + '|' + nonce);
+    demo.stamps.push({ index: index, ts: now, chainHash: chainHash, prev: demo.prevHash.slice(0,12) });
+    demo.prevHash = chainHash;
+    document.getElementById('statStamp').textContent = demo.stamps.length;
+    document.getElementById('statChain').textContent = chainHash.slice(0,16) + '…';
+    var div = document.createElement('div');
+    div.textContent = '#stamp ' + index + '  ' + chainHash.slice(0,16) + '…';
+    stampLog.prepend(div);
+    if (stampLog.children.length > 30) stampLog.removeChild(stampLog.lastChild);
+  })();
+}
+demoArea.addEventListener('input', function(){
+  document.getElementById('statChar').textContent = demoArea.value.replace(/\s/g,'').length;
+  stampNow();
+});
+document.getElementById('demoSeal').addEventListener('click', function(){
+  var msg = document.getElementById('verifyMsg');
+  var ok = demo.stamps.length > 0;
+  if (ok){
+    var idx = demo.stamps.length;
+    stampNow();
+    msg.className = 'verify-msg ok';
+    msg.textContent = (curLang==='zh' ? '✓ 封章完成 · 链验证通过' : '✓ Sealed · chain verified');
+  } else {
+    msg.className = 'verify-msg err';
+    msg.textContent = (curLang==='zh' ? '✗ 请先输入一些内容' : '✗ Type something first');
+  }
+});
+applyLang('zh');
+</script>
+</body>
+</html>
