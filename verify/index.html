@@ -121,7 +121,7 @@ td.bad{color:#EF4444}
       var certStore = JSON.parse(raw);
       if (certStore && certStore.stamps && certStore.stamps.length > 0) {
         var res = await RtVerifier.verifyChain(certStore.stamps);
-        renderResult({ sessionId: certStore.sessionId, publicKey: certStore.publicKey, rtVersion: 'session', sealedAt: '' }, res);
+        renderResult({ sessionId: certStore.sessionId, publicKey: certStore.publicKey, rtVersion: certStore.rtVersion || '2.0', sealedAt: certStore.sealedAt || '' }, res);
       }
     }
   } catch (e) { /* 忽略会话数据异常 */ }
