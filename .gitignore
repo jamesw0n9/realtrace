@@ -1,0 +1,26 @@
+# 依赖 / 构建产物
+node_modules/
+dist/
+build/
+*.min.js.map
+
+# 本地配置（含密钥/端点）—— 永远不要提交 config.js
+config.js
+.env
+.env.*
+
+# 运行时数据
+data/
+*.db
+*.db-wal
+*.db-shm
+backups/
+logs/
+
+# 生成的文件
+*.rt
+*.zip
+
+# 系统文件
+.DS_Store
+Thumbs.db

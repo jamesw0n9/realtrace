@@ -1,0 +1,47 @@
+/* ========================================
+   真迹 · 统一主题变量
+   修改变量即可全局换肤
+   ======================================== */
+
+:root {
+  /* ─── 字体族（系统原生） ─── */
+  --font-sans: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Source Code Pro", "Cascadia Code", "Consolas", monospace;
+
+  /* ─── 背景层级（暗夜蓝系） ─── */
+  --bg-deep: #0F172A;       /* 最深底色 */
+  --bg-surface: #1E293B;    /* 卡片/表面层 */
+  --bg-elevated: #273548;   /* 抬高层级（导航、表头） */
+  --bg-hover: #334155;      /* 悬停态 */
+
+  /* ─── 文字 ─── */
+  --text-primary: #F1F5F9;  /* 主文字（近白） */
+  --text-secondary: #94A3B8;/* 次要文字 */
+  --text-tertiary: #64748B; /* 第三级/占位符 */
+
+  /* ─── 强调色（金色） ─── */
+  --gold: #D4A017;          /* 主金色 */
+  --gold-light: #F59E0B;    /* 亮金/悬停 */
+  --gold-dim: #A0780A;      /* 暗金/已禁用 */
+
+  /* ─── 边框 ─── */
+  --border: #334155;        /* 边框/分隔线 */
+  --border-light: #E2E8F0;
+  --border-glow: rgba(148,163,184,0.08);
+
+  /* ─── 语义色 ─── */
+  --accent-blue: #1A56DB;
+  --accent-green: #10B981;
+  --accent-red: #EF4444;
+
+  /* ─── 输入控件 ─── */
+  --input-bg: #F8FAFC;
+  --input-text: #1E293B;
+  --input-border: #E2E8F0;
+  --input-focus-border: #DBEAFE;
+
+  /* ─── 布局 ─── */
+  --max-w: 1100px;
+  --radius-sm: 4px;
+  --radius: 8px;
+}

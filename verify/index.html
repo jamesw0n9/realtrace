@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Realtrace · 离线链验证</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"PingFang SC","Microsoft YaHei",-apple-system,sans-serif;background:#0F172A;color:#F1F5F9;min-height:100dvh;display:flex;flex-direction:column}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(148,163,184,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:-1}
+#h{position:sticky;top:0;z-index:100;background:rgba(15,23,42,.95);border-bottom:1px solid rgba(212,160,23,.08)}
+.hi{max-width:1100px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.l{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:#F1F5F9;letter-spacing:.12em;text-decoration:none}
+.li{width:28px;height:28px;border:1.5px solid #D4A017;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#D4A017;font-family:monospace}
+.n{font-size:12px;color:#64748B}
+.main{flex:1;max-width:1100px;margin:0 auto;width:100%;padding:32px 24px}
+h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
+.sub{font-size:12px;color:#94A3B8;line-height:1.8;margin-bottom:20px}
+.drop{border:1.5px dashed #334155;border-radius:12px;padding:36px 24px;text-align:center;color:#64748B;cursor:pointer;transition:all .25s;margin-bottom:20px;background:rgba(30,41,59,.4)}
+.drop:hover,.drop.over{border-color:#D4A017;color:#D4A017}
+.drop .icon{font-size:34px;display:block;margin-bottom:10px}
+.drop input{display:none}
+.badge{display:inline-block;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:600;margin-bottom:12px}
+.badge.ok{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);color:#10B981}
+.badge.fail{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#EF4444}
+.badge.info{background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);color:#D4A017}
+.card{background:#1E293B;border:1px solid #334155;border-radius:10px;padding:18px;margin-bottom:16px}
+.meta{font-size:12px;color:#94A3B8;line-height:2;word-break:break-all}
+.meta b{color:#D4A017;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #1E293B;color:#CBD5E1;font-family:Consolas,monospace;word-break:break-all}
+th{color:#64748B;font-weight:600}
+td.ok{color:#10B981}
+td.bad{color:#EF4444}
+.ft{font-size:11px;color:#64748B;line-height:1.9;padding:10px 0 0;border-top:1px solid #1E293B;margin-top:16px}
+.ft a{color:#D4A017}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#334155;border-radius:2px}
+</style>
+</head>
+<body>
+<div id="h"><div class="hi"><a href="../writer/index.html" class="l"><span class="li">R</span>真迹·Realtrace</a><div class="n">离线链验证 · 不依赖网络</div></div></div>
+<div class="main">
+  <h1>🔗 创作链离线验证</h1>
+  <div class="sub">拖入 .rt 链文件即可在本地完成全链验证：链条串联、Ed25519 签名、内容摘要。验证过程不向任何服务器发送数据。</div>
+  <div class="drop" id="drop">
+    <span class="icon">📂</span>
+    点击选择或拖入 .rt 链文件
+    <input type="file" id="fileInput" accept=".rt,application/zip,application/json">
+  </div>
+  <div id="result"></div>
+  <div class="ft">官方创世链锚定：个人创作上链免费。封章后子链根哈希记入官方创世链，可在官方站点公开审计。开源版默认完全离线，如需上链请配置 <code>config.js</code> 的 <code>anchor</code> 项。</div>
+</div>
+<script src="../core/lib/jszip.min.js"></script>
+<script src="../core/rt-export.js"></script>
+<script src="../core/rt-verifier.js"></script>
+<script>
+(async function() {
+  var drop = document.getElementById('drop');
+  var fileInput = document.getElementById('fileInput');
+  var resultEl = document.getElementById('result');
+
+  drop.addEventListener('click', function() { fileInput.click(); });
+  drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', function() { drop.classList.remove('over'); });
+  drop.addEventListener('drop', function(e) {
+    e.preventDefault(); drop.classList.remove('over');
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) verifyFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', function() {
+    if (fileInput.files.length > 0) verifyFile(fileInput.files[0]);
+  });
+
+  async function verifyFile(file) {
+    resultEl.innerHTML = '<div class="badge info">⏳ 解析 ' + escapeHtml(file.name) + ' ...</div>';
+    var pkg;
+    try {
+      pkg = await RtExport.loadRtFile(file);
+    } catch (e) {
+      resultEl.innerHTML = '<div class="badge fail">❌ 解析失败：' + escapeHtml(e.message || e) + '</div>';
+      return;
+    }
+    var stamps = (pkg && pkg.stamps) || [];
+    var res = await RtVerifier.verifyChain(stamps);
+    renderResult(pkg, res);
+  }
+
+  function renderResult(pkg, res) {
+    var ok = res.ok;
+    var meta = [
+      ['链 ID', pkg.sessionId || pkg.chainId || ''],
+      ['公钥', pkg.publicKey || pkg.pk || ''],
+      ['stamp 数', res.totalStamps + ' 个'],
+      ['rt 版本', pkg.rtVersion || ''],
+      ['封章时间', pkg.sealedAt || '']
+    ].filter(function(m) { return m[1] !== undefined && m[1] !== ''; }).map(function(m) {
+      return '<div><b>' + m[0] + '</b>：' + escapeHtml(String(m[1])) + '</div>';
+    }).join('');
+
+    var rows = (res.details || []).map(function(d, i) {
+      var cls = d.ok ? 'ok' : 'bad';
+      var icon = d.ok ? '✓' : '✗';
+      return '<tr><td>' + i + '</td><td class="' + cls + '">' + icon + '</td><td>' +
+      escapeHtml(String(d && d.errors ? d.errors.join('; ') : '')) + '</td></tr>';
+    }).join('');
+
+    resultEl.innerHTML =
+      '<div class="badge ' + (ok ? 'ok' : 'fail') + '">' + (ok ? '✅ 验证通过' : '❌ 验证失败') + '</div>' +
+      '<div class="card"><div class="meta">' + meta + '</div></div>' +
+      '<div class="card"><table><thead><tr><th>#</th><th>状态</th><th>说明</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // 写作页跳转带来会话数据时自动验证
+  try {
+    var raw = sessionStorage.getItem('rt_cert_data');
+    if (raw) {
+      var certStore = JSON.parse(raw);
+      if (certStore && certStore.stamps && certStore.stamps.length > 0) {
+        var res = await RtVerifier.verifyChain(certStore.stamps);
+        renderResult({ sessionId: certStore.sessionId, publicKey: certStore.publicKey, rtVersion: 'session', sealedAt: '' }, res);
+      }
+    }
+  } catch (e) { /* 忽略会话数据异常 */ }
+})();
+</script>
+</body>
+</html>
