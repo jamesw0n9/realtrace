@@ -1,0 +1,2 @@
+# 文本文件统一按 LF 入库（Windows 检出为 CRLF），防止 API/跨平台提交污染仓库行尾
+* text=auto
