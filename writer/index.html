@@ -337,20 +337,26 @@ async function doFinalSeal(result) {
       stamps: stamps,
       sessionId: sessionId,
       publicKey: pubKey,
+      source: 'web',
+      owner: 'personal',
       sealedAt: new Date().toISOString(),
       status: 'locked',
       lockedAt: Date.now()
     };
-    var rtFileName = 'rt-' + sessionId.substring(0, 8) + '.rt';
+    var lastSt = stamps.length > 0 ? stamps[stamps.length - 1] : null;
+    var rootH = (lastSt && (lastSt.hash || lastSt.chainHash)) || result.rootHash || '';
+    var chainId = await RtExport.deriveChainId(pubKey, rootH, 'web', 'personal');
+    var cidShort = chainId.split('-').pop().substring(0, 8);
+    var rtFileName = 'rt-' + cidShort + '.rt';
     await RtExport.downloadRtFile(sealData, rtFileName);
 
     if (content && content.trim()) {
-      var txtFileName = 'content-' + sessionId.substring(0, 8) + '.txt';
+      var txtFileName = 'content-' + cidShort + '.txt';
       RtExport.downloadTxtFile(content, txtFileName);
     }
 
     try {
-      var certStore = { sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: result.rootHash || '' };
+      var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH };
       sessionStorage.setItem('rt_cert_data', JSON.stringify(certStore));
       sessionStorage.setItem('rt_cert_id', result.certificateId || '');
     } catch(e) {}

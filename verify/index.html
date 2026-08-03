@@ -82,17 +82,31 @@ td.bad{color:#EF4444}
     }
     var stamps = (pkg && pkg.stamps) || [];
     var res = await RtVerifier.verifyChain(stamps);
-    renderResult(pkg, res);
+    renderResult(pkg, res, await checkChainId(pkg));
   }
 
-  function renderResult(pkg, res) {
+  async function checkChainId(pkg) {
+    var pk = pkg.pk || pkg.publicKey || '';
+    var stamps = pkg.stamps || [];
+    var last = stamps.length ? stamps[stamps.length - 1] : null;
+    var rootHash = (pkg.hashChain && pkg.hashChain.current) || (last && (last.hash || last.chainHash)) || '';
+    var chainId = pkg.chainId || pkg.sessionId || '';
+    if (!pk || !rootHash || !chainId) return '—';
+    var parts = String(chainId).split('-');
+    if (parts.length < 3) return '旧格式 ID（仅作标识）';
+    var expected = await RtExport.deriveCid(pk, rootHash);
+    return expected === parts[parts.length - 1] ? '✓ 与链内容一致' : '✗ 与链内容不符';
+  }
+
+  function renderResult(pkg, res, idCheck) {
     var ok = res.ok;
     var meta = [
-      ['链 ID', pkg.sessionId || pkg.chainId || ''],
+      ['链 ID', pkg.chainId || pkg.sessionId || ''],
       ['公钥', pkg.publicKey || pkg.pk || ''],
       ['stamp 数', res.totalStamps + ' 个'],
       ['rt 版本', pkg.rtVersion || ''],
-      ['封章时间', pkg.sealedAt || '']
+      ['封章时间', pkg.sealedAt || ''],
+      ['ID 校验', idCheck || '—']
     ].filter(function(m) { return m[1] !== undefined && m[1] !== ''; }).map(function(m) {
       return '<div><b>' + m[0] + '</b>：' + escapeHtml(String(m[1])) + '</div>';
     }).join('');
@@ -121,7 +135,7 @@ td.bad{color:#EF4444}
       var certStore = JSON.parse(raw);
       if (certStore && certStore.stamps && certStore.stamps.length > 0) {
         var res = await RtVerifier.verifyChain(certStore.stamps);
-        renderResult({ sessionId: certStore.sessionId, publicKey: certStore.publicKey, rtVersion: certStore.rtVersion || '2.0', sealedAt: certStore.sealedAt || '' }, res);
+        renderResult({ chainId: certStore.chainId || '', sessionId: certStore.sessionId, publicKey: certStore.publicKey, stamps: certStore.stamps, rtVersion: certStore.rtVersion || '2.0', sealedAt: certStore.sealedAt || '' }, res, await checkChainId({ chainId: certStore.chainId || '', pk: certStore.publicKey || '', stamps: certStore.stamps || [] }));
       }
     }
   } catch (e) { /* 忽略会话数据异常 */ }

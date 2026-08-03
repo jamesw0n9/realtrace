@@ -9,6 +9,20 @@ window.RtExport = (() => {
   "use strict";
 
   // ─── 工具函数 ────────────────────────────
+  function sha256Hex(input) {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(input || ""))).then(function(buf) {
+      return Array.from(new Uint8Array(buf)).map(function(x) { return x.toString(16).padStart(2, "0"); }).join("");
+    });
+  }
+  // 链 ID 密码学身份：cid = hex(SHA-256(pubkey || chainRootHash))[0:23]（BZ-007 第八章）
+  async function deriveCid(publicKeyHex, chainRootHash) {
+    var h = await sha256Hex(String(publicKeyHex || "") + String(chainRootHash || ""));
+    return h.slice(0, 23);
+  }
+  async function deriveChainId(publicKeyHex, chainRootHash, source, owner) {
+    var cid = await deriveCid(publicKeyHex, chainRootHash);
+    return (source || "web") + "-" + (owner || "personal") + "-" + cid;
+  }
   function b2h(b) {
     return Array.from(new Uint8Array(b)).map(function(x) { return x.toString(16).padStart(2, '0'); }).join('');
   }
@@ -65,7 +79,7 @@ window.RtExport = (() => {
 
     var chainJson = {
       version: "2.0",
-      chainId: chainData.sessionId || chainData.chainId || ('RT-' + Date.now().toString(36).toUpperCase()),
+      chainId: chainData.chainId || chainData.sessionId || ('RT-' + Date.now().toString(36).toUpperCase()),
       status: chainData.status || 'locked',
       pk: chainData.publicKey || chainData.pk || '',
       skEncrypted: null,
@@ -112,10 +126,16 @@ window.RtExport = (() => {
       return null;
     }
 
+    var v2Stamps = normalizeStamps(sealResult.stamps);
+    var lastStamp = v2Stamps.length > 0 ? v2Stamps[v2Stamps.length - 1] : null;
+    var pubKeyHex = sealResult.publicKeyHex || sealResult.publicKey || sealResult.pk || '';
+    var chainId = sealResult.chainId || await deriveChainId(pubKeyHex, lastStamp ? lastStamp.hash : '', sealResult.source, sealResult.owner);
+
     var chainData = {
       stamps: sealResult.stamps,
       sessionId: sealResult.sessionId,
-      publicKey: sealResult.publicKeyHex || sealResult.publicKey || sealResult.pk || '',
+      chainId: chainId,
+      publicKey: pubKeyHex,
       encryptedPrivateKey: encryptedKey || sealResult.encryptedPrivateKey || null,
       createdAt: sealResult.createdAt || sealResult.sealedAt || null,
       status: sealResult.status || 'locked',
@@ -353,6 +373,8 @@ window.RtExport = (() => {
     buildLightHead: buildLightHead,
     downloadRtFile: downloadRtFile,
     downloadTxtFile: downloadTxtFile,
+    deriveCid: deriveCid,
+    deriveChainId: deriveChainId,
     loadRtFile: loadRtFile,
     extractContent: extractContent,
     getDurationMs: getDurationMs,

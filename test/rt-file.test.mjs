@@ -26,7 +26,13 @@ test('构建 .rt ZIP 包（含 chain.json + meta.json）', async () => {
   const chainJson = JSON.parse(await zip.file('chain.json').async('string'));
   assert.equal(chainJson.version, '2.0');
   assert.equal(chainJson.stamps.length, 3);
-  assert.equal(chainJson.chainId, 'file-test-001');
+  // 链 ID 命名规则：来源-归属-cid（cid 可验证，BZ-007 第八章）
+  const chainIdParts = chainJson.chainId.split('-');
+  assert.equal(chainIdParts[0], 'web');
+  assert.equal(chainIdParts[1], 'personal');
+  assert.equal(chainIdParts[2].length, 23);
+  const expectedCid = await globalThis.RtExport.deriveCid(globalThis.StampChain.b2h(keyPair.publicKey), chainJson.hashChain.current);
+  assert.equal(chainIdParts[2], expectedCid);
   assert.ok(chainJson.hashChain && chainJson.hashChain.current, 'hashChain.current 存在');
 });
 

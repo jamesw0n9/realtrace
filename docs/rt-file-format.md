@@ -1,6 +1,6 @@
 # Realtrace · .rt 链文件格式
 
-> 版本：V2.0.0（纯链容器）
+> 版本：V2.1.0（纯链容器 · 链 ID 命名规则）
 > `.rt` 是 **ZIP 容器**，只记录 stamp 链与链元数据，**不包含创作正文**。正文单独以 `.txt` 下载。
 
 ## 1. 容器结构
@@ -19,7 +19,7 @@ xxx.rt (ZIP)
 | 字段 | 类型 | 说明 |
 |:-----|:-----|:-----|
 | `version` | string | 格式版本，如 `"2.0.0"` |
-| `chainId` | string | 链 ID（= sessionId） |
+| `chainId` | string | 链 ID（`来源-归属-cid`，见 §6 命名规则） |
 | `pk` | string | 会话 Ed25519 公钥 hex |
 | `skEncrypted` | string | 加密后的私钥 hex（用户选择加密时存在） |
 | `kdf` | object | `{ salt, iterations }` 密钥派生参数 |
@@ -50,6 +50,33 @@ RTLH (魔数) + rt-light-v1 + sessionId + prevChainHash + 最后索引 + 内容�
 ## 5. 命名建议
 
 ```
-rt-{sessionId前8位}.rt     # 链文件
-content-{sessionId前8位}.txt # 正文
+rt-{cid前8位}.rt          # 链文件（cid 见 §6）
+content-{cid前8位}.txt    # 正文
+```
+
+## 6. 链 ID 命名规则
+
+链 ID 统一为三段式，可读且可密码学验证：
+
+```text
+chainId = <source>-<owner>-<cid>
+```
+
+- **source（来源）**：`web` / `sdk` / `cli` / `app` / `merge` / `import`，表示链的生成端；新增来源向后兼容。
+- **owner（归属）**：`personal`（个人创作）或 `partner-<pid>`（授权平台支链，pid 为 4–8 位小写字母数字）。
+- **cid（密码学身份，23 位 hex）**：
+
+```text
+cid = hex( SHA-256( pubkey || chainRootHash ) )[0:23]
+```
+
+`pubkey` 为 chain.json 的 `pk`（hex 小写），`chainRootHash` 为 `hashChain.current`（最后一个 stamp 的 hash），`||` 为字符串拼接。
+
+**看 ID 可验证**：从 `.rt` 读取 `pk` + stamps 重算根哈希 → 派生 cid → 与 chainId 比对；一致可信，不一致提示「链 ID 与链内容不符」。cid 为 SHA-256 输出，不可反推创建时间或内容。
+
+**示例**：
+
+```text
+web-personal-3f9a2c81e4d07b2acd21a4f
+sdk-partner-a1b2c3-9f3c7d2e11aa44bb05c1e9d
 ```
