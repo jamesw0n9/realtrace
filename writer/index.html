@@ -350,7 +350,7 @@ async function doFinalSeal(result) {
     }
 
     try {
-      var certStore = { sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, certificateId: result.certificateId || '', rootHash: result.rootHash || '' };
+      var certStore = { sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: result.rootHash || '' };
       sessionStorage.setItem('rt_cert_data', JSON.stringify(certStore));
       sessionStorage.setItem('rt_cert_id', result.certificateId || '');
     } catch(e) {}
