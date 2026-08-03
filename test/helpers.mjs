@@ -29,6 +29,7 @@ export async function buildTestChain(sessionId, count, prefixLen) {
   for (let i = 0; i < count; i++) {
     const r = await globalThis.StampChain.append(chain, {
       contentLen: (prefixLen || 10) + i * 10,
+      contentHash: await globalThis.StampChain.computeContentHash('x'.repeat((prefixLen || 10) + i * 10)),
       keyPair: kp,
       sessionId: sessionId
     });

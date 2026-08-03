@@ -24,7 +24,7 @@ test('构建 .rt ZIP 包（含 chain.json + meta.json）', async () => {
   assert.ok(zip.file('meta.json'), 'zip 内含 meta.json');
 
   const chainJson = JSON.parse(await zip.file('chain.json').async('string'));
-  assert.equal(chainJson.version, '2.0');
+  assert.equal(chainJson.version, '2.1');
   assert.equal(chainJson.stamps.length, 3);
   // 链 ID 命名规则：来源-归属-cid（cid 可验证，BZ-007 第八章）
   const chainIdParts = chainJson.chainId.split('-');
@@ -34,6 +34,18 @@ test('构建 .rt ZIP 包（含 chain.json + meta.json）', async () => {
   const expectedCid = await globalThis.RtExport.deriveCid(globalThis.StampChain.b2h(keyPair.publicKey), chainJson.hashChain.current);
   assert.equal(chainIdParts[2], expectedCid);
   assert.ok(chainJson.hashChain && chainJson.hashChain.current, 'hashChain.current 存在');
+  // V2.1: .rt 链文件携带完整可验证字段（chain-spec §1），离线验证器可直接重算验证
+  const v2stamp = chainJson.stamps[0];
+  assert.equal(v2stamp.index, 0, '创世章 index=0');
+  assert.equal(v2stamp.prevChainHash, '', '创世章 prevChainHash 为空串');
+  for (const k of ['sessionId','salt','timestamp','contentHash','nonce','publicKey','signature','chainHash']) {
+    assert.ok(v2stamp[k] !== undefined && v2stamp[k] !== '', 'stamp 含验证字段 ' + k);
+  }
+  assert.ok(chainJson.stamps[1].prevChainHash === chainJson.stamps[0].chainHash, '第二节 prevChainHash 串联');
+  const vres = await globalThis.RtVerifier.verifyChain(chainJson.stamps);
+  assert.equal(vres.ok, true, 'rt-verifier 离线验证通过: ' + vres.summary);
+  const sres = await globalThis.StampChain.verifyChain(chainJson.stamps, globalThis.StampChain.b2h(keyPair.publicKey));
+  assert.equal(sres.valid, true, 'stamp.js F2 验证通过: ' + sres.errors.join(';'));
 });
 
 test('导出辅助函数（时长/速度/加密标识/内容提取）', async () => {

@@ -93,8 +93,9 @@ window.RtWriterBox = (function() {
     async function doStamp_impl() {
       await ensureKey();
       var contentLen = area.value.length;
+      var contentHash = await StampChain.computeContentHash(area.value);
       try {
-        var result = await window.StampChain.append(state._chain || null, { contentLen, keyPair: state.kp, sessionId: state.sessionId });
+        var result = await window.StampChain.append(state._chain || null, { contentLen, contentHash, keyPair: state.kp, sessionId: state.sessionId });
         var stamp = result.stamp;
         state._chain = result.chain; state.sessionId = stamp.sessionId;
         state.prevChainHash = stamp.hash || stamp.chainHash || '';

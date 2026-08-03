@@ -27,6 +27,8 @@
   "chainHash": "见下",
   "behaviorHash": "见下"
 }
+
+> .rt 文件（chain.json）的 `stamps` 数组保存上述完整字段（V2.1 起），离线验证器可直接重算验证；旧版精简文件（仅 seq/ts/hash/sig）无法离线重算，需重新封章。
 ```
 
 ## 2. 链哈希（chainHash）

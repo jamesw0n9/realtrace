@@ -37,39 +37,27 @@ window.RtExport = (() => {
   // ─── stamps 转换为 V2.0.0 格式 ────────────
   function normalizeStamps(stamps) {
     if (!stamps || stamps.length === 0) return [];
-    // 检查是否已是 V2.0.0 格式
-    if (stamps[0].seq !== undefined && stamps[0].ts !== undefined && stamps[0].hash !== undefined) {
-      return stamps.map(function(s) {
-        return {
-          seq: s.seq,
-          ts: typeof s.ts === 'number' ? s.ts : (typeof s.timestamp === 'string' ? new Date(s.timestamp).getTime() : Date.now()),
-          duration: s.duration || 0,
-          wordDelta: s.wordDelta || 0,
-          totalWords: s.totalWords || s.totalWords === 0 ? s.totalWords : 0,
-          deleteDelta: s.deleteDelta || 0,
-          hash: s.hash || s.chainHash || '',
-          sig: s.sig || s.signature || ''
-        };
-      });
-    }
-    // 从旧格式转换
+    // V2.1: .rt 链文件保存完整可验证字段（chain-spec §1 / BZ-007 2.1）
+    // 离线验证需 index/sessionId/salt/timestamp/contentHash/prevChainHash/nonce/publicKey/signature/chainHash
+    // 旧精简格式（仅 seq/ts/hash/sig）兼容解析：缺失字段补默认，但无法离线重算验证
     return stamps.map(function(s, i) {
-      var ts = typeof s.timestamp === 'number' ? s.timestamp :
-               typeof s.timestamp === 'string' ? new Date(s.timestamp).getTime() :
-               s.ts || Date.now();
-      return {
-        seq: i + 1,
-        ts: ts,
+      var o = {
+        seq: s.seq !== undefined ? s.seq : (i + 1),
+        index: s.index !== undefined ? s.index : i,
+        ts: typeof s.ts === 'number' ? s.ts : (typeof s.timestamp === 'string' ? new Date(s.timestamp).getTime() : Date.now()),
         duration: s.duration || 0,
         wordDelta: s.wordDelta || 0,
-        totalWords: s.totalWords || s.contentLength || 0,
+        totalWords: s.totalWords === 0 ? 0 : (s.totalWords || 0),
         deleteDelta: s.deleteDelta || 0,
-        hash: s.chainHash || s.hash || '',
-        sig: s.signature || s.sig || ''
+        hash: s.hash || s.chainHash || '',
+        sig: s.sig || s.signature || ''
       };
+      ['sessionId', 'salt', 'nonce', 'timestamp', 'contentHash', 'prevChainHash', 'publicKey', 'signature', 'chainHash', 'behaviorHash', 'chainAnchor'].forEach(function(k) {
+        if (s[k] !== undefined) o[k] = s[k];
+      });
+      return o;
     });
   }
-
   // ─── 构建 chain.json ────────────────────
   function buildChainJson(chainData) {
     var stamps = chainData.stamps || [];
@@ -78,7 +66,7 @@ window.RtExport = (() => {
     var firstStamp = v2Stamps.length > 0 ? v2Stamps[0] : null;
 
     var chainJson = {
-      version: "2.0",
+      version: "2.1",
       chainId: chainData.chainId || chainData.sessionId || ('RT-' + Date.now().toString(36).toUpperCase()),
       status: chainData.status || 'locked',
       pk: chainData.publicKey || chainData.pk || '',
