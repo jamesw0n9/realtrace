@@ -32,7 +32,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 .mode-btn{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid #334155;background:#1E293B;color:#94A3B8;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap}
 .mode-btn:hover{border-color:#D4A017;color:#D4A017}
 #writerBoxContainer{flex:1;display:flex;flex-direction:column;min-height:0}
-#timelineBar{display:none;margin-bottom:10px;background:#0F172A;border:1px solid #334155;border-radius:8px;padding:8px 12px;overflow:hidden}
+
 
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);z-index:999999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
@@ -72,10 +72,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
     <span id="writerStats" style="font-size:13px;color:#94A3B8;"></span><span class="mode-spacer"></span>
     <button class="mode-btn" id="importBtn" onclick="importRtFile()" data-i18n="importBtn">📂 导入 .rt 续写</button>
   </div>
-  <div id="timelineBar" style="display:none">
-    <div id="timelineScroll"></div>
-    <div id="timelineStats"></div>
-  </div>
+
   <div id="writerBoxContainer"></div>
 </div>
 <!-- Modal -->
@@ -99,7 +96,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <script src="../core/lib/jszip.min.js"></script>
 <script src="../core/rt-export.js"></script>
 <script src="../core/rt-lighthead.js"></script>
-<script src="../core/rt-timeline.js"></script>
+
 <script>
 var I18N = {
   zh: {
@@ -208,7 +205,7 @@ function applyLang(lang) {
   if (lbl) lbl.textContent = dict._langName || lang.toUpperCase();
   try { localStorage.setItem('rt_writer_lang', lang); } catch(e) {}
   if (_rtWriterBox && typeof _rtWriterBox.setLang === 'function') _rtWriterBox.setLang(lang);
-  if (window.RtTimeline && typeof RtTimeline.setLang === 'function') RtTimeline.setLang(lang);
+
 }
 
 (function(){
@@ -224,7 +221,7 @@ function applyLang(lang) {
 })();
 var _rtIdentity = { mode:'anonymous', kp:null, publicKeyHex:'', sessionId:'' };
 var _rtWriterBox = null;
-var _timelineTimer = null;
+
 function showNotification(msg, type) {
   type = type || 'info';
   var c = document.querySelector('.toast-container');
@@ -253,31 +250,13 @@ async function importRtFile() {
       var ta = document.getElementById('rtTextarea');
       if (ta && content) ta.value = content;
       showNotification(t('imported',{n:(pkg.totalStamps||(pkg.stamps?pkg.stamps.length:0))}), 'success');
-      renderTimeline();
+
     } catch(e) { showNotification(t('importFail')+': '+e.message, 'error'); }
     this.value = '';
   };
   input.click();
 }
-function renderTimeline() {
-  var bar = document.getElementById('timelineBar');
-  if (!bar) return;
-  var st = window.__rtwbState;
-  if ((!st || !st.stamps || st.stamps.length === 0) && window._rtWriterBox && typeof _rtWriterBox.getState === 'function') {
-    var wb = _rtWriterBox.getState();
-    if (wb && wb.stamps && wb.stamps.length > 0) st = wb;
-  }
-  if (!st || !st.stamps || st.stamps.length === 0) { bar.style.display = 'none'; return; }
-  bar.style.display = 'block';
-  var arr = st.stamps;
-  if (window.RtTimeline) {
-    var box = document.getElementById('timelineScroll');
-    var stats = document.getElementById('timelineStats');
-    if (box) box.innerHTML = RtTimeline.barHTML(arr);
-    if (stats) stats.innerHTML = RtTimeline.statsHTML(arr);
-    try { if (box) box.scrollLeft = box.scrollWidth; } catch(e) {}
-  }
-}
+
 function showModal(opts) {
   return new Promise(function(resolve) {
     var overlay = document.getElementById('modalOverlay');
@@ -381,8 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
   } catch(e) { console.error('WriterBox:', e); }
   applyLang(curLang);
 
-  if (_timelineTimer) clearInterval(_timelineTimer);
-  _timelineTimer = setInterval(renderTimeline, 2000);
+
 });
 
 applyLang((function(){ try { return localStorage.getItem('rt_writer_lang') || 'zh'; } catch(e){ return 'zh'; } })());
