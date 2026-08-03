@@ -1,7 +1,7 @@
 // ========================================
-// 真迹 · .rt 文件导出器 (V2.0.0)
+// Realtrace · .rt 文件导出器 (V2.1)
 // 格式: ZIP 容器内含 chain.json
-// chain.json 遵循 V2.0.0 规范
+// chain.json 遵循 V2.1 规范（完整可验证字段）
 // .rt 不包含稿件内容，内容独立 .txt 下载
 // ========================================
 
@@ -23,6 +23,10 @@ window.RtExport = (() => {
     var cid = await deriveCid(publicKeyHex, chainRootHash);
     return (source || "web") + "-" + (owner || "personal") + "-" + cid;
   }
+  function cidOf(chainId) {
+    var parts = String(chainId || '').split('-');
+    return parts.length >= 3 ? parts[parts.length - 1] : '';
+  }
   function b2h(b) {
     return Array.from(new Uint8Array(b)).map(function(x) { return x.toString(16).padStart(2, '0'); }).join('');
   }
@@ -34,7 +38,7 @@ window.RtExport = (() => {
     return bytes;
   }
 
-  // ─── stamps 转换为 V2.0.0 格式 ────────────
+  // ─── stamps 转换为 V2.1 格式 ──────────────
   function normalizeStamps(stamps) {
     if (!stamps || stamps.length === 0) return [];
     // V2.1: .rt 链文件保存完整可验证字段（chain-spec §1 / BZ-007 2.1）
@@ -160,7 +164,8 @@ window.RtExport = (() => {
     var blob = await buildRtPackage(sealResult, mode, rawContent);
     if (!blob) return;
 
-    filename = filename || ('rt-' + (sealResult.sessionId || 'cert').substring(0, 8) + '.rt');
+    var idPart = cidOf(sealResult.chainId || '') || (sealResult.sessionId || 'cert');
+    filename = filename || ('rt-' + idPart.substring(0, 23) + '.rt');
 
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');

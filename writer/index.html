@@ -33,20 +33,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 .mode-btn:hover{border-color:#D4A017;color:#D4A017}
 #writerBoxContainer{flex:1;display:flex;flex-direction:column;min-height:0}
 #timelineBar{display:none;margin-bottom:10px;background:#0F172A;border:1px solid #334155;border-radius:8px;padding:8px 12px;overflow:hidden}
-.timeline-scroll{overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:2px 0}
-.timeline-scroll::-webkit-scrollbar{height:3px}
-.timeline-scroll::-webkit-scrollbar-track{background:#0F172A}
-.timeline-scroll::-webkit-scrollbar-thumb{background:#334155;border-radius:2px}
-.timeline-track{display:inline-flex;align-items:center;gap:0;min-height:24px;padding:0 2px}
-.timeline-track .t-dot{width:8px;height:8px;border-radius:50%;background:#334155;flex-shrink:0;cursor:pointer;transition:all .2s;position:relative}
-.timeline-track .t-dot:hover{background:#D4A017;transform:scale(1.6);z-index:2}
-.timeline-track .t-dot.latest{background:#D4A017;width:10px;height:10px}
-.timeline-track .t-dot.latest::after{content:"";position:absolute;top:-2px;left:-2px;width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(212,160,23,.4);animation:tPulse 2s infinite}
-.timeline-track .t-dot.first{background:#F59E0B}
-@keyframes tPulse{0%,100%{opacity:1}50%{opacity:.3}}
-.timeline-track .t-conn{width:4px;height:1px;background:#1E293B;flex-shrink:0}
-.timeline-stats{display:flex;align-items:center;gap:16px;padding:4px 0 0;border-top:1px solid #1E293B;margin-top:6px;font-size:10px;color:#64748B}
-.timeline-stats strong{color:#D4A017;font-family:"JetBrains Mono",monospace}
+
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);z-index:999999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
 .modal-box{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:24px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:modalIn 0.25s ease}
@@ -86,8 +73,8 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
     <button class="mode-btn" id="importBtn" onclick="importRtFile()" data-i18n="importBtn">📂 导入 .rt 续写</button>
   </div>
   <div id="timelineBar" style="display:none">
-    <div class="timeline-scroll" id="timelineScroll"><div class="timeline-track" id="timelineTrack"></div></div>
-    <div class="timeline-stats" id="timelineStats"></div>
+    <div id="timelineScroll"></div>
+    <div id="timelineStats"></div>
   </div>
   <div id="writerBoxContainer"></div>
 </div>
@@ -112,6 +99,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <script src="../core/lib/jszip.min.js"></script>
 <script src="../core/rt-export.js"></script>
 <script src="../core/rt-lighthead.js"></script>
+<script src="../core/rt-timeline.js"></script>
 <script>
 var I18N = {
   zh: {
@@ -219,7 +207,8 @@ function applyLang(lang) {
   var lbl = document.getElementById('langBtnText');
   if (lbl) lbl.textContent = dict._langName || lang.toUpperCase();
   try { localStorage.setItem('rt_writer_lang', lang); } catch(e) {}
-  if (_rtWriterBox && typeof _rtWriterBox.setLang === 'function') _rtWriterBox.setLang(lang);
+  if (_rtWriterBox && typeof _rtWriterBox.setLang === 'function') _rtWriterBox.setLang(lang);
+  if (window.RtTimeline && typeof RtTimeline.setLang === 'function') RtTimeline.setLang(lang);
 }
 
 (function(){
@@ -272,30 +261,22 @@ async function importRtFile() {
 }
 function renderTimeline() {
   var bar = document.getElementById('timelineBar');
-  var track = document.getElementById('timelineTrack');
-  var stats = document.getElementById('timelineStats');
-  if (!bar || !track) return;
+  if (!bar) return;
   var st = window.__rtwbState;
+  if ((!st || !st.stamps || st.stamps.length === 0) && window._rtWriterBox && typeof _rtWriterBox.getState === 'function') {
+    var wb = _rtWriterBox.getState();
+    if (wb && wb.stamps && wb.stamps.length > 0) st = wb;
+  }
   if (!st || !st.stamps || st.stamps.length === 0) { bar.style.display = 'none'; return; }
   bar.style.display = 'block';
-  var arr = st.stamps; track.innerHTML = '';
-  for (var i = 0; i < arr.length; i++) {
-    if (i > 0) { var cn = document.createElement('div'); cn.className = 't-conn'; track.appendChild(cn); }
-    var d = document.createElement('div'); d.className = 't-dot';
-    if (i === 0) d.className += ' first';
-    if (i === arr.length - 1) d.className += ' latest';
-    var ts = arr[i].ts || arr[i].ts || '';
-    var info = '#' + (i+1);
-    if (ts) { try { info += ' ' + new Date(ts).toLocaleString(); } catch(e) {} }
-    info += ' | hash: ' + ((arr[i].hash || arr[i].hash || '').slice(0,8) || 'N/A');
-    d.title = info; track.appendChild(d);
+  var arr = st.stamps;
+  if (window.RtTimeline) {
+    var box = document.getElementById('timelineScroll');
+    var stats = document.getElementById('timelineStats');
+    if (box) box.innerHTML = RtTimeline.barHTML(arr);
+    if (stats) stats.innerHTML = RtTimeline.statsHTML(arr);
+    try { if (box) box.scrollLeft = box.scrollWidth; } catch(e) {}
   }
-  try { var scroll = document.getElementById('timelineScroll'); if (scroll) scroll.scrollLeft = scroll.scrollWidth; } catch(e) {}
-  var dur = '';
-  if (arr.length >= 2) {
-    try { var t0 = new Date(arr[0].ts || arr[0].ts || 0).getTime(); var t1 = new Date(arr[arr.length-1].ts || arr[arr.length-1].ts || 0).getTime(); if (t0 && t1 && t1 > t0) { var s = Math.floor((t1 - t0) / 1000); if (s < 60) dur = s + t('sec'); else if (s < 3600) dur = Math.floor(s/60) + t('min') + (s%60) + t('sec'); else dur = Math.floor(s/3600) + t('hour') + Math.floor((s%3600)/60) + t('min'); } } catch(e) {}
-  }
-  if (stats) stats.innerHTML = '<strong>' + arr.length + '</strong> ' + t('stampUnit') + (dur ? ' | ' + t('duration') + ' <strong>' + dur + '</strong>' : '');
 }
 function showModal(opts) {
   return new Promise(function(resolve) {
@@ -348,12 +329,12 @@ async function doFinalSeal(result) {
     var lastSt = stamps.length > 0 ? stamps[stamps.length - 1] : null;
     var rootH = (lastSt && (lastSt.hash || lastSt.chainHash)) || result.rootHash || '';
     var chainId = await RtExport.deriveChainId(pubKey, rootH, 'web', 'personal');
-    var cidShort = chainId.split('-').pop().substring(0, 8);
-    var rtFileName = 'rt-' + cidShort + '.rt';
+    var cidFull = chainId.split('-').pop();
+    var rtFileName = 'rt-' + cidFull + '.rt';
     await RtExport.downloadRtFile(sealData, rtFileName);
 
     if (content && content.trim()) {
-      var txtFileName = 'content-' + cidShort + '.txt';
+      var txtFileName = 'content-' + cidFull + '.txt';
       RtExport.downloadTxtFile(content, txtFileName);
     }
 

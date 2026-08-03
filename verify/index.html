@@ -36,6 +36,7 @@ td.bad{color:#EF4444}
 .ft{font-size:11px;color:#64748B;line-height:1.9;padding:10px 0 0;border-top:1px solid #1E293B;margin-top:16px}
 .ft a{color:#D4A017}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#334155;border-radius:2px}
+
 </style>
 </head>
 <body>
@@ -54,6 +55,7 @@ td.bad{color:#EF4444}
 <script src="../core/lib/jszip.min.js"></script>
 <script src="../core/rt-export.js"></script>
 <script src="../core/rt-verifier.js"></script>
+<script src="../core/rt-timeline.js"></script>
 <script>
 (async function() {
   var drop = document.getElementById('drop');
@@ -121,11 +123,19 @@ td.bad{color:#EF4444}
     resultEl.innerHTML =
       '<div class="badge ' + (ok ? 'ok' : 'fail') + '">' + (ok ? '✅ 验证通过' : '❌ 验证失败') + '</div>' +
       '<div class="card"><div class="meta">' + meta + '</div></div>' +
+      renderTimeline(pkg) +
       '<div class="card"><table><thead><tr><th>#</th><th>状态</th><th>说明</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // 创作时间轴：复用 core/rt-timeline.js 模块（点+连线，hover 显示详情，六语标签）
+  function renderTimeline(pkg) {
+    var stamps = (pkg && pkg.stamps) || [];
+    if (!stamps || stamps.length === 0) return '';
+    return '<div class="card">' + RtTimeline.cardHTML(stamps) + '</div>';
   }
 
   // 写作页跳转带来会话数据时自动验证

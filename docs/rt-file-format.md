@@ -1,6 +1,6 @@
 # Realtrace · .rt 链文件格式
 
-> 版本：V2.1.0（纯链容器 · 链 ID 命名规则）
+> 版本：V2.2.0（纯链容器 · 链 ID 命名规则 · 文件名完整 cid）
 > `.rt` 是 **ZIP 容器**，只记录 stamp 链与链元数据，**不包含创作正文**。正文单独以 `.txt` 下载。
 
 ## 1. 容器结构
@@ -47,34 +47,37 @@ RTLH (魔数) + rt-light-v1 + sessionId + prevChainHash + 最后索引 + 内容�
 
 仅上传新增 stamp（增量追加），不传输全量文件。该能力为后续版本预留，MVP 写作工具直接读写完整 `.rt`。
 
-## 5. 命名建议
+## 5. Naming Convention
 
 ```
-rt-{cid前8位}.rt          # 链文件（cid 见 §6）
-content-{cid前8位}.txt    # 正文
+rt-{cid}.rt               # chain file (full 23-char cid, see §6)
+content-{cid}.txt         # content
 ```
 
-## 6. 链 ID 命名规则
+- The file name carries the complete cid segment (23 hex chars) of chainId, fully aligned with the chain ID; it exposes neither source nor owner;
+- The legacy "first 8 chars of cid" naming is deprecated since V2.2.0.
 
-链 ID 统一为三段式，可读且可密码学验证：
+## 6. Chain ID Naming Rules
+
+The chain ID uses a three-part format that is readable and cryptographically verifiable:
 
 ```text
 chainId = <source>-<owner>-<cid>
 ```
 
-- **source（来源）**：`web` / `sdk` / `cli` / `app` / `merge` / `import`，表示链的生成端；新增来源向后兼容。
-- **owner（归属）**：`personal`（个人创作）或 `partner-<pid>`（授权平台支链，pid 为 4–8 位小写字母数字）。
-- **cid（密码学身份，23 位 hex）**：
+- **source**: `web` / `sdk` / `cli` / `app` / `merge` / `import`, the generating end of the chain; new sources are backward compatible.
+- **owner**: `personal` (personal creation) or `partner-<pid>` (authorized platform branch; pid is 4-8 lowercase alphanumeric characters).
+- **cid (cryptographic identity, 23 hex chars)**:
 
 ```text
 cid = hex( SHA-256( pubkey || chainRootHash ) )[0:23]
 ```
 
-`pubkey` 为 chain.json 的 `pk`（hex 小写），`chainRootHash` 为 `hashChain.current`（最后一个 stamp 的 hash），`||` 为字符串拼接。
+`pubkey` is the `pk` field of chain.json (lowercase hex); `chainRootHash` is `hashChain.current` (the hash of the last stamp); `||` is string concatenation.
 
-**看 ID 可验证**：从 `.rt` 读取 `pk` + stamps 重算根哈希 → 派生 cid → 与 chainId 比对；一致可信，不一致提示「链 ID 与链内容不符」。cid 为 SHA-256 输出，不可反推创建时间或内容。
+**Verifiable by ID**: read `pk` + stamps from the `.rt`, recompute the root hash → derive cid → compare with chainId; a match is trustworthy, a mismatch reports "chain ID does not match chain content". cid is a SHA-256 output and cannot be reversed into creation time or content.
 
-**示例**：
+**Examples**:
 
 ```text
 web-personal-3f9a2c81e4d07b2acd21a4f
