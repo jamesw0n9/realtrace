@@ -245,6 +245,11 @@ npm test
 
 - [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
 - [Ko-fi](https://ko-fi.com/realtrace)
+- 중국 내: Alipay / WeChat Pay QR 코드(개인 소액 팁 전용, 상업 라이선스 아님)
+
+<p align="center">
+  <img src="site/sponsor/alipay.png" width="180" alt="Alipay QR"> <img src="site/sponsor/wechat.png" width="180" alt="WeChat Pay QR">
+</p>
 
 > 후원은 단순한 응원일 뿐이며 **상업 라이선스가 아닙니다**. 개인 사용은 항상 무료이며, 기업·플랫폼 통합은 [`LICENSE.commercial`](LICENSE.commercial)에 따라 별도 라이선스가 필요합니다.
 

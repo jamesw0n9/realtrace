@@ -245,6 +245,11 @@ Gefällt Ihnen das Projekt? Laden Sie mich auf einen Kaffee ein ☕:
 
 - [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
 - [Ko-fi](https://ko-fi.com/realtrace)
+- China: Alipay / WeChat-Pay-QR-Codes (nur private kleine Trinkgelder, keine kommerzielle Lizenz)
+
+<p align="center">
+  <img src="site/sponsor/alipay.png" width="180" alt="Alipay-QR"> <img src="site/sponsor/wechat.png" width="180" alt="WeChat-Pay-QR">
+</p>
 
 > Sponsoring ist nur ein Zeichen der Unterstützung — **keine kommerzielle Lizenz**. Die private Nutzung bleibt kostenlos; die Integration durch Unternehmen / Plattformen wird separat über [`LICENSE.commercial`](LICENSE.commercial) lizenziert.
 
