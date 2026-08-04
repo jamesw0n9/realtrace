@@ -226,6 +226,19 @@ Toutes les fonctionnalités restent rétrocompatibles : les fichiers de chaîne 
 
 ---
 
+---
+
+## Sponsor · Offrez-moi un café
+
+Le projet vous plaît ? Offrez-moi un café ☕ :
+
+- [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
+- [Ko-fi](https://ko-fi.com/realtrace)
+
+> Le sponsoring n'est qu'un geste de soutien — **ce n'est pas une licence commerciale**. L'usage personnel reste gratuit ; l'intégration par les entreprises / plateformes reste soumise à une licence séparée via [`LICENSE.commercial`](LICENSE.commercial).
+
+---
+
 ## Open source & commercial
 
 **Double licence AGPL-3.0 + commerciale** (la partie open source est régie par le texte intégral de l'AGPL-3.0 dans [`LICENSE`](LICENSE)) :

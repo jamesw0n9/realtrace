@@ -226,6 +226,19 @@ npm test
 
 ---
 
+---
+
+## スポンサー · コーヒーをご馳走ください
+
+このプロジェクトを気に入っていただけましたか？☕ コーヒーをご馳走ください：
+
+- [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
+- [Ko-fi](https://ko-fi.com/realtrace)
+
+> スポンサーは応援の気持ちを示すだけのもので、**商用ライセンスではありません**。個人利用は常に無料です。企業・プラットフォームの導入は [`LICENSE.commercial`](LICENSE.commercial) に基づく別途ライセンスが必要です。
+
+---
+
 ## オープンソースと商業
 
 **AGPL-3.0 + 商業デュアルライセンス**（オープンソース部分は [`LICENSE`](LICENSE) の AGPL-3.0 全文に準拠）：

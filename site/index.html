@@ -151,6 +151,10 @@ footer{border-top:1px solid var(--line);padding:40px 0 60px;text-align:center}
 .footer-links{display:flex;justify-content:center;gap:26px;margin-bottom:16px;font-size:14px}
 .footer-copy{color:#5b6585;font-size:13px}
 .footer-copy .rt{color:var(--gold)}
+.footer-sponsor{display:flex;justify-content:center;gap:18px;margin-bottom:10px;font-size:13px}
+.footer-sponsor a{color:var(--gold);text-decoration:none;transition:opacity .2s}
+.footer-sponsor a:hover{opacity:.85;text-decoration:underline}
+.footer-sponsor-note{color:#5b6585;font-size:12px;margin-bottom:14px}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
 .reveal.in{opacity:1;transform:none}
 @media(max-width:960px){
@@ -419,6 +423,11 @@ footer{border-top:1px solid var(--line);padding:40px 0 60px;text-align:center}
       
       <a href="https://github.com/jamesw0n9/realtrace/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
     </div>
+        <div class="footer-sponsor">
+      <a href="https://github.com/sponsors/jamesw0n9" target="_blank" rel="noopener" data-i18n="sponsorGithub">GitHub Sponsors</a>
+      <a href="https://ko-fi.com/realtrace" target="_blank" rel="noopener" data-i18n="sponsorKoFi">☕ 请喝咖啡</a>
+    </div>
+    <div class="footer-sponsor-note" data-i18n="sponsorNote">赞助只是请我喝杯咖啡——不影响免费使用，也不等同于商业授权。</div>
     <div class="footer-copy">© 2026 <span class="rt">RealTrace · 真迹</span> — 为每一份人类创作留下在场证明 · AGPL-3.0 + Commercial</div>
   </div>
 </footer>
@@ -458,7 +467,7 @@ var I18N = {
     licFreeT:'个人创作者', licFree1:'自建 / 自签创作链完全免费', licFree2:'锚定官方创世链个人免费', licFree3:'可离线自证，无需注册', licFree4:'AGPL-3.0 开源可审计', licFreeBtn:'获取源码',
     licBizT:'企业 / 联合授权平台', licBizPrice:'按授权', licBiz1:'企业合作按授权', licBizBtn:'商业合作',
     finalT:'在 AI 可以模仿一切的时代\n人类创作的尊严，值得被捍卫', finalD:'立即体验：打开写作工具，写下你的第一篇真迹。不需要账号，不需要上传，写下即证。',
-    ctaStar2:'★ Star us on GitHub', ctaRelease2:'下载 v0.1.0'
+    ctaStar2:'★ Star us on GitHub', ctaRelease2:'下载 v0.1.0', sponsorGithub:'GitHub Sponsors', sponsorKoFi:'☕ 请喝咖啡', sponsorNote:'赞助只是请我喝杯咖啡——不影响免费使用，也不等同于商业授权。'
   },
   en: {
     kicker:'Ed25519 signature chain · Human creation authentication',
@@ -493,7 +502,7 @@ var I18N = {
     licFreeT:'Individual creators', licFree1:'Self-hosted / self-signed chains are completely free', licFree2:'Official genesis anchoring free for individuals', licFree3:'Offline self-verification, no registration', licFree4:'AGPL-3.0 open source, auditable', licFreeBtn:'Get Source',
     licBizT:'Enterprises / partner platforms', licBizPrice:'By license', licBiz1:'Enterprise cooperation by license', licBizBtn:'Partner with us',
     finalT:'In an age when AI can imitate everything,\nthe dignity of human creation deserves defending', finalD:'Try it now: open the writer and write your first RealTrace. No account, no upload — just write, and it is proven.',
-    ctaStar2:'★ Star us on GitHub', ctaRelease2:'Download v0.1.0'
+    ctaStar2:'★ Star us on GitHub', ctaRelease2:'Download v0.1.0', sponsorGithub:'GitHub Sponsors', sponsorKoFi:'☕ Buy me a coffee', sponsorNote:'Sponsorship just buys me a coffee — it never affects free use and is not a commercial license.'
   }
 };
 var curLang = 'zh';

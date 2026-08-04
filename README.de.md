@@ -226,6 +226,19 @@ Alle Funktionen bleiben abwärtskompatibel: `.rt`-Ketten-Dateien aus älteren Ve
 
 ---
 
+---
+
+## Sponsor · Lade mich auf einen Kaffee ein
+
+Gefällt Ihnen das Projekt? Laden Sie mich auf einen Kaffee ein ☕:
+
+- [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
+- [Ko-fi](https://ko-fi.com/realtrace)
+
+> Sponsoring ist nur ein Zeichen der Unterstützung — **keine kommerzielle Lizenz**. Die private Nutzung bleibt kostenlos; die Integration durch Unternehmen / Plattformen wird separat über [`LICENSE.commercial`](LICENSE.commercial) lizenziert.
+
+---
+
 ## Open Source & kommerziell
 
 **AGPL-3.0 + kommerzielle Dual-Lizenz** (der Open-Source-Teil richtet sich nach dem vollständigen AGPL-3.0-Text in [`LICENSE`](LICENSE)):

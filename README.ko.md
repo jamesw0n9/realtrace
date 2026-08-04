@@ -226,6 +226,19 @@ npm test
 
 ---
 
+---
+
+## 후원 · 커피 한 잔
+
+프로젝트가 마음에 드시나요? 커피 한 잔을 사주세요 ☕:
+
+- [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
+- [Ko-fi](https://ko-fi.com/realtrace)
+
+> 후원은 단순한 응원일 뿐이며 **상업 라이선스가 아닙니다**. 개인 사용은 항상 무료이며, 기업·플랫폼 통합은 [`LICENSE.commercial`](LICENSE.commercial)에 따라 별도 라이선스가 필요합니다.
+
+---
+
 ## 오픈소스와 상업
 
 **AGPL-3.0 + 상업 듀얼 라이선스**(오픈소스 부분은 [`LICENSE`](LICENSE)의 AGPL-3.0 전문 기준):

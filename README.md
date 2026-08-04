@@ -226,6 +226,19 @@ npm test
 
 ---
 
+---
+
+## 赞助 · Sponsor
+
+喜欢这个项目？请我喝杯咖啡 ☕：
+
+- [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
+- [Ko-fi](https://ko-fi.com/realtrace)
+
+> 赞助只是表达支持，**不是商业授权**：个人使用始终免费；企业 / 平台集成仍按 [`LICENSE.commercial`](LICENSE.commercial) 另行授权。
+
+---
+
 ## 开源与商业
 
 **AGPL-3.0 + 商业双许可**（开源部分以 [`LICENSE`](LICENSE) 的 AGPL-3.0 全文为准）：
