@@ -99,7 +99,7 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
   function renderResult(pkg, res, idCheck) {
     var ok = res.ok;
     var meta = [
-      ['链 ID', pkg.chainId || pkg.sessionId || ''],
+      ['链 ID', RtExport.normalizeChainIdDisplay(pkg.chainId || pkg.sessionId || '')],
       ['公钥', pkg.publicKey || pkg.pk || ''],
       ['stamp 数', res.totalStamps + ' 个'],
       ['rt 版本', pkg.rtVersion || ''],

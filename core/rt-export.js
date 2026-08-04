@@ -23,6 +23,13 @@ window.RtExport = (() => {
     var cid = await deriveCid(publicKeyHex, chainRootHash);
     return (source || "web") + "-" + (owner || "personal") + "-" + cid;
   }
+  // 展示层兜底：历史中文身份段映射为英文（仅展示，不修改 .rt 文件内容）
+  var CHAIN_OWNER_DISPLAY = { "个人": "personal" };
+  function normalizeChainIdDisplay(chainId) {
+    var parts = String(chainId || "").split("-");
+    if (parts.length >= 3 && CHAIN_OWNER_DISPLAY[parts[1]]) parts[1] = CHAIN_OWNER_DISPLAY[parts[1]];
+    return parts.join("-");
+  }
   function cidOf(chainId) {
     var parts = String(chainId || '').split('-');
     return parts.length >= 3 ? parts[parts.length - 1] : '';
@@ -368,6 +375,7 @@ window.RtExport = (() => {
     downloadTxtFile: downloadTxtFile,
     deriveCid: deriveCid,
     deriveChainId: deriveChainId,
+    normalizeChainIdDisplay: normalizeChainIdDisplay,
     loadRtFile: loadRtFile,
     extractContent: extractContent,
     getDurationMs: getDurationMs,
