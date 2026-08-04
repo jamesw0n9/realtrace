@@ -56,10 +56,10 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
   <div id="result"></div>
   <div class="ft" data-i18n-html="footerHtml">官方创世链锚定：个人创作上链免费。封章后子链根哈希记入官方创世链，可在官方站点公开审计。开源版默认完全离线，如需上链请配置 <code>config.js</code> 的 <code>anchor</code> 项。</div>
 </div>
-<script src="../core/lib/jszip.min.js"></script>
-<script src="../core/rt-export.js"></script>
-<script src="../core/rt-verifier.js"></script>
-<script src="../core/rt-timeline.js"></script>
+<script src="../core/lib/jszip.min.js?v=2"></script>
+<script src="../core/rt-export.js?v=2"></script>
+<script src="../core/rt-verifier.js?v=2"></script>
+<script src="../core/rt-timeline.js?v=2"></script>
 <script>
 var curLang = 'zh';
 var lastResult = null;
@@ -261,6 +261,7 @@ function mountTimeline(pkg) {
       if (certStore && certStore.stamps && certStore.stamps.length > 0) {
         var res = await RtVerifier.verifyChain(certStore.stamps);
         renderResult({ chainId: certStore.chainId || '', sessionId: certStore.sessionId, publicKey: certStore.publicKey, stamps: certStore.stamps, rtVersion: certStore.rtVersion || '2.0', sealedAt: certStore.sealedAt || '' }, res, await checkChainId({ chainId: certStore.chainId || '', pk: certStore.publicKey || '', stamps: certStore.stamps || [] }));
+        sessionStorage.removeItem('rt_cert_data');
       }
     }
   } catch (e) { /* 忽略会话数据异常 */ }
