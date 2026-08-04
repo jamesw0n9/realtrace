@@ -7,13 +7,22 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:"PingFang SC","Microsoft YaHei",-apple-system,sans-serif;background:#0F172A;color:#F1F5F9;min-height:100dvh;display:flex;flex-direction:column}
+body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,sans-serif;background:#0F172A;color:#F1F5F9;min-height:100dvh;display:flex;flex-direction:column}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(148,163,184,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:-1}
 #h{position:sticky;top:0;z-index:100;background:rgba(15,23,42,.95);border-bottom:1px solid rgba(212,160,23,.08)}
 .hi{max-width:1100px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
 .l{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:#F1F5F9;letter-spacing:.12em;text-decoration:none}
 .li{width:28px;height:28px;border:1.5px solid #D4A017;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#D4A017;font-family:monospace}
-.n{font-size:12px;color:#64748B}
+.n{display:flex;align-items:center;gap:2px}
+.os-tag{font-size:12px;color:#64748B}
+.lang-wrap{position:relative;margin-left:10px}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#94A3B8;background:transparent;border:1px solid #334155;border-radius:999px;cursor:pointer;font-family:inherit;transition:all .25s;white-space:nowrap}
+.lang-btn:hover{color:#D4A017;border-color:#D4A017}
+.lang-caret{font-size:10px;opacity:.7}
+.lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:160px;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:300;flex-direction:column;gap:2px}
+.lang-menu.open{display:flex}
+.lang-menu button{display:block;width:100%;text-align:left;padding:8px 12px;font-size:13px;color:#CBD5E1;background:transparent;border:none;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .2s}
+.lang-menu button:hover{background:#334155;color:#D4A017}
 .main{flex:1;max-width:1100px;margin:0 auto;width:100%;padding:32px 24px}
 h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
 .sub{font-size:12px;color:#94A3B8;line-height:1.8;margin-bottom:20px}
@@ -28,35 +37,183 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
 .card{background:#1E293B;border:1px solid #334155;border-radius:10px;padding:18px;margin-bottom:16px}
 .meta{font-size:12px;color:#94A3B8;line-height:2;word-break:break-all}
 .meta b{color:#D4A017;font-weight:600}
-
 .ft{font-size:11px;color:#64748B;line-height:1.9;padding:10px 0 0;border-top:1px solid #1E293B;margin-top:16px}
 .ft a{color:#D4A017}
+.ft code{color:#94A3B8;background:rgba(148,163,184,.12);border-radius:3px;padding:0 4px;font-family:Consolas,monospace}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#334155;border-radius:2px}
-
 </style>
 </head>
 <body>
-<div id="h"><div class="hi"><a href="../writer/index.html" class="l"><span class="li">R</span>真迹·Realtrace</a><div class="n">离线链验证 · 不依赖网络</div></div></div>
+<div id="h"><div class="hi"><a href="../writer/index.html" class="l"><span class="li">R</span><span data-i18n="brand">真迹·Realtrace</span></a><div class="n"><span class="os-tag" data-i18n="osTag">离线链验证 · 不依赖网络</span><div class="lang-wrap"><button class="lang-btn" id="langBtn" type="button"><span id="langBtnText">中文</span><span class="lang-caret">▾</span></button><div class="lang-menu" id="langMenu"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">English</button><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="ko">한국어</button><button type="button" data-lang="fr">Français</button><button type="button" data-lang="de">Deutsch</button></div></div></div></div></div>
 <div class="main">
-  <h1>🔗 创作链离线验证</h1>
-  <div class="sub">拖入 .rt 链文件即可在本地完成全链验证：链条串联、Ed25519 签名、内容摘要。验证过程不向任何服务器发送数据。</div>
+  <h1 data-i18n="h1">🔗 创作链离线验证</h1>
+  <div class="sub" data-i18n="sub">拖入 .rt 链文件即可在本地完成全链验证：链条串联、Ed25519 签名、内容摘要。验证过程不向任何服务器发送数据。</div>
   <div class="drop" id="drop">
     <span class="icon">📂</span>
-    点击选择或拖入 .rt 链文件
+    <span data-i18n="dropHint">点击选择或拖入 .rt 链文件</span>
     <input type="file" id="fileInput" accept=".rt,application/zip,application/json">
   </div>
   <div id="result"></div>
-  <div class="ft">官方创世链锚定：个人创作上链免费。封章后子链根哈希记入官方创世链，可在官方站点公开审计。开源版默认完全离线，如需上链请配置 <code>config.js</code> 的 <code>anchor</code> 项。</div>
+  <div class="ft" data-i18n-html="footerHtml">官方创世链锚定：个人创作上链免费。封章后子链根哈希记入官方创世链，可在官方站点公开审计。开源版默认完全离线，如需上链请配置 <code>config.js</code> 的 <code>anchor</code> 项。</div>
 </div>
 <script src="../core/lib/jszip.min.js"></script>
 <script src="../core/rt-export.js"></script>
 <script src="../core/rt-verifier.js"></script>
 <script src="../core/rt-timeline.js"></script>
 <script>
+var curLang = 'zh';
+var lastResult = null;
+var resultEl = document.getElementById('result');
+var I18N = {
+  zh: {
+    brand:'真迹·Realtrace', osTag:'离线链验证 · 不依赖网络', pageTitle:'Realtrace · 离线链验证',
+    h1:'🔗 创作链离线验证',
+    sub:'拖入 .rt 链文件即可在本地完成全链验证：链条串联、Ed25519 签名、内容摘要。验证过程不向任何服务器发送数据。',
+    dropHint:'点击选择或拖入 .rt 链文件',
+    footerHtml:'官方创世链锚定：个人创作上链免费。封章后子链根哈希记入官方创世链，可在官方站点公开审计。开源版默认完全离线，如需上链请配置 <code>config.js</code> 的 <code>anchor</code> 项。',
+    parsing:'⏳ 解析 {name} ...', parseFail:'❌ 解析失败：',
+    legacyId:'旧格式 ID（仅作标识）', idOk:'✓ 与链内容一致', idFail:'✗ 与链内容不符',
+    metaCid:'链 ID', metaPk:'公钥', metaStamps:'stamp 数', metaRtVer:'rt 版本', metaSealed:'封章时间', metaIdCheck:'ID 校验',
+    stampUnit:'个', sep:'：',
+    verifyOk:'✅ 验证通过', verifyFail:'❌ 验证失败', _langName:'中文'
+  },
+  en: {
+    brand:'RealTrace', osTag:'Offline chain verification · No network required', pageTitle:'RealTrace · Offline Chain Verification',
+    h1:'🔗 Offline Creation Chain Verification',
+    sub:'Drop a .rt chain file to verify the entire chain locally: chain linkage, Ed25519 signatures, and content digest. No data is sent to any server during verification.',
+    dropHint:'Click to select or drop a .rt chain file',
+    footerHtml:'Official genesis chain anchoring: personal creations are anchored for free. After sealing, the child chain root hash is recorded in the official genesis chain and can be publicly audited on the official site. The open-source edition is fully offline by default; to anchor online, configure the <code>anchor</code> option in <code>config.js</code>.',
+    parsing:'⏳ Parsing {name} ...', parseFail:'❌ Parse failed: ',
+    legacyId:'Legacy ID (identifier only)', idOk:'✓ Matches chain content', idFail:'✗ Does not match chain content',
+    metaCid:'Chain ID', metaPk:'Public Key', metaStamps:'Stamps', metaRtVer:'rt Version', metaSealed:'Sealed At', metaIdCheck:'ID Check',
+    stampUnit:'', sep:': ',
+    verifyOk:'✅ Verification passed', verifyFail:'❌ Verification failed', _langName:'English'
+  },
+  ja: {
+    brand:'真迹·Realtrace', osTag:'オフラインチェーン検証 · ネットワーク不要', pageTitle:'Realtrace · オフライン検証',
+    h1:'🔗 創作チェーンのオフライン検証',
+    sub:'.rt チェーンファイルをドロップすると、ローカルで全チェーンを検証できます：チェーン連結、Ed25519 署名、コンテンツ要約。検証中にデータがサーバーへ送信されることはありません。',
+    dropHint:'クリックして選択、または .rt チェーンファイルをドロップ',
+    footerHtml:'公式創世チェーンへのアンカーリング：個人の創作は無料で記録できます。封章後、子チェーンのルートハッシュは公式創世チェーンに記録され、公式サイトで公開監査できます。オープンソース版はデフォルトで完全オフラインです。オンラインで記録するには <code>config.js</code> の <code>anchor</code> 項目を設定してください。',
+    parsing:'⏳ {name} を解析中 ...', parseFail:'❌ 解析に失敗：',
+    legacyId:'旧形式 ID（識別のみ）', idOk:'✓ チェーン内容と一致', idFail:'✗ チェーン内容と不一致',
+    metaCid:'チェーン ID', metaPk:'公開鍵', metaStamps:'スタンプ数', metaRtVer:'rt バージョン', metaSealed:'封章日時', metaIdCheck:'ID 検証',
+    stampUnit:'個', sep:'：',
+    verifyOk:'✅ 検証に合格', verifyFail:'❌ 検証に失敗', _langName:'日本語'
+  },
+  ko: {
+    brand:'RealTrace', osTag:'오프라인 체인 검증 · 네트워크 불필요', pageTitle:'RealTrace · 오프라인 검증',
+    h1:'🔗 창작 체인 오프라인 검증',
+    sub:'.rt 체인 파일을 드래그하면 로컬에서 전체 체인을 검증합니다: 체인 연결, Ed25519 서명, 콘텐츠 요약. 검증 중 어떤 데이터도 서버로 전송되지 않습니다.',
+    dropHint:'클릭하여 선택하거나 .rt 체인 파일을 드롭하세요',
+    footerHtml:'공식 창세 체인 앵커링: 개인 창작물은 무료로 체인에 기록됩니다. 봉인 후 하위 체인 루트 해시가 공식 창세 체인에 기록되어 공식 사이트에서 공개 감사할 수 있습니다. 오픈소스 버전은 기본적으로 완전 오프라인입니다. 온라인 앵커링이 필요하면 <code>config.js</code>의 <code>anchor</code> 항목을 설정하세요.',
+    parsing:'⏳ {name} 분석 중 ...', parseFail:'❌ 분석 실패: ',
+    legacyId:'이전 형식 ID（식별 전용）', idOk:'✓ 체인 내용과 일치', idFail:'✗ 체인 내용과 불일치',
+    metaCid:'체인 ID', metaPk:'공개 키', metaStamps:'스탬프 수', metaRtVer:'rt 버전', metaSealed:'봉인 시각', metaIdCheck:'ID 검증',
+    stampUnit:'개', sep:': ',
+    verifyOk:'✅ 검증 통과', verifyFail:'❌ 검증 실패', _langName:'한국어'
+  },
+  fr: {
+    brand:'RealTrace', osTag:'Vérification hors ligne · Aucun réseau requis', pageTitle:'RealTrace · Vérification hors ligne',
+    h1:'🔗 Vérification hors ligne de la chaîne de création',
+    sub:'Déposez un fichier de chaîne .rt pour vérifier toute la chaîne localement : enchaînement, signatures Ed25519, résumé du contenu. Aucune donnée n\'est envoyée à un serveur pendant la vérification.',
+    dropHint:'Cliquez pour sélectionner ou déposez un fichier de chaîne .rt',
+    footerHtml:'Ancrage officiel à la chaîne genesis : les créations personnelles sont ancrées gratuitement. Après le scellement, le hachage racine de la sous-chaîne est enregistré dans la chaîne genesis officielle et peut être audité publiquement sur le site officiel. L\'édition open source est entièrement hors ligne par défaut ; pour ancrer en ligne, configurez l\'option <code>anchor</code> dans <code>config.js</code>.',
+    parsing:'⏳ Analyse de {name} ...', parseFail:'❌ Échec de l\'analyse : ',
+    legacyId:'ID hérité (identification uniquement)', idOk:'✓ Correspond au contenu de la chaîne', idFail:'✗ Ne correspond pas au contenu de la chaîne',
+    metaCid:'ID de chaîne', metaPk:'Clé publique', metaStamps:'Tampons', metaRtVer:'Version rt', metaSealed:'Scellé le', metaIdCheck:'Vérif. ID',
+    stampUnit:'', sep:' : ',
+    verifyOk:'✅ Vérification réussie', verifyFail:'❌ Échec de la vérification', _langName:'Français'
+  },
+  de: {
+    brand:'RealTrace', osTag:'Offline-Kettenprüfung · Kein Netzwerk nötig', pageTitle:'RealTrace · Offline-Verifizierung',
+    h1:'🔗 Offline-Verifizierung der Schöpfungskette',
+    sub:'Legen Sie eine .rt-Kettendatei ab, um die gesamte Kette lokal zu prüfen: Kettenverknüpfung, Ed25519-Signaturen, Inhaltszusammenfassung. Während der Prüfung werden keine Daten an einen Server gesendet.',
+    dropHint:'Klicken zum Auswählen oder .rt-Kettendatei hierher ziehen',
+    footerHtml:'Offizielle Genesis-Ketten-Ankerung: Persönliche Kreationen werden kostenlos verankert. Nach der Versiegelung wird der Wurzel-Hash der Unterkette in der offiziellen Genesis-Kette gespeichert und kann auf der offiziellen Website öffentlich geprüft werden. Die Open-Source-Version ist standardmäßig vollständig offline; zum Online-Verankern konfigurieren Sie die Option <code>anchor</code> in <code>config.js</code>.',
+    parsing:'⏳ {name} wird geparst ...', parseFail:'❌ Parsen fehlgeschlagen: ',
+    legacyId:'Altformat-ID (nur zur Identifikation)', idOk:'✓ Entspricht dem Ketteninhalt', idFail:'✗ Entspricht nicht dem Ketteninhalt',
+    metaCid:'Ketten-ID', metaPk:'Öffentlicher Schlüssel', metaStamps:'Stempel', metaRtVer:'rt-Version', metaSealed:'Versiegelt am', metaIdCheck:'ID-Prüfung',
+    stampUnit:'', sep:': ',
+    verifyOk:'✅ Verifizierung erfolgreich', verifyFail:'❌ Verifizierung fehlgeschlagen', _langName:'Deutsch'
+  }
+};
+function t(key, params) {
+  var s = (I18N[curLang] && I18N[curLang][key] !== undefined) ? I18N[curLang][key] : (I18N.zh[key] !== undefined ? I18N.zh[key] : key);
+  if (params) { for (var k in params) { s = s.split('{' + k + '}').join(params[k]); } }
+  return s;
+}
+function applyLang(lang) {
+  if (!I18N[lang]) lang = 'zh';
+  curLang = lang;
+  var dict = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(function(el){
+    var key = el.getAttribute('data-i18n-html');
+    if (dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+  document.title = dict.pageTitle || document.title;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+  var lbl = document.getElementById('langBtnText');
+  if (lbl) lbl.textContent = dict._langName || lang.toUpperCase();
+  try { localStorage.setItem('rt_verify_lang', lang); } catch(e) {}
+  if (window.RtTimeline && typeof RtTimeline.setLang === 'function') RtTimeline.setLang(lang);
+  if (lastResult) renderResult(lastResult.pkg, lastResult.res, lastResult.idCheck);
+}
+(function(){
+  var btn = document.getElementById('langBtn');
+  var menu = document.getElementById('langMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
+  document.addEventListener('click', function(){ menu.classList.remove('open'); });
+  menu.addEventListener('click', function(e){ e.stopPropagation(); });
+  menu.querySelectorAll('[data-lang]').forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); menu.classList.remove('open'); });
+  });
+})();
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function renderResult(pkg, res, idCheck) {
+  var ok = res.ok;
+  var meta = [
+    [t('metaCid'), RtExport.normalizeChainIdDisplay(pkg.chainId || pkg.sessionId || '')],
+    [t('metaPk'), pkg.publicKey || pkg.pk || ''],
+    [t('metaStamps'), res.totalStamps + (t('stampUnit') ? ' ' + t('stampUnit') : '')],
+    [t('metaRtVer'), pkg.rtVersion || ''],
+    [t('metaSealed'), pkg.sealedAt || ''],
+    [t('metaIdCheck'), idCheck || '—']
+  ].filter(function(m) { return m[1] !== undefined && m[1] !== ''; }).map(function(m) {
+    return '<div><b>' + m[0] + '</b>' + t('sep') + escapeHtml(String(m[1])) + '</div>';
+  }).join('');
+  resultEl.innerHTML =
+    '<div class="badge ' + (ok ? 'ok' : 'fail') + '">' + (ok ? t('verifyOk') : t('verifyFail')) + '</div>' +
+    '<div class="card"><div class="meta">' + meta + '</div></div>' +
+    renderTimeline(pkg);
+  mountTimeline(pkg);
+  lastResult = { pkg: pkg, res: res, idCheck: idCheck };
+}
+// 创作时间轴：复用 core/rt-timeline.js 模块（可缩放直方图，六语标签）
+function renderTimeline(pkg) {
+  var stamps = (pkg && pkg.stamps) || [];
+  if (!stamps || stamps.length === 0) return '';
+  return '<div class="card" data-rt-tl-mount="1"></div>';
+}
+function mountTimeline(pkg) {
+  var box = resultEl && resultEl.querySelector('[data-rt-tl-mount]');
+  if (!box) return;
+  var stamps = (pkg && pkg.stamps) || [];
+  if (!stamps || stamps.length === 0) return;
+  if (window.RtTimeline && typeof RtTimeline.mount === 'function') {
+    RtTimeline.mount(box, stamps);
+  }
+}
 (async function() {
   var drop = document.getElementById('drop');
   var fileInput = document.getElementById('fileInput');
-  var resultEl = document.getElementById('result');
 
   drop.addEventListener('click', function() { fileInput.click(); });
   drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('over'); });
@@ -70,12 +227,12 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
   });
 
   async function verifyFile(file) {
-    resultEl.innerHTML = '<div class="badge info">⏳ 解析 ' + escapeHtml(file.name) + ' ...</div>';
+    resultEl.innerHTML = '<div class="badge info">' + t('parsing', { name: escapeHtml(file.name) }) + '</div>';
     var pkg;
     try {
       pkg = await RtExport.loadRtFile(file);
     } catch (e) {
-      resultEl.innerHTML = '<div class="badge fail">❌ 解析失败：' + escapeHtml(e.message || e) + '</div>';
+      resultEl.innerHTML = '<div class="badge fail">' + t('parseFail') + escapeHtml(e.message || e) + '</div>';
       return;
     }
     var stamps = (pkg && pkg.stamps) || [];
@@ -91,51 +248,9 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
     var chainId = pkg.chainId || pkg.sessionId || '';
     if (!pk || !rootHash || !chainId) return '—';
     var parts = String(chainId).split('-');
-    if (parts.length < 3) return '旧格式 ID（仅作标识）';
+    if (parts.length < 3) return t('legacyId');
     var expected = await RtExport.deriveCid(pk, rootHash);
-    return expected === parts[parts.length - 1] ? '✓ 与链内容一致' : '✗ 与链内容不符';
-  }
-
-  function renderResult(pkg, res, idCheck) {
-    var ok = res.ok;
-    var meta = [
-      ['链 ID', RtExport.normalizeChainIdDisplay(pkg.chainId || pkg.sessionId || '')],
-      ['公钥', pkg.publicKey || pkg.pk || ''],
-      ['stamp 数', res.totalStamps + ' 个'],
-      ['rt 版本', pkg.rtVersion || ''],
-      ['封章时间', pkg.sealedAt || ''],
-      ['ID 校验', idCheck || '—']
-    ].filter(function(m) { return m[1] !== undefined && m[1] !== ''; }).map(function(m) {
-      return '<div><b>' + m[0] + '</b>：' + escapeHtml(String(m[1])) + '</div>';
-    }).join('');
-
-
-    resultEl.innerHTML =
-      '<div class="badge ' + (ok ? 'ok' : 'fail') + '">' + (ok ? '✅ 验证通过' : '❌ 验证失败') + '</div>' +
-      '<div class="card"><div class="meta">' + meta + '</div></div>' +
-      renderTimeline(pkg);
-    mountTimeline(pkg);
-  }
-
-  function escapeHtml(s) {
-    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // 创作时间轴：复用 core/rt-timeline.js 模块（可缩放直方图，六语标签）
-  function renderTimeline(pkg) {
-    var stamps = (pkg && pkg.stamps) || [];
-    if (!stamps || stamps.length === 0) return '';
-    return '<div class="card" data-rt-tl-mount="1"></div>';
-  }
-
-  function mountTimeline(pkg) {
-    var box = resultEl && resultEl.querySelector('[data-rt-tl-mount]');
-    if (!box) return;
-    var stamps = (pkg && pkg.stamps) || [];
-    if (!stamps || stamps.length === 0) return;
-    if (window.RtTimeline && typeof RtTimeline.mount === 'function') {
-      RtTimeline.mount(box, stamps);
-    }
+    return expected === parts[parts.length - 1] ? t('idOk') : t('idFail');
   }
 
   // 写作页跳转带来会话数据时自动验证
@@ -149,6 +264,8 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
       }
     }
   } catch (e) { /* 忽略会话数据异常 */ }
+
+  applyLang((function(){ try { return localStorage.getItem('rt_verify_lang') || 'zh'; } catch(e){ return 'zh'; } })());
 })();
 </script>
 </body>
