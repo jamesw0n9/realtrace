@@ -8,7 +8,7 @@
 window.RtMerkle = (() => {
   'use strict';
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
   var DEFAULT_BLOCK_SIZE = 512;   // 超长段落内部切块大小
   var MAX_BLOCK_SIZE = 1024;      // 段落超过该长度再切固定块
 
@@ -65,39 +65,49 @@ window.RtMerkle = (() => {
     return Math.ceil(Math.log2(leafCount));
   }
 
-  // 建树：返回根 + 叶子哈希 + 块列表
-  async function buildMerkle(content, blockSize) {
+  // 建树：返回根 + 叶子哈希 + 块列表 + 完整层级（tree[0]=叶子层，末层=[root]）
+  async function buildTree(content, blockSize) {
     var blocks = splitBlocks(content, blockSize);
     var bs = blockSize || DEFAULT_BLOCK_SIZE;
     if (blocks.length === 0) {
-      return { root: '', leafHashes: [], blocks: [], blockSize: bs, blockCount: 0, levels: 0 };
+      return { root: '', leafHashes: [], blocks: [], tree: [], blockSize: bs, blockCount: 0, levels: 0 };
     }
     var leaves = [];
     for (var i = 0; i < blocks.length; i++) leaves.push(await sha256(blocks[i]));
-    var root = await combineLevel(leaves);
-    return { root: root, leafHashes: leaves, blocks: blocks, blockSize: bs, blockCount: blocks.length, levels: levelCount(blocks.length) };
+    var tree = [leaves];
+    var level = leaves.slice();
+    while (level.length > 1) {
+      var next = [];
+      for (var j = 0; j < level.length; j += 2) {
+        var left = level[j];
+        var right = (j + 1 < level.length) ? level[j + 1] : left;
+        next.push(await sha256(left + right));
+      }
+      tree.push(next);
+      level = next;
+    }
+    return { root: level[0], leafHashes: leaves, blocks: blocks, tree: tree, blockSize: bs, blockCount: blocks.length, levels: levelCount(blocks.length) };
+  }
+
+  // 建树（兼容旧接口：返回根 + 叶子哈希 + 块列表）
+  async function buildMerkle(content, blockSize) {
+    var t = await buildTree(content, blockSize);
+    return { root: t.root, leafHashes: t.leafHashes, blocks: t.blocks, blockSize: t.blockSize, blockCount: t.blockCount, levels: t.levels };
   }
 
   // 生成某块的证明：{ blockText, leafIndex, proofPath, blockSize, blockCount, root }
   async function buildProof(content, blockIndex, blockSize) {
-    var m = await buildMerkle(content, blockSize);
+    var m = await buildTree(content, blockSize);
     if (m.blockCount === 0) throw new Error('Empty content, cannot build proof');
     if (blockIndex < 0 || blockIndex >= m.blockCount) throw new Error('blockIndex out of range: 0..' + (m.blockCount - 1));
     var proofPath = [];
-    var level = m.leafHashes.slice();
     var idx = blockIndex;
-    while (level.length > 1) {
+    for (var l = 0; l < m.tree.length - 1; l++) {
+      var level = m.tree[l];
       var sibling = (idx % 2 === 0)
         ? (idx + 1 < level.length ? level[idx + 1] : level[idx])
         : level[idx - 1];
       proofPath.push(sibling);
-      var next = [];
-      for (var i = 0; i < level.length; i += 2) {
-        var left = level[i];
-        var right = (i + 1 < level.length) ? level[i + 1] : left;
-        next.push(await sha256(left + right));
-      }
-      level = next;
       idx = Math.floor(idx / 2);
     }
     return {
@@ -152,6 +162,7 @@ window.RtMerkle = (() => {
   return {
     VERSION: VERSION,
     buildMerkle: buildMerkle,
+    buildTree: buildTree,
     buildProof: buildProof,
     verifyProof: verifyProof,
     verifyFull: verifyFull,
