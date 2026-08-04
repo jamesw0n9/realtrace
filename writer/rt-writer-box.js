@@ -31,12 +31,12 @@ window.RtWriterBox = (function() {
 
   // ======== 多语言字典（六语：zh/en/ja/ko/fr/de） ========
   var _WB_I18N = {
-    zh: { placeholder:'在此输入创作内容...', sealBtn:'封章上链', stampLabel:'印章', charLabel:'字符', needContent:'请先输入内容', stampFail:'打章失败', sealing:'封章中...', sealSuccess:'封章成功', sealFailed:'封章失败', unknownError:'未知错误', sealSuccessOffline:'封章成功（离线）', pasteDetected:'检测到大量粘贴行为', noDragDrop:'不支持拖拽上传' },
-    en: { placeholder:'Start writing here...', sealBtn:'Seal & Anchor', stampLabel:'stamps', charLabel:'chars', needContent:'Please enter content first', stampFail:'Stamping failed', sealing:'Sealing...', sealSuccess:'Sealed successfully', sealFailed:'Sealing failed', unknownError:'Unknown error', sealSuccessOffline:'Sealed successfully (offline)', pasteDetected:'Large paste detected', noDragDrop:'Drag & drop is not supported' },
-    ja: { placeholder:'ここに創作内容を入力...', sealBtn:'封章してチェーンに記録', stampLabel:'スタンプ', charLabel:'文字', needContent:'先に内容を入力してください', stampFail:'スタンプ処理に失敗しました', sealing:'封章中...', sealSuccess:'封章成功', sealFailed:'封章失敗', unknownError:'不明なエラー', sealSuccessOffline:'封章成功（オフライン）', pasteDetected:'大量の貼り付けを検出しました', noDragDrop:'ドラッグ＆ドロップには対応していません' },
-    ko: { placeholder:'여기에 창작 내용을 입력하세요...', sealBtn:'봉인 및 체인 기록', stampLabel:'스탬프', charLabel:'문자', needContent:'먼저 내용을 입력하세요', stampFail:'스탬프 생성 실패', sealing:'봉인 중...', sealSuccess:'봉인 성공', sealFailed:'봉인 실패', unknownError:'알 수 없는 오류', sealSuccessOffline:'봉인 성공 (오프라인)', pasteDetected:'대량 붙여넣기가 감지되었습니다', noDragDrop:'드래그 앤 드롭은 지원되지 않습니다' },
-    fr: { placeholder:'Commencez à écrire ici...', sealBtn:'Sceller & ancrer', stampLabel:'tampons', charLabel:'caractères', needContent:'Veuillez d\'abord saisir du contenu', stampFail:'Échec du tamponnage', sealing:'Scellement...', sealSuccess:'Scellement réussi', sealFailed:'Échec du scellement', unknownError:'Erreur inconnue', sealSuccessOffline:'Scellé avec succès (hors ligne)', pasteDetected:'Collage massif détecté', noDragDrop:'Glisser-déposer non pris en charge' },
-    de: { placeholder:'Beginnen Sie hier zu schreiben...', sealBtn:'Versiegeln & verankern', stampLabel:'Stempel', charLabel:'Zeichen', needContent:'Bitte zuerst Inhalt eingeben', stampFail:'Stempeln fehlgeschlagen', sealing:'Versiegele...', sealSuccess:'Erfolgreich versiegelt', sealFailed:'Versiegelung fehlgeschlagen', unknownError:'Unbekannter Fehler', sealSuccessOffline:'Erfolgreich versiegelt (offline)', pasteDetected:'Großes Einfügen erkannt', noDragDrop:'Drag & Drop wird nicht unterstützt' }
+    zh: { placeholder:'在此输入创作内容...', sealBtn:'封章上链', stampLabel:'印章', charLabel:'字符', duration:'写作时间', needContent:'请先输入内容', stampFail:'打章失败', sealing:'封章中...', sealSuccess:'封章成功', sealFailed:'封章失败', unknownError:'未知错误', sealSuccessOffline:'封章成功（离线）', pasteDetected:'检测到大量粘贴行为', noDragDrop:'不支持拖拽上传' },
+    en: { placeholder:'Start writing here...', sealBtn:'Seal & Anchor', stampLabel:'stamps', charLabel:'chars', duration:'Time', needContent:'Please enter content first', stampFail:'Stamping failed', sealing:'Sealing...', sealSuccess:'Sealed successfully', sealFailed:'Sealing failed', unknownError:'Unknown error', sealSuccessOffline:'Sealed successfully (offline)', pasteDetected:'Large paste detected', noDragDrop:'Drag & drop is not supported' },
+    ja: { placeholder:'ここに創作内容を入力...', sealBtn:'封章してチェーンに記録', stampLabel:'スタンプ', charLabel:'文字', duration:'執筆時間', needContent:'先に内容を入力してください', stampFail:'スタンプ処理に失敗しました', sealing:'封章中...', sealSuccess:'封章成功', sealFailed:'封章失敗', unknownError:'不明なエラー', sealSuccessOffline:'封章成功（オフライン）', pasteDetected:'大量の貼り付けを検出しました', noDragDrop:'ドラッグ＆ドロップには対応していません' },
+    ko: { placeholder:'여기에 창작 내용을 입력하세요...', sealBtn:'봉인 및 체인 기록', stampLabel:'스탬프', charLabel:'문자', duration:'작성 시간', needContent:'먼저 내용을 입력하세요', stampFail:'스탬프 생성 실패', sealing:'봉인 중...', sealSuccess:'봉인 성공', sealFailed:'봉인 실패', unknownError:'알 수 없는 오류', sealSuccessOffline:'봉인 성공 (오프라인)', pasteDetected:'대량 붙여넣기가 감지되었습니다', noDragDrop:'드래그 앤 드롭은 지원되지 않습니다' },
+    fr: { placeholder:'Commencez à écrire ici...', sealBtn:'Sceller & ancrer', stampLabel:'tampons', charLabel:'caractères', duration:'Durée', needContent:'Veuillez d\'abord saisir du contenu', stampFail:'Échec du tamponnage', sealing:'Scellement...', sealSuccess:'Scellement réussi', sealFailed:'Échec du scellement', unknownError:'Erreur inconnue', sealSuccessOffline:'Scellé avec succès (hors ligne)', pasteDetected:'Collage massif détecté', noDragDrop:'Glisser-déposer non pris en charge' },
+    de: { placeholder:'Beginnen Sie hier zu schreiben...', sealBtn:'Versiegeln & verankern', stampLabel:'Stempel', charLabel:'Zeichen', duration:'Zeit', needContent:'Bitte zuerst Inhalt eingeben', stampFail:'Stempeln fehlgeschlagen', sealing:'Versiegele...', sealSuccess:'Erfolgreich versiegelt', sealFailed:'Versiegelung fehlgeschlagen', unknownError:'Unbekannter Fehler', sealSuccessOffline:'Erfolgreich versiegelt (offline)', pasteDetected:'Großes Einfügen erkannt', noDragDrop:'Drag & Drop wird nicht unterstützt' }
   };
   var _wbLang = 'zh';
   function _t(key) {
@@ -72,11 +72,10 @@ window.RtWriterBox = (function() {
       btn.style.cssText = 'padding:10px 24px;border-radius:8px;border:none;background:#D4A017;color:#0F172A;font-weight:700;cursor:pointer;margin-top:12px;font-size:14px;';
       el.appendChild(btn);
     }
-    var timerEl = document.getElementById('stampTimer');
     var state = {
       stamps: [], _chain: null,
       sessionId: 'web-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,6),
-      kp: null, startTime: 0, timerInterval: null, prevChainHash: '',
+      kp: null, startTime: 0, timerInterval: null, prevChainHash: '', importedChainId: '', importedCount: 0, publicKey: '',
       maxChars: options.maxChars || 999999, apiBase: options.apiBase || '',
       onSeal: options.onSeal || null,
       pasteCount: 0, pasteCharTotal: 0, maxBurstPaste: 0, pasteWarned: false
@@ -86,9 +85,20 @@ window.RtWriterBox = (function() {
       state.kp = nacl.sign.keyPair();
       return Promise.resolve(state.kp);
     }
+    function _fmtElapsed() {
+      if (!state.startTime) return '00:00';
+      var s = Math.floor((Date.now() - state.startTime) / 1000);
+      var h = Math.floor(s / 3600);
+      var m = Math.floor((s % 3600) / 60);
+      var sec = s % 60;
+      return h > 0 ? String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0') : String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+    }
     function updateStats() {
       var el = document.getElementById('writerStats');
-      if (el) el.innerHTML = '<span style="color:#D4A017;font-weight:700;">' + _t('stampLabel') + ': ' + state.stamps.length + '</span> | <span style="color:#94A3B8;">' + _t('charLabel') + ': ' + (area.value || '').replace(/\s/g,'').length + '</span>';
+      if (!el) return;
+      el.innerHTML = '<span style="color:#D4A017;font-weight:700;">' + _t('stampLabel') + ': ' + state.stamps.length + '</span>' +
+        ' | <span style="color:#94A3B8;">' + _t('charLabel') + ': ' + (area.value || '').replace(/\s/g, '').length + '</span>' +
+        ' | <span style="color:#94A3B8;">' + _t('duration') + ': <span id="stampTimer" style="color:#F1F5F9;">' + _fmtElapsed() + '</span></span>';
     }
     async function doStamp_impl() {
       await ensureKey();
@@ -128,13 +138,8 @@ window.RtWriterBox = (function() {
       if (area.value.length > state.maxChars) area.value = area.value.substring(0, state.maxChars);
       if (state.startTime === 0 && area.value.trim().length > 0) {
         state.startTime = Date.now();
-        if (timerEl) {
-          clearInterval(state.timerInterval);
-          state.timerInterval = setInterval(function() {
-            var s = Math.floor((Date.now() - state.startTime) / 1000);
-            if (timerEl) timerEl.textContent = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
-          }, 500);
-        }
+        clearInterval(state.timerInterval);
+        state.timerInterval = setInterval(function() { updateStats(); }, 500);
       }
       doStamp_impl(); updateStats();
     });
@@ -148,6 +153,35 @@ window.RtWriterBox = (function() {
     area.addEventListener('drop', function(e) { e.preventDefault(); showToast(_t('noDragDrop'), 'error'); });
     btn.addEventListener('click', sealNow);
     updateStats();
+    async function importRt(pkg) {
+      if (!pkg || !pkg.stamps || pkg.stamps.length === 0) {
+        throw new Error('invalid chain file');
+      }
+      var stamps = pkg.stamps.slice();
+      var last = stamps[stamps.length - 1];
+      var chainSessionId = (last && last.sessionId) || pkg.sessionId || pkg.chainId || state.sessionId;
+      var lastHash = (last && (last.hash || last.chainHash)) || '';
+      state.stamps = stamps.slice();
+      state.sessionId = chainSessionId;
+      state.prevChainHash = lastHash;
+      state._chain = {
+        sessionId: chainSessionId,
+        stamps: stamps.slice(),
+        prevChainHash: lastHash,
+        hmacSeed: '',
+        startTime: (stamps[0] && stamps[0].ts) ? stamps[0].ts : 0,
+        prevContentLen: (last && (last.totalWords || 0)) || 0,
+        prevStampTs: (last && (last.ts || (last.timestamp ? Date.parse(last.timestamp) : 0))) || 0,
+        status: 'active'
+      };
+      state.importedChainId = pkg.chainId || pkg.sessionId || '';
+      state.publicKey = pkg.publicKey || pkg.pk || '';
+      state.importedCount = stamps.length;
+      var content = (typeof RtExport !== 'undefined' && RtExport.extractContent) ? RtExport.extractContent(pkg) : '';
+      if (content && area.value !== content) area.value = content;
+      updateStats();
+      return { chainId: state.importedChainId, stamps: stamps.length, sessionId: chainSessionId, publicKey: state.publicKey };
+    }
     function setLang(lang) {
       if (!_WB_I18N[lang]) return;
       _wbLang = lang;
@@ -155,7 +189,7 @@ window.RtWriterBox = (function() {
       btn.textContent = _t('sealBtn');
       updateStats();
     }
-    return { seal: sealNow, getState: function() { return state; }, setLang: setLang, destroy: function() { el.innerHTML = ''; } };
+    return { seal: sealNow, importRt: importRt, getState: function() { return state; }, setLang: setLang, destroy: function() { el.innerHTML = ''; } };
   }
 
 C.Core = {

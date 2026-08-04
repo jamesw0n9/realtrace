@@ -28,6 +28,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 .main-wrap{flex:1;display:flex;flex-direction:column;max-width:1400px;margin:0 auto;width:100%;padding:24px 40px;min-height:0}
 .mode-bar{display:flex;align-items:center;padding:0 0 10px;gap:8px;flex-shrink:0;min-height:36px}
 .mode-badge{font-size:13px;font-weight:600;color:#D4A017;padding:4px 12px;border-radius:4px;background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.2);white-space:nowrap}
+.mode-chain{font-size:12px;color:#94A3B8;font-family:Consolas,monospace;letter-spacing:.02em;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left:8px}
 .mode-spacer{flex:1}
 .mode-btn{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid #334155;background:#1E293B;color:#94A3B8;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap}
 .mode-btn:hover{border-color:#D4A017;color:#D4A017}
@@ -68,12 +69,12 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <div id="h"><div class="hi"><a href="./" class="l"><span class="li">R</span>真迹·Realtrace</a><div class="n"><span class="os-tag" data-i18n="osTag">Realtrace 开源版</span><div class="lang-wrap"><button class="lang-btn" id="langBtn" type="button"><span id="langBtnText">中文</span><span class="lang-caret">▾</span></button><div class="lang-menu" id="langMenu"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">English</button><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="ko">한국어</button><button type="button" data-lang="fr">Français</button><button type="button" data-lang="de">Deutsch</button></div></div></div></div></div>
 <div class="main-wrap">
   <div class="mode-bar">
-    <span class="mode-badge" id="modeBadge" data-i18n="modeAnon">✏️ 匿名写作</span>
+    <span class="mode-badge" id="modeBadge">✏️ 匿名写作</span>
+    <span class="mode-chain" id="modeChainId" style="display:none"></span>
     <span id="writerStats" style="font-size:13px;color:#94A3B8;"></span><span class="mode-spacer"></span>
-    <button class="mode-btn" id="importBtn" onclick="importRtFile()" data-i18n="importBtn">📂 导入 .rt 续写</button>
   </div>
 
-  <div id="writerBoxContainer"></div>
+  <div id="writerBoxContainer" style="display:none"></div>
 </div>
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
@@ -100,8 +101,10 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <script>
 var I18N = {
   zh: {
-    osTag:'Realtrace 开源版', modeAnon:'✏️ 匿名写作', importBtn:'📂 导入 .rt 续写',
-    imported:'已导入 {n} 个印章', importFail:'导入失败',
+    osTag:'Realtrace 开源版', modeAnon:'✏️ 匿名写作', modeRt:'📂 rt 续写', chainId:'链 ID', modeSelectTitle:'选择创作方式', modeAnonBtn:'✏️ 匿名写作', modeImportBtn:'📂 使用 .rt 续写',
+    imported:'已导入 {n} 个印章', importFail:'导入失败',
+    modeSelectDesc:'匿名写作：无需注册，即写即签，私钥不留存。<br>使用 .rt 续写：导入已有链文件，接续创作历史。',
+    importChainNote:'已导入链：{n} 个 stamp，续写将延续该链',
     stampUnit:'章', duration:'创作时长', sec:'秒', min:'分', hour:'时',
     modalTitle:'提示', modalDesc:'描述',
     privacyTitle:'隐私与安全须知',
@@ -114,8 +117,10 @@ var I18N = {
     pageTitle:'真迹 · 创作封章认证', _langName:'中文'
   },
   en: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonymous writing', importBtn:'📂 Import .rt to continue',
-    imported:'Imported {n} stamps', importFail:'Import failed',
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonymous writing', modeRt:'📂 .rt continuation', chainId:'Chain ID', modeSelectTitle:'Choose writing mode', modeAnonBtn:'✏️ Anonymous writing', modeImportBtn:'📂 Continue with .rt',
+    imported:'Imported {n} stamps', importFail:'Import failed',
+    modeSelectDesc:'Anonymous writing: no sign-up, write & sign on the fly, key is not kept.<br>Continue with .rt: import an existing chain file to extend your creation history.',
+    importChainNote:'Chain imported: {n} stamps. New stamps will extend this chain.',
     stampUnit:'stamps', duration:'Writing time', sec:'s', min:'m', hour:'h',
     modalTitle:'Notice', modalDesc:'Description',
     privacyTitle:'Privacy & Security Notice',
@@ -128,8 +133,10 @@ var I18N = {
     pageTitle:'RealTrace · Creation Seal', _langName:'English'
   },
   ja: {
-    osTag:'Realtrace オープンソース版', modeAnon:'✏️ 匿名で執筆', importBtn:'📂 .rt を読み込んで続きを書く',
-    imported:'{n} 個のスタンプを読み込みました', importFail:'読み込みに失敗しました',
+    osTag:'Realtrace オープンソース版', modeAnon:'✏️ 匿名で執筆', modeRt:'📂 .rt で続きを書く', chainId:'チェーン ID', modeSelectTitle:'創作方法を選択', modeAnonBtn:'✏️ 匿名で執筆', modeImportBtn:'📂 .rt で続きを書く',
+    imported:'{n} 個のスタンプを読み込みました', importFail:'読み込みに失敗しました',
+    modeSelectDesc:'匿名で執筆：登録不要、書いて即署名、秘密鍵は保存されません。<br>.rt で続きを書く：既存のチェーンファイルを読み込み、創作履歴を引き継ぎます。',
+    importChainNote:'チェーンを読み込みました：{n} スタンプ。続きのスタンプはこのチェーンに連結されます。',
     stampUnit:'スタンプ', duration:'執筆時間', sec:'秒', min:'分', hour:'時間',
     modalTitle:'お知らせ', modalDesc:'説明',
     privacyTitle:'プライバシーとセキュリティの注意事項',
@@ -142,8 +149,10 @@ var I18N = {
     pageTitle:'真迹 · 創作封章認証', _langName:'日本語'
   },
   ko: {
-    osTag:'Realtrace 오픈소스', modeAnon:'✏️ 익명 작성', importBtn:'📂 .rt 가져와 이어쓰기',
-    imported:'스탬프 {n}개를 가져왔습니다', importFail:'가져오기 실패',
+    osTag:'Realtrace 오픈소스', modeAnon:'✏️ 익명 작성', modeRt:'📂 .rt 이어쓰기', chainId:'체인 ID', modeSelectTitle:'작성 방식 선택', modeAnonBtn:'✏️ 익명 작성', modeImportBtn:'📂 .rt 이어쓰기',
+    imported:'스탬프 {n}개를 가져왔습니다', importFail:'가져오기 실패',
+    modeSelectDesc:'익명 작성: 가입 없이 즉시 작성·서명, 개인 키가 저장되지 않습니다.<br>.rt 이어쓰기: 기존 체인 파일을 가져와 창작 기록을 이어갑니다.',
+    importChainNote:'체인 가져옴: {n}개 스탬프. 이후 스탬프는 이 체인에 연결됩니다.',
     stampUnit:'스탬프', duration:'작성 시간', sec:'초', min:'분', hour:'시간',
     modalTitle:'알림', modalDesc:'설명',
     privacyTitle:'개인정보 및 보안 안내',
@@ -156,8 +165,10 @@ var I18N = {
     pageTitle:'RealTrace · 창작 봉인', _langName:'한국어'
   },
   fr: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Écriture anonyme', importBtn:'📂 Importer .rt pour continuer',
-    imported:'{n} tampons importés', importFail:'Échec de l\'import',
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Écriture anonyme', modeRt:'📂 Continuer avec .rt', chainId:'ID de chaîne', modeSelectTitle:'Choisissez le mode de création', modeAnonBtn:'✏️ Écriture anonyme', modeImportBtn:'📂 Continuer avec .rt',
+    imported:'{n} tampons importés', importFail:'Échec de l\'import',
+    modeSelectDesc:'Écriture anonyme : sans inscription, écrivez et signez immédiatement, la clé privée n\'est pas conservée.<br>Continuer avec .rt : importez un fichier de chaîne existant pour prolonger votre historique.',
+    importChainNote:'Chaîne importée : {n} tampons. Les nouveaux tampons prolongeront cette chaîne.',
     stampUnit:'tampons', duration:'Durée d\'écriture', sec:'s', min:'m', hour:'h',
     modalTitle:'Avis', modalDesc:'Description',
     privacyTitle:'Avis de confidentialité et de sécurité',
@@ -170,8 +181,10 @@ var I18N = {
     pageTitle:'RealTrace · Scellement de création', _langName:'Français'
   },
   de: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonym schreiben', importBtn:'📂 .rt importieren und fortsetzen',
-    imported:'{n} Stempel importiert', importFail:'Import fehlgeschlagen',
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonym schreiben', modeRt:'📂 .rt fortsetzen', chainId:'Ketten-ID', modeSelectTitle:'Schreibmodus wählen', modeAnonBtn:'✏️ Anonym schreiben', modeImportBtn:'📂 Mit .rt fortsetzen',
+    imported:'{n} Stempel importiert', importFail:'Import fehlgeschlagen',
+    modeSelectDesc:'Anonym schreiben: keine Anmeldung, sofort schreiben & signieren, privater Schlüssel wird nicht gespeichert.<br>Mit .rt fortsetzen: vorhandene Kettendatei importieren und Schreibverlauf erweitern.',
+    importChainNote:'Kette importiert: {n} Stempel. Neue Stempel verlängern diese Kette.',
     stampUnit:'Stempel', duration:'Schreibzeit', sec:'s', min:'min', hour:'h',
     modalTitle:'Hinweis', modalDesc:'Beschreibung',
     privacyTitle:'Datenschutz- und Sicherheitshinweis',
@@ -205,6 +218,7 @@ function applyLang(lang) {
   if (lbl) lbl.textContent = dict._langName || lang.toUpperCase();
   try { localStorage.setItem('rt_writer_lang', lang); } catch(e) {}
   if (_rtWriterBox && typeof _rtWriterBox.setLang === 'function') _rtWriterBox.setLang(lang);
+  setModeDisplay(_currentMode, _currentChainId);
 
 }
 
@@ -219,7 +233,9 @@ function applyLang(lang) {
     b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); menu.classList.remove('open'); });
   });
 })();
-var _rtIdentity = { mode:'anonymous', kp:null, publicKeyHex:'', sessionId:'' };
+var _rtIdentity = { mode:'anonymous', kp:null, publicKeyHex:'', sessionId:'', chainId:'' };
+var _currentMode = 'anon';
+var _currentChainId = '';
 var _rtWriterBox = null;
 
 function showNotification(msg, type) {
@@ -236,25 +252,96 @@ function showNotification(msg, type) {
   requestAnimationFrame(function() { item.style.transform = 'translateY(0)'; item.style.opacity = '1'; });
   setTimeout(function() { item.style.transform = 'translateY(20px)'; item.style.opacity = '0'; setTimeout(function() { item.remove(); }, 300); }, 3000);
 }
-async function importRtFile() {
+function chooseMode() {
+  showModal({
+    icon: '✍️',
+    title: t('modeSelectTitle'),
+    desc: t('modeSelectDesc'),
+    actions: [
+      { label: t('modeAnonBtn'), class: 'btn-primary', value: 'anon' },
+      { label: t('modeImportBtn'), class: 'btn-secondary', value: 'import' }
+    ]
+  }).then(function(choice) {
+    if (choice === 'anon') { enterWriterBox(null); }
+    else if (choice === 'import') { pickRtFile(); }
+  });
+}
+
+function pickRtFile() {
   var input = document.createElement('input');
   input.type = 'file'; input.accept = '.rt';
   input.onchange = async function(e) {
-    var f = e.target.files[0]; if (!f) return;
+    var f = e.target.files[0];
+    if (!f) { chooseMode(); return; }
     try {
       var pkg = await RtExport.loadRtFile(f);
-      if (_rtWriterBox && typeof _rtWriterBox.importRtFile === 'function') {
-        await _rtWriterBox.importRtFile(pkg);
-      }
-      var content = RtExport.extractContent ? RtExport.extractContent(pkg) : '';
-      var ta = document.getElementById('rtTextarea');
-      if (ta && content) ta.value = content;
-      showNotification(t('imported',{n:(pkg.totalStamps||(pkg.stamps?pkg.stamps.length:0))}), 'success');
-
-    } catch(e) { showNotification(t('importFail')+': '+e.message, 'error'); }
+      await enterWriterBox(pkg);
+    } catch(err) {
+      showNotification(t('importFail') + ': ' + err.message, 'error');
+      chooseMode();
+    }
     this.value = '';
   };
   input.click();
+}
+
+async function enterWriterBox(pkg) {
+  try {
+    _rtWriterBox = RtWriterBox.init('writerBoxContainer', {
+      apiBase: (window.RT_CONFIG && window.RT_CONFIG.anchor && window.RT_CONFIG.anchor.enabled && window.RT_CONFIG.anchor.apiBase) || '',
+      maxChars: 999999,
+      onSeal: function(result) { doFinalSeal(result); }
+    });
+    if (_rtWriterBox) {
+      var origSeal = _rtWriterBox.seal;
+      _rtWriterBox.seal = function() {
+        showModal({
+          icon: '🔐',
+          title: t('sealConfirmTitle'),
+          desc: t('sealConfirmDesc'),
+          actions: [
+            { label: t('cancel'), class: 'btn-secondary', value: 'cancel' },
+            { label: t('confirmSeal'), class: 'btn-primary', value: 'confirm' }
+          ]
+        }).then(function(choice) {
+          if (choice === 'confirm') { origSeal.call(_rtWriterBox); }
+        });
+      };
+    }
+    if (pkg) {
+      var info = await _rtWriterBox.importRt(pkg);
+      _rtIdentity = { mode: 'rt', kp: null, publicKeyHex: info.publicKey || '', sessionId: info.sessionId, chainId: info.chainId };
+      setModeDisplay('rt', info.chainId);
+      showNotification(t('importChainNote', { n: info.stamps }), 'success');
+    } else {
+      _rtIdentity = { mode: 'anonymous', kp: null, publicKeyHex: '', sessionId: '', chainId: '' };
+      setModeDisplay('anon', '');
+    }
+    var box = document.getElementById('writerBoxContainer');
+    if (box) box.style.display = 'flex';
+    showModal({
+      icon: '🛡️',
+      title: t('privacyTitle'),
+      desc: t('privacyDesc'),
+      actions: [{ label: t('gotIt'), class: 'btn-primary', value: 'ok' }]
+    });
+  } catch(e) { console.error('WriterBox:', e); }
+}
+
+function setModeDisplay(mode, chainId) {
+  _currentMode = mode;
+  _currentChainId = chainId || '';
+  var badge = document.getElementById('modeBadge');
+  var chainEl = document.getElementById('modeChainId');
+  if (badge) badge.textContent = mode === 'rt' ? t('modeRt') : t('modeAnon');
+  if (chainEl) {
+    if (mode === 'rt' && _currentChainId) {
+      chainEl.textContent = t('chainId') + ': ' + RtExport.normalizeChainIdDisplay(_currentChainId);
+      chainEl.style.display = 'inline-block';
+    } else {
+      chainEl.style.display = 'none';
+    }
+  }
 }
 
 function showModal(opts) {
@@ -328,39 +415,8 @@ async function doFinalSeal(result) {
   setTimeout(function(){ window.location.href = '../verify/index.html'; }, 800);
 }
 document.addEventListener('DOMContentLoaded', function() {
-  showModal({
-    icon: '🛡️',
-    title: t('privacyTitle'),
-    desc: t('privacyDesc'),
-    actions: [{ label: t('gotIt'), class: 'btn-primary', value: 'ok' }]
-  });
-
-  try {
-    _rtWriterBox = RtWriterBox.init('writerBoxContainer', { apiBase: (window.RT_CONFIG && window.RT_CONFIG.anchor && window.RT_CONFIG.anchor.enabled && window.RT_CONFIG.anchor.apiBase) || '',
-      maxChars: 999999,
-      onSeal: function(result) { doFinalSeal(result); }
-    });
-
-    if (_rtWriterBox) {
-      var origSeal = _rtWriterBox.seal;
-      _rtWriterBox.seal = function() {
-        showModal({
-          icon: '🔐',
-          title: t('sealConfirmTitle'),
-          desc: t('sealConfirmDesc'),
-          actions: [
-            { label: t('cancel'), class: 'btn-secondary', value: 'cancel' },
-            { label: t('confirmSeal'), class: 'btn-primary', value: 'confirm' }
-          ]
-        }).then(function(choice) {
-          if (choice === 'confirm') { origSeal.call(_rtWriterBox); }
-        });
-      };
-    }
-  } catch(e) { console.error('WriterBox:', e); }
+  chooseMode();
   applyLang(curLang);
-
-
 });
 
 applyLang((function(){ try { return localStorage.getItem('rt_writer_lang') || 'zh'; } catch(e){ return 'zh'; } })());
