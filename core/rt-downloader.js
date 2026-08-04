@@ -10,8 +10,6 @@ window.RtDownloader = (() => {
   var I18N = {
     zh: {
       title: '文件下载与原文备份',
-      contentTitle: '创作原文（.txt）',
-      contentEmpty: '该 .rt 为纯链格式，不包含正文。正文请以封章后下载的 .txt 原文为准。',
       dlTxt: '下载 .txt 原文',
       dlRt: '下载 .rt 链文件',
       txtDesc: '.txt 是本次创作的内容原件（纯文本）。正文不会写入 .rt 文件，请与 .rt 一起妥善保存，便于对照与归档。',
@@ -22,8 +20,6 @@ window.RtDownloader = (() => {
     },
     en: {
       title: 'Files & Original Backup',
-      contentTitle: 'Original Content (.txt)',
-      contentEmpty: 'This .rt is chain-only and does not contain the content. Keep the .txt original downloaded after sealing.',
       dlTxt: 'Download .txt original',
       dlRt: 'Download .rt chain file',
       txtDesc: '.txt is the original content of this creation (plain text). The content is not stored in the .rt file — keep both together for review and archiving.',
@@ -34,8 +30,6 @@ window.RtDownloader = (() => {
     },
     ja: {
       title: 'ファイル保存と原文バックアップ',
-      contentTitle: '創作原文（.txt）',
-      contentEmpty: 'この .rt はチェーン情報のみで、本文は含まれません。本文は封章後にダウンロードした .txt 原文を保存してください。',
       dlTxt: '.txt 原文をダウンロード',
       dlRt: '.rt チェーンファイルをダウンロード',
       txtDesc: '.txt は今回の創作内容の原本（プレーンテキスト）です。本文は .rt ファイルには保存されないため、.rt と一緒に大切に保管してください。',
@@ -46,8 +40,6 @@ window.RtDownloader = (() => {
     },
     ko: {
       title: '파일 저장 및 원문 백업',
-      contentTitle: '창작 원문 (.txt)',
-      contentEmpty: '이 .rt 파일은 체인 정보만 포함하며 본문은 포함되지 않습니다. 본문은 봉인 후 다운로드한 .txt 원문을 보관하세요.',
       dlTxt: '.txt 원문 다운로드',
       dlRt: '.rt 체인 파일 다운로드',
       txtDesc: '.txt는 이번 창작의 내용 원본(일반 텍스트)입니다. 본문은 .rt 파일에 저장되지 않으므로 .rt와 함께 안전하게 보관하세요.',
@@ -58,8 +50,6 @@ window.RtDownloader = (() => {
     },
     fr: {
       title: 'Fichiers et sauvegarde',
-      contentTitle: 'Contenu original (.txt)',
-      contentEmpty: 'Ce .rt ne contient que la chaîne, pas le contenu. Conservez le .txt original téléchargé après le scellement.',
       dlTxt: 'Télécharger le .txt original',
       dlRt: 'Télécharger le fichier .rt',
       txtDesc: 'Le .txt est le contenu original de cette création (texte brut). Le contenu n\'est pas stocké dans le .rt — conservez les deux ensemble.',
@@ -70,8 +60,6 @@ window.RtDownloader = (() => {
     },
     de: {
       title: 'Dateien & Original-Backup',
-      contentTitle: 'Originalinhalt (.txt)',
-      contentEmpty: 'Diese .rt-Datei enthält nur die Kette, nicht den Inhalt. Bewahren Sie das nach dem Versiegeln heruntergeladene .txt-Original auf.',
       dlTxt: '.txt-Original herunterladen',
       dlRt: '.rt-Kettendatei herunterladen',
       txtDesc: '.txt ist der Originalinhalt dieser Erstellung (Klartext). Der Inhalt wird nicht in der .rt-Datei gespeichert — bewahren Sie beide zusammen auf.',
@@ -101,8 +89,6 @@ window.RtDownloader = (() => {
     cssInjected = true;
     var css = '.rtdl-card{background:#1E293B;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:16px}'
       + '.rtdl-h{font-size:12px;font-weight:700;color:#D4A017;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}'
-      + '.rtdl-content{background:#0F172A;border:1px solid #334155;border-radius:6px;padding:12px;font-size:13px;line-height:1.7;color:#E2E8F0;max-height:180px;overflow:auto;white-space:pre-wrap;word-break:break-word}'
-      + '.rtdl-empty{font-size:12px;color:#94A3B8;padding:8px 0}'
       + '.rtdl-btns{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}'
       + '.rtdl-btn{padding:8px 16px;border-radius:6px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:#D4A017;color:#0F172A;transition:opacity .2s}'
       + '.rtdl-btn:hover{opacity:.85}'
@@ -161,13 +147,6 @@ window.RtDownloader = (() => {
     if (!hasChain) { box.style.display = 'none'; box.innerHTML = ''; return; }
     var cid = cidOf(data.chainId || data.sessionId || '');
     var h = '';
-    h += '<div class="rtdl-card"><div class="rtdl-h">' + esc(t(lang, 'contentTitle')) + '</div>';
-    if (content) {
-      h += '<div class="rtdl-content">' + esc(content) + '</div>';
-    } else {
-      h += '<div class="rtdl-empty">' + esc(t(lang, 'contentEmpty')) + '</div>';
-    }
-    h += '</div>';
     h += '<div class="rtdl-card"><div class="rtdl-h">' + esc(t(lang, 'title')) + '</div>';
     h += '<div class="rtdl-btns">';
     if (content) {
