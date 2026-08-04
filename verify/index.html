@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" translate="no">
 <head>
 <meta charset="UTF-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Realtrace · 离线链验证</title>
 <style>
@@ -180,6 +181,12 @@ function applyLang(lang) {
 function escapeHtml(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function idCheckText(ic) {
+  if (!ic) return '—';
+  if (ic.none) return '—';
+  if (ic.legacy) return t('legacyId');
+  return ic.ok ? t('idOk') : t('idFail');
+}
 function renderResult(pkg, res, idCheck) {
   var ok = res.ok;
   var meta = [
@@ -188,7 +195,7 @@ function renderResult(pkg, res, idCheck) {
     [t('metaStamps'), res.totalStamps + (t('stampUnit') ? ' ' + t('stampUnit') : '')],
     [t('metaRtVer'), pkg.rtVersion || ''],
     [t('metaSealed'), pkg.sealedAt || ''],
-    [t('metaIdCheck'), idCheck || '—']
+    [t('metaIdCheck'), idCheckText(idCheck)]
   ].filter(function(m) { return m[1] !== undefined && m[1] !== ''; }).map(function(m) {
     return '<div><b>' + m[0] + '</b>' + t('sep') + escapeHtml(String(m[1])) + '</div>';
   }).join('');
@@ -254,11 +261,11 @@ function mountTimeline(pkg) {
     var last = stamps.length ? stamps[stamps.length - 1] : null;
     var rootHash = (pkg.hashChain && pkg.hashChain.current) || (last && (last.hash || last.chainHash)) || '';
     var chainId = pkg.chainId || pkg.sessionId || '';
-    if (!pk || !rootHash || !chainId) return '—';
+    if (!pk || !rootHash || !chainId) return { none: true };
     var parts = String(chainId).split('-');
-    if (parts.length < 3) return t('legacyId');
+    if (parts.length < 3) return { legacy: true };
     var expected = await RtExport.deriveCid(pk, rootHash);
-    return expected === parts[parts.length - 1] ? t('idOk') : t('idFail');
+    return { ok: expected === parts[parts.length - 1] };
   }
 
   // 写作页跳转带来会话数据时自动验证
