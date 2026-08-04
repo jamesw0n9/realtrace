@@ -13,7 +13,7 @@
 > Chaîne de signatures Ed25519 · Estampillage en temps réel · Aucun upload de contenu · Vérification hors ligne · Ancrage à la chaîne de genèse officielle (gratuit pour les particuliers)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.1.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > Quand tout peut être falsifié, l'authenticité devient un luxe. **Les détecteurs devinent. RealTrace prouve.**
@@ -174,10 +174,11 @@ npm test
 | 2026.06 | **Première implémentation complète** : estampillage en chaîne → scellement → vérification hors ligne → certificat autonome, de bout en bout ; 11 brevets d'invention préparés en parallèle, dossier parent déposé auprès de l'agence de brevets |
 | 2026.07 | **Refactorisation modulaire** : le noyau d'estampillage `stamp.js` devient un module indépendant, la boîte à outils crypto `rt-crypto.js` est stratifiée, outil d'écriture / vérificateur / service d'ancrage découplés ; renommage officiel en **RealTrace** ; lancement du service d'ancrage à la chaîne de genèse officielle |
 | 2026.08 | **MVP open source v0.1.0 publié** (double licence AGPL-3.0 + commerciale) ; modèle de licence entreprise en planification |
+| 2026.08 | **v0.2.0 publié** : divulgation sélective Merkle + génération de preuve de divulgation, interface en six langues, règles de nommage des ID de chaîne, choix du mode de création, chronologie modulaire |
 
 ---
 
-## Ce que contient cette version (MVP v0.1.0)
+## Ce que contient cette version (v0.2.0)
 
 Ce dépôt est une **construction MVP minimale** : il implémente la boucle complète « écrire → estampiller → sceller → vérifier » avec le moins de code possible. Cette version inclut :
 
@@ -188,6 +189,13 @@ Ce dépôt est une **construction MVP minimale** : il implémente la boucle comp
 - **Empreinte comportementale** : rythme de frappe / pauses / suppressions (chaîne comportementale HMAC) pour l'analyse de crédibilité ;
 - **Ancrage à la chaîne de genèse (optionnel, gratuit pour les particuliers)** : après scellement, le hash racine de chaîne est soumis à la chaîne de genèse officielle, formant une provenance auditée publiquement ;
 - **Traçabilité des versions** : les paquets `.rt` enregistrent `appVersion` dans `meta.json` et le format de chaîne `version` dans `chain.json` ; la version est portée lors de l'ancrage.
+- **Divulgation sélective Merkle** : chaque scellement lie une racine Merkle du texte complet ; vous pouvez divulguer n'importe quel passage sans révéler l'ensemble ;
+- **Génération de preuve de divulgation** : en un clic sur la page de vérification hors ligne, avec visualisation du chemin Merkle et JSON copiable ;
+- **Interface en six langues** : page d'écriture / vérificateur / site en 简体中文 · English · 日本語 · 한국어 · Deutsch · Français ;
+- **Règles de nommage des ID de chaîne** : ID de chaîne de 23 caractères (`web-personal-…`) liant clé publique + racine — vérifiable, non réversible ;
+- **Choix du mode de création** : choisir « Écriture anonyme » ou « Importer .rt pour continuer » avant d'écrire ; la continuation prolonge automatiquement la chaîne d'origine.
+
+> Journal des modifications complet : [CHANGELOG.md](CHANGELOG.md).
 
 Toutes les fonctionnalités restent rétrocompatibles : les fichiers de chaîne `.rt` générés par les anciennes versions doivent rester vérifiables et traçables dans les versions ultérieures.
 

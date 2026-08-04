@@ -13,7 +13,7 @@
 > Ed25519 签名链 · 实时打章 · 零内容上传 · 离线验证 · 官方创世链锚定（个人免费）
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.1.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > 当一切都可以被伪造，真实反而成了奢侈品。**检测器在猜，真迹在证明。**
@@ -174,10 +174,11 @@ npm test
 | 2026.06 | **首个完整实现落地**：链式打章 → 封章 → 离线验证 → 自包含证书全链路打通；同步完成 11 项发明专利布局，母案提交专利代理机构 |
 | 2026.07 | **模块化重构**：打章核心 `stamp.js` 独立成模块，密码学工具库 `rt-crypto.js` 分层，写作框 / 验证器 / 锚定服务解耦；正式更名 **RealTrace**；官方创世链锚定服务上线 |
 | 2026.08 | **开源 MVP v0.1.0 发布**（AGPL-3.0 + 商业双许可）；企业授权模式进入规划 |
+| 2026.08 | **v0.2.0 发布**：Merkle 选择性披露 + 生成披露证明、六语界面、链 ID 命名规则、创作模式选择、时间轴模块化 |
 
 ---
 
-## 本版本包含哪些功能（v0.1.0 MVP）
+## 本版本包含哪些功能（v0.2.0）
 
 本仓库是 **MVP 最小版**：以最少的代码实现「写作 → 打章 → 封章 → 验证」完整闭环。本版本已包含：
 
@@ -188,6 +189,13 @@ npm test
 - **行为指纹**：打字节奏 / 停顿 / 删除量特征（HMAC 行为链），供可信度分析；
 - **创世链锚定（可选，个人免费）**：封章后提交链根哈希到官方创世链，形成公开可审计溯源；
 - **版本可溯源**：`.rt` 包内 `meta.json` 记录 `appVersion`，`chain.json` 记录链格式 `version`，封章上链时携带版本号。
+- **Merkle 选择性披露**：每章绑定全文 Merkle 根，可只披露任意段落而不暴露全文；
+- **生成披露证明**：离线认证页一键生成段落披露证明，附 Merkle 路径可视化，复制 JSON 即可自证；
+- **六语界面**：写作页 / 离线认证页 / 官网支持 简体中文 · English · 日本語 · 한국어 · Deutsch · Français；
+- **链 ID 命名规则**：公钥 + 根哈希双绑定的 23 位链 ID（`web-personal-…`），可验证、不可反推；
+- **创作模式选择**：进入写作前选择「匿名写作」或「导入 .rt 续写」，续写自动延续原链并同步状态栏。
+
+> 完整变更记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 所有功能保持向后兼容：旧版本生成的 `.rt` 链文件在后续版本必须可验证、可追溯。
 

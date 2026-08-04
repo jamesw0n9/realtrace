@@ -13,7 +13,7 @@
 > Ed25519 서명 체인 · 실시간 스탬프 · 콘텐츠 미업로드 · 오프라인 검증 · 공식 창세 체인 앵커링(개인 무료)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.1.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > 모든 것이 위조될 수 있는 세상에서, "진짜"는 사치품이 된다. **탐지기는 추측한다. RealTrace는 증명한다.**
@@ -174,10 +174,11 @@ npm test
 | 2026.06 | **첫 완전 구현**: 체인 스탬프 → 봉인 → 오프라인 검증 → 자체 완결 증명서 전 구간 완성. 병행하여 11건의 발명 특허를 준비하고, 모안을 특허 대리 기관에 제출 |
 | 2026.07 | **모듈화 리팩터**: 스탬프 핵심 `stamp.js`를 독립 모듈로 분리, 암호 도구 `rt-crypto.js`를 계층화, 라이팅 / 검증 / 앵커 서비스 분리. 공식 명칭 **RealTrace**로 변경. 공식 창세 체인 앵커링 서비스 가동 |
 | 2026.08 | **오픈소스 MVP v0.1.0 공개**(AGPL-3.0 + 상업 듀얼 라이선스). 기업 라이선스 모델 기획 중 |
+| 2026.08 | **v0.2.0 출시**: Merkle 선택적 공개 + 공개 증명 생성, 6개 언어 UI, 체인 ID 명명 규칙, 작성 모드 선택, 타임라인 모듈화 |
 
 ---
 
-## 이 버전의 기능(v0.1.0 MVP)
+## 이 버전의 기능(v0.2.0)
 
 이 리포지토리는 **MVP 최소 버전**: 최소한의 코드로 "작성 → 스탬프 → 봉인 → 검증" 완전 루프를 구현한다. 이 버전에는 다음이 포함된다:
 
@@ -188,6 +189,13 @@ npm test
 - **행동 지문**: 타자 리듬 / 멈춤 / 삭제량 특징(HMAC 행동 체인)으로 신뢰도 분석;
 - **창세 체인 앵커링(선택, 개인 무료)**: 봉인 후 체인 루트 해시를 공식 창세 체인에 제출하여 공개 감사 가능한 이력을 형성;
 - **버전 추적**: `.rt` 패키지는 `meta.json`에 `appVersion`, `chain.json`에 체인 형식 `version`을 기록하고, 상장 시 버전을 유지.
+- **Merkle 선택적 공개**: 각 봉인이 전문 Merkle 루트를 바인딩하여, 전체 텍스트를 공개하지 않고 원하는 단락만 공개 가능;
+- **공개 증명 생성**: 오프라인 검증 페이지에서 단락 공개 증명을 원클릭 생성, Merkle 경로 시각화 포함, JSON 복사로 자가 증명;
+- **6개 언어 UI**: 작성 페이지 / 오프라인 검증 페이지 / 공식 사이트가 简体中文 · English · 日本語 · 한국어 · Deutsch · Français 지원;
+- **체인 ID 명명 규칙**: 공개 키 + 루트 해시를 이중 바인딩한 23자리 체인 ID(`web-personal-…`). 검증 가능, 역산 불가;
+- **작성 모드 선택**: 작성 전에 "익명 작성" 또는 ".rt 가져와 이어쓰기" 선택. 이어쓰기는 원래 체인을 자동 연장.
+
+> 전체 변경 기록: [CHANGELOG.md](CHANGELOG.md).
 
 모든 기능은 하위 호환을 유지: 이전 버전이 생성한 `.rt` 체인 파일은 이후 버전에서도 검증·추적 가능해야 한다.
 

@@ -13,7 +13,7 @@
 > Ed25519-Signaturkette · Echtzeit-Stempeln · Keine Inhalts-Uploads · Offline-Verifizierung · Offizielle Genesis-Ketten-Ankerung (für Einzelpersonen kostenlos)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.1.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > Wenn alles gefälscht werden kann, wird Authentizität zum Luxusgut. **Detektoren raten. RealTrace beweist.**
@@ -174,10 +174,11 @@ npm test
 | 2026.06 | **Erste vollständige Umsetzung**: Ketten-Stempeln → Besiegeln → Offline-Verifizierung → in sich geschlossenes Zertifikat, durchgängig; parallel 11 Erfindungspatente vorbereitet, Stammsache beim Patentanwalt eingereicht |
 | 2026.07 | **Modulare Umstrukturierung**: Stempelkern `stamp.js` als eigenes Modul, Krypto-Toolkit `rt-crypto.js` geschichtet, Schreibwerkzeug / Verifizierer / Anker-Dienst entkoppelt; offizielle Umbenennung in **RealTrace**; offizieller Genesis-Ketten-Ankerungs-Dienst gestartet |
 | 2026.08 | **Open-Source-MVP v0.1.0 veröffentlicht** (AGPL-3.0 + kommerzielle Dual-Lizenz); Unternehmenslizenzmodell in Planung |
+| 2026.08 | **v0.2.0 veröffentlicht**: Merkle-selektive Offenlegung + Offenlegungsnachweis-Generierung, sechssprachige Oberfläche, Chain-ID-Namensregeln, Wahl des Schreibmodus, modulares Timeline |
 
 ---
 
-## Was diese Version enthält (v0.1.0 MVP)
+## Was diese Version enthält (v0.2.0)
 
 Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollständigen Kreislauf „Schreiben → Stempeln → Besiegeln → Verifizieren" mit möglichst wenig Code. Diese Version enthält:
 
@@ -188,6 +189,13 @@ Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollstä
 - **Verhaltens-Fingerabdruck**: Tipprhythmus / Pausen / Löschmenge (HMAC-Verhaltenskette) für die Glaubwürdigkeitsanalyse;
 - **Genesis-Ketten-Ankerung (optional, für Einzelpersonen kostenlos)**: nach dem Besiegeln wird der Ketten-Wurzel-Hash an die offizielle Genesis-Kette übermittelt und bildet eine öffentlich prüfbare Herkunft;
 - **Versionsrückverfolgbarkeit**: `.rt`-Pakete erfassen `appVersion` in `meta.json` und das Kettenformat `version` in `chain.json`; die Version wird beim Verankern mitgeführt.
+- **Merkle-selektive Offenlegung**: jedes Siegel bindet einen Merkle-Wurzel-Hash des Volltexts; beliebige Passagen lassen sich offenlegen, ohne den gesamten Text preiszugeben;
+- **Offenlegungsnachweis-Generierung**: mit einem Klick auf der Offline-Verifikationsseite, mit Merkle-Pfad-Visualisierung und kopierbarem JSON;
+- **Sechssprachige Oberfläche**: Schreibseite / Verifizierer / Website in 简体中文 · English · 日本語 · 한국어 · Deutsch · Français;
+- **Chain-ID-Namensregeln**: 23-stellige Chain-ID (`web-personal-…`) aus öffentlichem Schlüssel + Wurzel-Hash — verifizierbar, nicht umkehrbar;
+- **Wahl des Schreibmodus**: vor dem Schreiben „Anonym schreiben" oder „.rt importieren und fortsetzen" wählen; Fortsetzen verlängert automatisch die ursprüngliche Kette.
+
+> Vollständige Änderungshistorie: [CHANGELOG.md](CHANGELOG.md).
 
 Alle Funktionen bleiben abwärtskompatibel: `.rt`-Ketten-Dateien aus älteren Versionen müssen in späteren Versionen weiterhin verifizierbar und rückverfolgbar sein.
 
