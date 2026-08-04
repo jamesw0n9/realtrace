@@ -103,6 +103,7 @@ signature = Ed25519_sign(chainHash)
 - **Private keys cannot be forged**: Ed25519 signatures are produced by a locally generated private key that never leaves your device;
 - **Behavioral fingerprint**: each stamp carries keystroke rhythm / pause / deletion traits (HMAC behavior chain) for credibility analysis;
 - **Genesis-chain anchoring**: sub-chain keys are deterministically derived from the official seed via HKDF-SHA256; sub-chain root hashes anchor into the official genesis chain — traceable upward and downward (free for individuals).
+- **Full-text Merkle binding**: every seal also computes the full-text Merkle root and writes it into the chain, enabling selective disclosure of any passage without exposing the whole text.
 
 **Chain file format (`.rt`)**: a ZIP container holding `chain.json` (signature chain) and `meta.json` (version, time, certificate metadata). The chain records only "creative process evidence", never the content.
 
@@ -121,7 +122,8 @@ npx serve .
 # open http://localhost:3000/writer/
 ```
 
-- Content is stamped automatically as you type; click "Seal & Anchor" to download the `.rt` chain file + `.txt` content file;
+- Choose "Anonymous writing" or "Import .rt to continue" before entering the editor; content is stamped automatically as you type;
+- Click "Seal & Anchor" to confirm: you are redirected to the offline verification page to download the `.txt` original and the `.rt` chain file (purely local export, no upload);
 - Open `verify/index.html` and drag in the `.rt` file to verify chain integrity fully offline.
 
 ### 2. Enable official genesis-chain anchoring (optional, free for individuals)
@@ -157,7 +159,7 @@ npm test
 
 | Path | Description |
 |:--|:--|
-| `core/` | Pure front-end core (browser IIFE, zero build dependencies): stamping `stamp.js`, cryptography `rt-crypto.js`, offline verification `rt-verifier.js`, chain file `rt-export.js` |
+| `core/` | Pure front-end core (browser IIFE, zero build dependencies): stamping `stamp.js`, cryptography `rt-crypto.js`, offline verification `rt-verifier.js`, chain file `rt-export.js`, Merkle disclosure `rt-merkle.js`, timeline `rt-timeline.js`, file download `rt-downloader.js` |
 | `writer/` | Writing tool (single-page HTML): automatic stamping + seal download |
 | `verify/` | Offline chain verification page: drag in a `.rt` file to verify |
 | `anchor/` | Official genesis-chain anchoring client (free for individuals) |
@@ -194,6 +196,7 @@ This repository is an **MVP minimal build**: it implements the complete "write �
 - **Six-language UI**: writer / verifier / website in 简体中文 · English · 日本語 · 한국어 · Deutsch · Français;
 - **Chain ID naming rules**: 23-character chain ID (`web-personal-…`) binding public key + root hash — verifiable, not reversible;
 - **Creation-mode selection**: choose "Anonymous writing" or "Import .rt to continue" before writing; continuing automatically extends the original chain.
+- **Modular timeline**: the scalable histogram timeline is extracted into the shared module `core/rt-timeline.js`, making the writing rhythm visible at a glance.
 
 > Full changelog: [CHANGELOG.md](CHANGELOG.md).
 

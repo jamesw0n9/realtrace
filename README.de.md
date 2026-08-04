@@ -103,6 +103,7 @@ signature = Ed25519_sign(chainHash)
 - **Private Schlüssel sind nicht fälschbar**: Ed25519-Signaturen werden mit einem lokal erzeugten privaten Schlüssel erstellt, der dein Gerät nie verlässt;
 - **Verhaltens-Fingerabdruck**: jeder Stempel trägt Merkmale von Tipprhythmus / Pausen / Löschmenge (HMAC-Verhaltenskette) für die Glaubwürdigkeitsanalyse;
 - **Genesis-Ketten-Ankerung**: Teilketten-Schlüssel werden deterministisch per HKDF-SHA256 aus dem offiziellen Seed abgeleitet; die Wurzel-Hashes der Teilketten werden in der offiziellen Genesis-Kette verankert – nach oben und unten rückverfolgbar (für Einzelpersonen kostenlos).
+- **Merkle-Volltextbindung**: jedes Siegel berechnet zusätzlich den Merkle-Wurzel-Hash des Volltexts und schreibt ihn in die Kette – so lassen sich beliebige Passagen selektiv offenlegen, ohne den gesamten Text preiszugeben.
 
 **Ketten-Dateiformat (`.rt`)**: ein ZIP-Container mit `chain.json` (Signaturkette) und `meta.json` (Version, Zeit, Zertifikats-Metadaten). Die Kette zeichnet nur „Schaffensprozess-Beweise" auf, niemals den Inhalt.
 
@@ -121,7 +122,8 @@ npx serve .
 # http://localhost:3000/writer/ öffnen
 ```
 
-- Inhalte werden beim Tippen automatisch gestempelt; klicke auf „Besiegeln & verankern", um die `.rt`-Ketten-Datei + die `.txt`-Inhaltsdatei herunterzuladen;
+- Vor dem Schreiben „Anonym schreiben" oder „.rt importieren und fortsetzen" wählen; Inhalte werden beim Tippen automatisch gestempelt;
+- Auf „Besiegeln & verankern" klicken – du wirst zur Offline-Verifizierungsseite weitergeleitet und kannst die `.txt`-Originaldatei und die `.rt`-Ketten-Datei herunterladen (rein lokaler Export, kein Upload);
 - Öffne `verify/index.html` und ziehe die `.rt`-Datei hinein, um die Kettenintegrität vollständig offline zu prüfen.
 
 ### 2. Offizielle Genesis-Ketten-Ankerung aktivieren (optional, für Einzelpersonen kostenlos)
@@ -157,7 +159,7 @@ npm test
 
 | Pfad | Beschreibung |
 |:--|:--|
-| `core/` | Reiner Frontend-Kern (Browser-IIFE, keine Build-Abhängigkeiten): Stempeln `stamp.js`, Kryptografie `rt-crypto.js`, Offline-Verifizierung `rt-verifier.js`, Ketten-Datei `rt-export.js` |
+| `core/` | Reiner Frontend-Kern (Browser-IIFE, keine Build-Abhängigkeiten): Stempeln `stamp.js`, Kryptografie `rt-crypto.js`, Offline-Verifizierung `rt-verifier.js`, Ketten-Datei `rt-export.js`, Merkle-Offenlegung `rt-merkle.js`, Timeline `rt-timeline.js`, Datei-Download `rt-downloader.js` |
 | `writer/` | Schreibwerkzeug (einzelnes HTML): automatisches Stempeln + Siegel-Download |
 | `verify/` | Offline-Verifizierungsseite: `.rt`-Datei hineinziehen und prüfen |
 | `anchor/` | Offizieller Genesis-Ketten-Ankerungs-Client (für Einzelpersonen kostenlos) |
@@ -194,6 +196,7 @@ Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollstä
 - **Sechssprachige Oberfläche**: Schreibseite / Verifizierer / Website in 简体中文 · English · 日本語 · 한국어 · Deutsch · Français;
 - **Chain-ID-Namensregeln**: 23-stellige Chain-ID (`web-personal-…`) aus öffentlichem Schlüssel + Wurzel-Hash — verifizierbar, nicht umkehrbar;
 - **Wahl des Schreibmodus**: vor dem Schreiben „Anonym schreiben" oder „.rt importieren und fortsetzen" wählen; Fortsetzen verlängert automatisch die ursprüngliche Kette.
+- **Modulares Timeline**: das skalierbare Histogramm-Timeline ist in das gemeinsame Modul `core/rt-timeline.js` ausgegliedert und macht den Schreibrhythmus auf einen Blick sichtbar.
 
 > Vollständige Änderungshistorie: [CHANGELOG.md](CHANGELOG.md).
 

@@ -103,6 +103,7 @@ signature = Ed25519_sign(chainHash)
 - **Les clés privées sont infalsifiables** : les signatures Ed25519 sont produites par une clé privée générée localement, qui ne quitte jamais votre appareil ;
 - **Empreinte comportementale** : chaque tampon porte des traits de rythme de frappe / pauses / suppressions (chaîne comportementale HMAC) pour l'analyse de crédibilité ;
 - **Ancrage à la chaîne de genèse** : les clés des sous-chaînes sont dérivées de manière déterministe via HKDF-SHA256 à partir de la graine officielle ; les hashs racines des sous-chaînes s'ancrent dans la chaîne de genèse officielle — traçables vers le haut comme vers le bas (gratuit pour les particuliers).
+- **Liaison Merkle au texte complet** : chaque scellement calcule aussi la racine Merkle du texte complet et l'écrit dans la chaîne, permettant de divulguer sélectivement n'importe quel passage sans révéler l'ensemble.
 
 **Format du fichier de chaîne (`.rt`)** : un conteneur ZIP contenant `chain.json` (chaîne de signatures) et `meta.json` (version, temps, métadonnées du certificat). La chaîne n'enregistre que des « preuves du processus de création », jamais le contenu.
 
@@ -121,7 +122,8 @@ npx serve .
 # ouvrir http://localhost:3000/writer/
 ```
 
-- Le contenu est estampillé automatiquement pendant la frappe ; cliquez sur « Sceller & ancrer » pour télécharger le fichier de chaîne `.rt` + le fichier de contenu `.txt` ;
+- Choisissez « Écriture anonyme » ou « Importer .rt pour continuer » avant d'écrire ; le contenu est estampillé automatiquement pendant la frappe ;
+- Cliquez sur « Sceller & ancrer » pour confirmer : vous êtes redirigé vers la page de vérification hors ligne pour télécharger l'original `.txt` et le fichier de chaîne `.rt` (export 100 % local, aucun envoi) ;
 - Ouvrez `verify/index.html` et glissez-y le fichier `.rt` pour vérifier l'intégrité de la chaîne entièrement hors ligne.
 
 ### 2. Activer l'ancrage à la chaîne de genèse officielle (optionnel, gratuit pour les particuliers)
@@ -157,7 +159,7 @@ npm test
 
 | Chemin | Description |
 |:--|:--|
-| `core/` | Noyau front-end pur (IIFE navigateur, zéro dépendance de build) : estampillage `stamp.js`, cryptographie `rt-crypto.js`, vérification hors ligne `rt-verifier.js`, fichier de chaîne `rt-export.js` |
+| `core/` | Noyau front-end pur (IIFE navigateur, zéro dépendance de build) : estampillage `stamp.js`, cryptographie `rt-crypto.js`, vérification hors ligne `rt-verifier.js`, fichier de chaîne `rt-export.js`, divulgation Merkle `rt-merkle.js`, chronologie `rt-timeline.js`, téléchargement de fichiers `rt-downloader.js` |
 | `writer/` | Outil d'écriture (HTML mono-page) : estampillage automatique + téléchargement du scellé |
 | `verify/` | Page de vérification hors ligne : glissez un `.rt` pour vérifier |
 | `anchor/` | Client d'ancrage à la chaîne de genèse officielle (gratuit pour les particuliers) |
@@ -194,6 +196,7 @@ Ce dépôt est une **construction MVP minimale** : il implémente la boucle comp
 - **Interface en six langues** : page d'écriture / vérificateur / site en 简体中文 · English · 日本語 · 한국어 · Deutsch · Français ;
 - **Règles de nommage des ID de chaîne** : ID de chaîne de 23 caractères (`web-personal-…`) liant clé publique + racine — vérifiable, non réversible ;
 - **Choix du mode de création** : choisir « Écriture anonyme » ou « Importer .rt pour continuer » avant d'écrire ; la continuation prolonge automatiquement la chaîne d'origine.
+- **Chronologie modulaire** : la chronologie en histogramme redimensionnable est extraite dans le module partagé `core/rt-timeline.js`, rendant le rythme d'écriture visible d'un coup d'œil.
 
 > Journal des modifications complet : [CHANGELOG.md](CHANGELOG.md).
 
