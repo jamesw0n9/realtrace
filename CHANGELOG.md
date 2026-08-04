@@ -1,7 +1,5 @@
 # Changelog / 变更记录
 
-> English first, then Chinese — 英文在前，中文在后。
-
 ## [v0.2.0] - 2026-08-05
 
 ### Added
