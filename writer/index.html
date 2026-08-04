@@ -16,14 +16,14 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 .n{display:flex;align-items:center;gap:2px}
 .n a{padding:8px 14px;font-size:12px;font-weight:500;color:#64748B;letter-spacing:.04em;border-radius:6px;transition:all .25s;text-decoration:none}
 .n a:hover{color:#F1F5F9;background:#334155}
-.lang-wrap{position:relative;margin-left:10px}
-.lang-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#94A3B8;background:transparent;border:1px solid #334155;border-radius:999px;cursor:pointer;font-family:inherit;transition:all .25s;white-space:nowrap}
-.lang-btn:hover{color:#D4A017;border-color:#D4A017}
-.lang-caret{font-size:10px;opacity:.7}
-.lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:160px;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:300;flex-direction:column;gap:2px}
-.lang-menu.open{display:flex}
-.lang-menu button{display:block;width:100%;text-align:left;padding:8px 12px;font-size:13px;color:#CBD5E1;background:transparent;border:none;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .2s}
-.lang-menu button:hover{background:#334155;color:#D4A017}
+.lang-wrap{position:relative;margin-left:10px}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#94A3B8;background:transparent;border:1px solid #334155;border-radius:999px;cursor:pointer;font-family:inherit;transition:all .25s;white-space:nowrap}
+.lang-btn:hover{color:#D4A017;border-color:#D4A017}
+.lang-caret{font-size:10px;opacity:.7}
+.lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:160px;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:300;flex-direction:column;gap:2px}
+.lang-menu.open{display:flex}
+.lang-menu button{display:block;width:100%;text-align:left;padding:8px 12px;font-size:13px;color:#CBD5E1;background:transparent;border:none;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .2s}
+.lang-menu button:hover{background:#334155;color:#D4A017}
 .os-tag{font-size:12px;color:#64748B}
 .main-wrap{flex:1;display:flex;flex-direction:column;max-width:1400px;margin:0 auto;width:100%;padding:24px 40px;min-height:0}
 .mode-bar{display:flex;align-items:center;padding:0 0 10px;gap:8px;flex-shrink:0;min-height:36px}
@@ -99,140 +99,140 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <script src="../core/rt-lighthead.js?v=2"></script>
 
 <script>
-var I18N = {
-  zh: {
-    osTag:'Realtrace 开源版', modeAnon:'✏️ 匿名写作', modeRt:'📂 rt 续写', chainId:'链 ID', modeSelectTitle:'选择创作方式', modeAnonBtn:'✏️ 匿名写作', modeImportBtn:'📂 使用 .rt 续写',
+var I18N = {
+  zh: {
+    osTag:'Realtrace 开源版', modeAnon:'✏️ 匿名写作', modeRt:'📂 rt 续写', chainId:'链 ID', modeSelectTitle:'选择创作方式', modeAnonBtn:'✏️ 匿名写作', modeImportBtn:'📂 使用 .rt 续写',
     imported:'已导入 {n} 个印章', importFail:'导入失败',
     modeSelectDesc:'匿名写作：无需注册，即写即签，私钥不留存。<br>使用 .rt 续写：导入已有链文件，接续创作历史。',
-    importChainNote:'已导入链：{n} 个 stamp，续写将延续该链',
-    stampUnit:'章', duration:'创作时长', sec:'秒', min:'分', hour:'时',
-    modalTitle:'提示', modalDesc:'描述',
-    privacyTitle:'隐私与安全须知',
-    privacyDesc:'• 所有创作数据默认存储在本地<br>• 封章使用 Ed25519 加密签名，内容不上传服务器<br>• 可选择将链文件上传至服务器托管（需登录）<br>• 离线 .rt 文件请自行妥善保管<br><br>继续使用即代表您理解并接受上述条款。',
-    gotIt:'我知道了',
-    sealConfirmTitle:'确认封章上链',
-    sealConfirmDesc:'封章后将生成加密签名链，内容将被记录且无法修改。<br><br>⚠️ 请确认：<br>• 创作内容为本人原创<br>• 已检查无敏感信息<br>• 确认封章上链',
-    cancel:'取消', confirmSeal:'确认封章',
-    sealDoneDownload:'封章成功，已下载 .rt + .txt',
-    pageTitle:'真迹 · 创作封章认证', _langName:'中文'
-  },
-  en: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonymous writing', modeRt:'📂 .rt continuation', chainId:'Chain ID', modeSelectTitle:'Choose writing mode', modeAnonBtn:'✏️ Anonymous writing', modeImportBtn:'📂 Continue with .rt',
+    importChainNote:'已导入链：{n} 个 stamp，续写将延续该链',
+    stampUnit:'章', duration:'创作时长', sec:'秒', min:'分', hour:'时',
+    modalTitle:'提示', modalDesc:'描述',
+    privacyTitle:'隐私与安全须知',
+    privacyDesc:'• 所有创作数据默认存储在本地<br>• 封章使用 Ed25519 加密签名，内容不上传服务器<br>• 可选择将链文件上传至服务器托管（需登录）<br>• 离线 .rt 文件请自行妥善保管<br><br>继续使用即代表您理解并接受上述条款。',
+    gotIt:'我知道了',
+    sealConfirmTitle:'确认封章上链',
+    sealConfirmDesc:'封章后将生成加密签名链，内容将被记录且无法修改。<br><br>⚠️ 请确认：<br>• 创作内容为本人原创<br>• 已检查无敏感信息<br>• 确认封章上链',
+    cancel:'取消', confirmSeal:'确认封章',
+    sealDoneDownload:'封章成功，已前往离线认证页，可下载 .txt 原文与 .rt 链文件',
+    pageTitle:'真迹 · 创作封章认证', _langName:'中文'
+  },
+  en: {
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonymous writing', modeRt:'📂 .rt continuation', chainId:'Chain ID', modeSelectTitle:'Choose writing mode', modeAnonBtn:'✏️ Anonymous writing', modeImportBtn:'📂 Continue with .rt',
     imported:'Imported {n} stamps', importFail:'Import failed',
     modeSelectDesc:'Anonymous writing: no sign-up, write & sign on the fly, key is not kept.<br>Continue with .rt: import an existing chain file to extend your creation history.',
-    importChainNote:'Chain imported: {n} stamps. New stamps will extend this chain.',
-    stampUnit:'stamps', duration:'Writing time', sec:'s', min:'m', hour:'h',
-    modalTitle:'Notice', modalDesc:'Description',
-    privacyTitle:'Privacy & Security Notice',
-    privacyDesc:'• All creation data is stored locally by default<br>• Sealing uses Ed25519 signatures; content never leaves your device<br>• You may optionally upload the chain file for cloud hosting (login required)<br>• Keep offline .rt files safe yourself<br><br>By continuing, you understand and accept these terms.',
-    gotIt:'Got it',
-    sealConfirmTitle:'Confirm Sealing',
-    sealConfirmDesc:'Sealing generates an encrypted signature chain; the content is recorded and cannot be modified.<br><br>⚠️ Please confirm:<br>• The content is your original work<br>• No sensitive information is included<br>• You agree to seal and anchor',
-    cancel:'Cancel', confirmSeal:'Confirm',
-    sealDoneDownload:'Sealed — .rt + .txt downloaded',
-    pageTitle:'RealTrace · Creation Seal', _langName:'English'
-  },
-  ja: {
-    osTag:'Realtrace オープンソース版', modeAnon:'✏️ 匿名で執筆', modeRt:'📂 .rt で続きを書く', chainId:'チェーン ID', modeSelectTitle:'創作方法を選択', modeAnonBtn:'✏️ 匿名で執筆', modeImportBtn:'📂 .rt で続きを書く',
+    importChainNote:'Chain imported: {n} stamps. New stamps will extend this chain.',
+    stampUnit:'stamps', duration:'Writing time', sec:'s', min:'m', hour:'h',
+    modalTitle:'Notice', modalDesc:'Description',
+    privacyTitle:'Privacy & Security Notice',
+    privacyDesc:'• All creation data is stored locally by default<br>• Sealing uses Ed25519 signatures; content never leaves your device<br>• You may optionally upload the chain file for cloud hosting (login required)<br>• Keep offline .rt files safe yourself<br><br>By continuing, you understand and accept these terms.',
+    gotIt:'Got it',
+    sealConfirmTitle:'Confirm Sealing',
+    sealConfirmDesc:'Sealing generates an encrypted signature chain; the content is recorded and cannot be modified.<br><br>⚠️ Please confirm:<br>• The content is your original work<br>• No sensitive information is included<br>• You agree to seal and anchor',
+    cancel:'Cancel', confirmSeal:'Confirm',
+    sealDoneDownload:'Sealed — download .txt and .rt on the offline verify page',
+    pageTitle:'RealTrace · Creation Seal', _langName:'English'
+  },
+  ja: {
+    osTag:'Realtrace オープンソース版', modeAnon:'✏️ 匿名で執筆', modeRt:'📂 .rt で続きを書く', chainId:'チェーン ID', modeSelectTitle:'創作方法を選択', modeAnonBtn:'✏️ 匿名で執筆', modeImportBtn:'📂 .rt で続きを書く',
     imported:'{n} 個のスタンプを読み込みました', importFail:'読み込みに失敗しました',
     modeSelectDesc:'匿名で執筆：登録不要、書いて即署名、秘密鍵は保存されません。<br>.rt で続きを書く：既存のチェーンファイルを読み込み、創作履歴を引き継ぎます。',
-    importChainNote:'チェーンを読み込みました：{n} スタンプ。続きのスタンプはこのチェーンに連結されます。',
-    stampUnit:'スタンプ', duration:'執筆時間', sec:'秒', min:'分', hour:'時間',
-    modalTitle:'お知らせ', modalDesc:'説明',
-    privacyTitle:'プライバシーとセキュリティの注意事項',
-    privacyDesc:'• 創作データはデフォルトでローカルに保存されます<br>• 封章は Ed25519 署名を使用し、内容はサーバーに送信されません<br>• チェーンファイルをサーバーにアップロードして管理することも可能です（ログインが必要）<br>• オフラインの .rt ファイルはご自身で安全に保管してください<br><br>続行することで、上記の条項を理解し承諾したものとみなされます。',
-    gotIt:'了解しました',
-    sealConfirmTitle:'封章を確定',
-    sealConfirmDesc:'封章後は暗号署名チェーンが生成され、内容が記録され変更できなくなります。<br><br>⚠️ ご確認ください：<br>• 内容は本人のオリジナル作品です<br>• 機密情報が含まれていないことを確認しました<br>• 封章してチェーンに記録することに同意します',
-    cancel:'キャンセル', confirmSeal:'封章を確定',
-    sealDoneDownload:'封章完了、.rt + .txt をダウンロードしました',
-    pageTitle:'真迹 · 創作封章認証', _langName:'日本語'
-  },
-  ko: {
-    osTag:'Realtrace 오픈소스', modeAnon:'✏️ 익명 작성', modeRt:'📂 .rt 이어쓰기', chainId:'체인 ID', modeSelectTitle:'작성 방식 선택', modeAnonBtn:'✏️ 익명 작성', modeImportBtn:'📂 .rt 이어쓰기',
+    importChainNote:'チェーンを読み込みました：{n} スタンプ。続きのスタンプはこのチェーンに連結されます。',
+    stampUnit:'スタンプ', duration:'執筆時間', sec:'秒', min:'分', hour:'時間',
+    modalTitle:'お知らせ', modalDesc:'説明',
+    privacyTitle:'プライバシーとセキュリティの注意事項',
+    privacyDesc:'• 創作データはデフォルトでローカルに保存されます<br>• 封章は Ed25519 署名を使用し、内容はサーバーに送信されません<br>• チェーンファイルをサーバーにアップロードして管理することも可能です（ログインが必要）<br>• オフラインの .rt ファイルはご自身で安全に保管してください<br><br>続行することで、上記の条項を理解し承諾したものとみなされます。',
+    gotIt:'了解しました',
+    sealConfirmTitle:'封章を確定',
+    sealConfirmDesc:'封章後は暗号署名チェーンが生成され、内容が記録され変更できなくなります。<br><br>⚠️ ご確認ください：<br>• 内容は本人のオリジナル作品です<br>• 機密情報が含まれていないことを確認しました<br>• 封章してチェーンに記録することに同意します',
+    cancel:'キャンセル', confirmSeal:'封章を確定',
+    sealDoneDownload:'封章完了。オフライン検証ページで .txt と .rt をダウンロードできます',
+    pageTitle:'真迹 · 創作封章認証', _langName:'日本語'
+  },
+  ko: {
+    osTag:'Realtrace 오픈소스', modeAnon:'✏️ 익명 작성', modeRt:'📂 .rt 이어쓰기', chainId:'체인 ID', modeSelectTitle:'작성 방식 선택', modeAnonBtn:'✏️ 익명 작성', modeImportBtn:'📂 .rt 이어쓰기',
     imported:'스탬프 {n}개를 가져왔습니다', importFail:'가져오기 실패',
     modeSelectDesc:'익명 작성: 가입 없이 즉시 작성·서명, 개인 키가 저장되지 않습니다.<br>.rt 이어쓰기: 기존 체인 파일을 가져와 창작 기록을 이어갑니다.',
-    importChainNote:'체인 가져옴: {n}개 스탬프. 이후 스탬프는 이 체인에 연결됩니다.',
-    stampUnit:'스탬프', duration:'작성 시간', sec:'초', min:'분', hour:'시간',
-    modalTitle:'알림', modalDesc:'설명',
-    privacyTitle:'개인정보 및 보안 안내',
-    privacyDesc:'• 모든 창작 데이터는 기본적으로 로컬에 저장됩니다<br>• 봉인은 Ed25519 서명을 사용하며, 내용은 서버에 업로드되지 않습니다<br>• 체인 파일을 서버에 업로드하여 관리할 수 있습니다 (로그인 필요)<br>• 오프라인 .rt 파일은 직접 안전하게 보관하세요<br><br>계속 사용하면 위 약관을 이해하고 수락한 것으로 간주됩니다.',
-    gotIt:'확인했습니다',
-    sealConfirmTitle:'봉인 확정',
-    sealConfirmDesc:'봉인하면 암호화 서명 체인이 생성되며 내용이 기록되어 수정할 수 없습니다.<br><br>⚠️ 확인하세요:<br>• 창작 내용은 본인의 원작입니다<br>• 민감한 정보가 없음을 확인했습니다<br>• 봉인 및 체인 기록에 동의합니다',
-    cancel:'취소', confirmSeal:'확인',
-    sealDoneDownload:'봉인 완료 — .rt + .txt 다운로드됨',
-    pageTitle:'RealTrace · 창작 봉인', _langName:'한국어'
-  },
-  fr: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Écriture anonyme', modeRt:'📂 Continuer avec .rt', chainId:'ID de chaîne', modeSelectTitle:'Choisissez le mode de création', modeAnonBtn:'✏️ Écriture anonyme', modeImportBtn:'📂 Continuer avec .rt',
+    importChainNote:'체인 가져옴: {n}개 스탬프. 이후 스탬프는 이 체인에 연결됩니다.',
+    stampUnit:'스탬프', duration:'작성 시간', sec:'초', min:'분', hour:'시간',
+    modalTitle:'알림', modalDesc:'설명',
+    privacyTitle:'개인정보 및 보안 안내',
+    privacyDesc:'• 모든 창작 데이터는 기본적으로 로컬에 저장됩니다<br>• 봉인은 Ed25519 서명을 사용하며, 내용은 서버에 업로드되지 않습니다<br>• 체인 파일을 서버에 업로드하여 관리할 수 있습니다 (로그인 필요)<br>• 오프라인 .rt 파일은 직접 안전하게 보관하세요<br><br>계속 사용하면 위 약관을 이해하고 수락한 것으로 간주됩니다.',
+    gotIt:'확인했습니다',
+    sealConfirmTitle:'봉인 확정',
+    sealConfirmDesc:'봉인하면 암호화 서명 체인이 생성되며 내용이 기록되어 수정할 수 없습니다.<br><br>⚠️ 확인하세요:<br>• 창작 내용은 본인의 원작입니다<br>• 민감한 정보가 없음을 확인했습니다<br>• 봉인 및 체인 기록에 동의합니다',
+    cancel:'취소', confirmSeal:'확인',
+    sealDoneDownload:'봉인 완료 — 오프라인 검증 페이지에서 .txt 및 .rt를 다운로드하세요',
+    pageTitle:'RealTrace · 창작 봉인', _langName:'한국어'
+  },
+  fr: {
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Écriture anonyme', modeRt:'📂 Continuer avec .rt', chainId:'ID de chaîne', modeSelectTitle:'Choisissez le mode de création', modeAnonBtn:'✏️ Écriture anonyme', modeImportBtn:'📂 Continuer avec .rt',
     imported:'{n} tampons importés', importFail:'Échec de l\'import',
     modeSelectDesc:'Écriture anonyme : sans inscription, écrivez et signez immédiatement, la clé privée n\'est pas conservée.<br>Continuer avec .rt : importez un fichier de chaîne existant pour prolonger votre historique.',
-    importChainNote:'Chaîne importée : {n} tampons. Les nouveaux tampons prolongeront cette chaîne.',
-    stampUnit:'tampons', duration:'Durée d\'écriture', sec:'s', min:'m', hour:'h',
-    modalTitle:'Avis', modalDesc:'Description',
-    privacyTitle:'Avis de confidentialité et de sécurité',
-    privacyDesc:'• Toutes les données de création sont stockées localement par défaut<br>• Le scellement utilise des signatures Ed25519 ; le contenu n\'est jamais envoyé au serveur<br>• Vous pouvez éventuellement héberger le fichier de chaîne (connexion requise)<br>• Conservez vous-même vos fichiers .rt hors ligne en lieu sûr<br><br>En continuant, vous comprenez et acceptez ces conditions.',
-    gotIt:'Compris',
-    sealConfirmTitle:'Confirmer le scellement',
-    sealConfirmDesc:'Le scellement génère une chaîne de signatures chiffrées ; le contenu est enregistré et ne peut plus être modifié.<br><br>⚠️ Veuillez confirmer :<br>• Le contenu est votre création originale<br>• Aucune information sensible incluse<br>• Vous acceptez de sceller et d\'ancrer',
-    cancel:'Annuler', confirmSeal:'Confirmer',
-    sealDoneDownload:'Scellé — .rt + .txt téléchargés',
-    pageTitle:'RealTrace · Scellement de création', _langName:'Français'
-  },
-  de: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonym schreiben', modeRt:'📂 .rt fortsetzen', chainId:'Ketten-ID', modeSelectTitle:'Schreibmodus wählen', modeAnonBtn:'✏️ Anonym schreiben', modeImportBtn:'📂 Mit .rt fortsetzen',
+    importChainNote:'Chaîne importée : {n} tampons. Les nouveaux tampons prolongeront cette chaîne.',
+    stampUnit:'tampons', duration:'Durée d\'écriture', sec:'s', min:'m', hour:'h',
+    modalTitle:'Avis', modalDesc:'Description',
+    privacyTitle:'Avis de confidentialité et de sécurité',
+    privacyDesc:'• Toutes les données de création sont stockées localement par défaut<br>• Le scellement utilise des signatures Ed25519 ; le contenu n\'est jamais envoyé au serveur<br>• Vous pouvez éventuellement héberger le fichier de chaîne (connexion requise)<br>• Conservez vous-même vos fichiers .rt hors ligne en lieu sûr<br><br>En continuant, vous comprenez et acceptez ces conditions.',
+    gotIt:'Compris',
+    sealConfirmTitle:'Confirmer le scellement',
+    sealConfirmDesc:'Le scellement génère une chaîne de signatures chiffrées ; le contenu est enregistré et ne peut plus être modifié.<br><br>⚠️ Veuillez confirmer :<br>• Le contenu est votre création originale<br>• Aucune information sensible incluse<br>• Vous acceptez de sceller et d\'ancrer',
+    cancel:'Annuler', confirmSeal:'Confirmer',
+    sealDoneDownload:'Scellé — téléchargez .txt et .rt sur la page de vérification hors ligne',
+    pageTitle:'RealTrace · Scellement de création', _langName:'Français'
+  },
+  de: {
+    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonym schreiben', modeRt:'📂 .rt fortsetzen', chainId:'Ketten-ID', modeSelectTitle:'Schreibmodus wählen', modeAnonBtn:'✏️ Anonym schreiben', modeImportBtn:'📂 Mit .rt fortsetzen',
     imported:'{n} Stempel importiert', importFail:'Import fehlgeschlagen',
     modeSelectDesc:'Anonym schreiben: keine Anmeldung, sofort schreiben & signieren, privater Schlüssel wird nicht gespeichert.<br>Mit .rt fortsetzen: vorhandene Kettendatei importieren und Schreibverlauf erweitern.',
-    importChainNote:'Kette importiert: {n} Stempel. Neue Stempel verlängern diese Kette.',
-    stampUnit:'Stempel', duration:'Schreibzeit', sec:'s', min:'min', hour:'h',
-    modalTitle:'Hinweis', modalDesc:'Beschreibung',
-    privacyTitle:'Datenschutz- und Sicherheitshinweis',
-    privacyDesc:'• Alle Schreibdaten werden standardmäßig lokal gespeichert<br>• Versiegelung nutzt Ed25519-Signaturen; Inhalte verlassen nie Ihr Gerät<br>• Sie können die Chain-Datei optional hochladen (Anmeldung erforderlich)<br>• Bewahren Sie Offline-.rt-Dateien selbst sicher auf<br><br>Durch die Fortsetzung akzeptieren Sie diese Bedingungen.',
-    gotIt:'Verstanden',
-    sealConfirmTitle:'Versiegelung bestätigen',
-    sealConfirmDesc:'Durch die Versiegelung wird eine verschlüsselte Signaturkette erzeugt; der Inhalt wird aufgezeichnet und kann nicht mehr geändert werden.<br><br>⚠️ Bitte bestätigen Sie:<br>• Der Inhalt ist Ihr eigenes Originalwerk<br>• Keine sensiblen Informationen enthalten<br>• Sie stimmen der Versiegelung und Verankerung zu',
-    cancel:'Abbrechen', confirmSeal:'Bestätigen',
-    sealDoneDownload:'Versiegelt — .rt + .txt heruntergeladen',
-    pageTitle:'RealTrace · Schöpfungssiegel', _langName:'Deutsch'
-  }
-};
-
-var curLang = 'zh';
-function t(key, params) {
-  var s = (I18N[curLang] && I18N[curLang][key] !== undefined) ? I18N[curLang][key] : (I18N.zh[key] !== undefined ? I18N.zh[key] : key);
-  if (params) { for (var k in params) { s = s.split('{'+k+'}').join(String(params[k])); } }
-  return s;
-}
-function applyLang(lang) {
-  if (!I18N[lang]) lang = 'zh';
-  curLang = lang;
-  var dict = I18N[lang];
-  document.querySelectorAll('[data-i18n]').forEach(function(el){
-    var key = el.getAttribute('data-i18n');
-    if (dict[key] !== undefined) el.textContent = dict[key];
-  });
-  document.title = dict.pageTitle || document.title;
-  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
-  var lbl = document.getElementById('langBtnText');
-  if (lbl) lbl.textContent = dict._langName || lang.toUpperCase();
-  try { localStorage.setItem('rt_writer_lang', lang); } catch(e) {}
+    importChainNote:'Kette importiert: {n} Stempel. Neue Stempel verlängern diese Kette.',
+    stampUnit:'Stempel', duration:'Schreibzeit', sec:'s', min:'min', hour:'h',
+    modalTitle:'Hinweis', modalDesc:'Beschreibung',
+    privacyTitle:'Datenschutz- und Sicherheitshinweis',
+    privacyDesc:'• Alle Schreibdaten werden standardmäßig lokal gespeichert<br>• Versiegelung nutzt Ed25519-Signaturen; Inhalte verlassen nie Ihr Gerät<br>• Sie können die Chain-Datei optional hochladen (Anmeldung erforderlich)<br>• Bewahren Sie Offline-.rt-Dateien selbst sicher auf<br><br>Durch die Fortsetzung akzeptieren Sie diese Bedingungen.',
+    gotIt:'Verstanden',
+    sealConfirmTitle:'Versiegelung bestätigen',
+    sealConfirmDesc:'Durch die Versiegelung wird eine verschlüsselte Signaturkette erzeugt; der Inhalt wird aufgezeichnet und kann nicht mehr geändert werden.<br><br>⚠️ Bitte bestätigen Sie:<br>• Der Inhalt ist Ihr eigenes Originalwerk<br>• Keine sensiblen Informationen enthalten<br>• Sie stimmen der Versiegelung und Verankerung zu',
+    cancel:'Abbrechen', confirmSeal:'Bestätigen',
+    sealDoneDownload:'Versiegelt — .txt und .rt auf der Offline-Verifizierungsseite herunterladen',
+    pageTitle:'RealTrace · Schöpfungssiegel', _langName:'Deutsch'
+  }
+};
+
+var curLang = 'zh';
+function t(key, params) {
+  var s = (I18N[curLang] && I18N[curLang][key] !== undefined) ? I18N[curLang][key] : (I18N.zh[key] !== undefined ? I18N.zh[key] : key);
+  if (params) { for (var k in params) { s = s.split('{'+k+'}').join(String(params[k])); } }
+  return s;
+}
+function applyLang(lang) {
+  if (!I18N[lang]) lang = 'zh';
+  curLang = lang;
+  var dict = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.title = dict.pageTitle || document.title;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+  var lbl = document.getElementById('langBtnText');
+  if (lbl) lbl.textContent = dict._langName || lang.toUpperCase();
+  try { localStorage.setItem('rt_writer_lang', lang); } catch(e) {}
   if (_rtWriterBox && typeof _rtWriterBox.setLang === 'function') _rtWriterBox.setLang(lang);
   setModeDisplay(_currentMode, _currentChainId);
-
-}
-
-(function(){
-  var btn = document.getElementById('langBtn');
-  var menu = document.getElementById('langMenu');
-  if (!btn || !menu) return;
-  btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
-  document.addEventListener('click', function(){ menu.classList.remove('open'); });
-  menu.addEventListener('click', function(e){ e.stopPropagation(); });
-  menu.querySelectorAll('[data-lang]').forEach(function(b){
-    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); menu.classList.remove('open'); });
-  });
-})();
+
+}
+
+(function(){
+  var btn = document.getElementById('langBtn');
+  var menu = document.getElementById('langMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
+  document.addEventListener('click', function(){ menu.classList.remove('open'); });
+  menu.addEventListener('click', function(e){ e.stopPropagation(); });
+  menu.querySelectorAll('[data-lang]').forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); menu.classList.remove('open'); });
+  });
+})();
 var _rtIdentity = { mode:'anonymous', kp:null, publicKeyHex:'', sessionId:'', chainId:'' };
 var _currentMode = 'anon';
 var _currentChainId = '';
@@ -395,14 +395,6 @@ async function doFinalSeal(result) {
     var lastSt = stamps.length > 0 ? stamps[stamps.length - 1] : null;
     var rootH = (lastSt && (lastSt.hash || lastSt.chainHash)) || result.rootHash || '';
     var chainId = await RtExport.deriveChainId(pubKey, rootH, 'web', 'personal');
-    var cidFull = chainId.split('-').pop();
-    var rtFileName = 'rt-' + cidFull + '.rt';
-    await RtExport.downloadRtFile(sealData, rtFileName);
-
-    if (content && content.trim()) {
-      var txtFileName = 'content-' + cidFull + '.txt';
-      RtExport.downloadTxtFile(content, txtFileName);
-    }
 
     try {
       var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH };
