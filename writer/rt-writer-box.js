@@ -119,13 +119,29 @@ window.RtWriterBox = (function() {
         if (state.stamps.length < 1) await doStamp_impl();
         if (state.stamps.length < 1) { showToast(_t('stampFail'), 'error'); return; }
         clearInterval(state.timerInterval); btn.disabled = true; btn.textContent = _t('sealing');
-        var contentHash = await StampChain.computeContentHash(area.value);
+        // 内容绑定根：优先 Merkle（支持选择性披露），无 RtMerkle 时退回全文哈希
+        var merkle = null;
+        var contentHash = '';
+        if (window.RtMerkle) {
+          merkle = await window.RtMerkle.buildMerkle(area.value);
+          contentHash = merkle.root;
+        } else {
+          contentHash = await StampChain.computeContentHash(area.value);
+        }
+        // 追加 binding stamp：contentHash = 内容绑定根，用户私钥签名并纳入链
+        var bindResult = await window.StampChain.append(state._chain || null, { contentLen: area.value.length, contentHash: contentHash, keyPair: state.kp, sessionId: state.sessionId, binding: true });
+        var bindingStamp = bindResult.stamp;
+        state._chain = bindResult.chain; state.sessionId = bindingStamp.sessionId;
+        state.prevChainHash = bindingStamp.hash || bindingStamp.chainHash || '';
+        state.stamps.push(bindingStamp); updateStats();
         var pubKey = (state.stamps.length > 0 ? state.stamps[state.stamps.length-1].publicKey : '') || (state.kp ? await StampChain.exportPubHex(state.kp.publicKey) : '');
         // 封章在本地完成（不占服务器资源）；是否上链由页面层根据网络情况决定
         var lastSt = state.stamps[state.stamps.length - 1];
         var rootHash = (lastSt && (lastSt.hash || lastSt.chainHash)) || '';
+        var merkleMeta = merkle ? { algo: 'sha256-merkle-v1', blockSize: merkle.blockSize, blockCount: merkle.blockCount, levels: merkle.levels } : null;
+        var bindMode = merkle ? 'merkle-v1' : 'full';
         showToast(_t('sealSuccessOffline'), 'success');
-        if (state.onSeal) state.onSeal({ success: true, certificateId: 'offline-' + state.sessionId.substring(0, 8), sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps, rootHash: rootHash });
+        if (state.onSeal) state.onSeal({ success: true, certificateId: 'offline-' + state.sessionId.substring(0, 8), sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps, rootHash: rootHash, merkleRoot: contentHash, merkleMeta: merkleMeta, bindMode: bindMode });
       } catch(e) { showToast(_t('sealFailed') + ': ' + e.message, 'error'); }
       btn.textContent = '\u5c01\u7ae0\u4e0a\u94fe'; btn.disabled = false;
     }

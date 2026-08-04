@@ -56,9 +56,19 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
   </div>
   <div id="result"></div>
   <div id="downloadBox" style="display:none"></div>
+  <div class="card" style="margin-top:20px">
+    <div style="font-size:13px;font-weight:700;color:#D4A017;margin-bottom:4px" data-i18n="discTitle">选择性披露验证</div>
+    <div style="font-size:12px;color:#94A3B8;margin-bottom:10px" data-i18n="discHint">无需交出全文，出示一小段即可证明属于该链封章内容。先在上方验证 .rt 文件，再粘贴披露证明。</div>
+    <textarea id="discInput" style="width:100%;min-height:80px;background:rgba(15,23,42,.6);color:#E2E8F0;border:1px solid #334155;border-radius:8px;padding:10px;font-family:Consolas,monospace;font-size:11px;box-sizing:border-box;resize:vertical" data-i18n-ph="discPlaceholder"></textarea>
+    <button onclick="handleDisclosure()" style="margin-top:10px;padding:8px 18px;border:none;border-radius:6px;background:#D4A017;color:#0F172A;font-size:12px;font-weight:600;cursor:pointer" data-i18n="discBtn">验证披露</button>
+    <div id="discResult" style="margin-top:10px"></div>
+  </div>
   <div class="ft" data-i18n-html="footerHtml">官方创世链锚定：个人创作上链免费。封章后子链根哈希记入官方创世链，可在官方站点公开审计。开源版默认完全离线，如需上链请配置 <code>config.js</code> 的 <code>anchor</code> 项。</div>
 </div>
 <script src="../core/lib/jszip.min.js?v=2"></script>
+<script src="../core/lib/tweetnacl.min.js?v=2"></script>
+<script src="../core/rt-crypto.js?v=2"></script>
+<script src="../core/rt-merkle.js?v=2"></script>
 <script src="../core/rt-export.js?v=2"></script>
 <script src="../core/rt-verifier.js?v=2"></script>
 <script src="../core/rt-timeline.js?v=2"></script>
@@ -79,7 +89,8 @@ var I18N = {
     legacyId:'旧格式 ID（仅作标识）', idOk:'✓ 与链内容一致', idFail:'✗ 与链内容不符',
     metaCid:'链 ID', metaPk:'公钥', metaStamps:'stamp 数', metaRtVer:'rt 版本', metaSealed:'封章时间', metaIdCheck:'ID 校验',
     stampUnit:'个', sep:'：',
-    verifyOk:'✅ 验证通过', verifyFail:'❌ 验证失败', _langName:'中文'
+    verifyOk:'✅ 验证通过', verifyFail:'❌ 验证失败', _langName:'中文',
+    discTitle:'选择性披露验证', discHint:'无需交出全文，出示一小段即可证明属于该链封章内容。先在上方验证 .rt 文件，再粘贴披露证明。', discPlaceholder:'粘贴披露证明（JSON），例如 {"blockText":"...","proofPath":[...],"root":"..."}', discBtn:'验证披露', discEmpty:'请输入披露证明内容', discParse:'JSON 解析失败：', discNoMerkle:'缺少 RtMerkle 模块，请刷新页面', discNoRoot:'未找到内容绑定根（该 .rt 文件无 merkleRoot）', discRootMismatch:'证明中的根与文件内容绑定根不匹配', discPass:'披露验证通过', discFail:'披露验证失败'
   },
   en: {
     brand:'RealTrace', osTag:'Offline chain verification · No network required', pageTitle:'RealTrace · Offline Chain Verification',
@@ -91,7 +102,8 @@ var I18N = {
     legacyId:'Legacy ID (identifier only)', idOk:'✓ Matches chain content', idFail:'✗ Does not match chain content',
     metaCid:'Chain ID', metaPk:'Public Key', metaStamps:'Stamps', metaRtVer:'rt Version', metaSealed:'Sealed At', metaIdCheck:'ID Check',
     stampUnit:'', sep:': ',
-    verifyOk:'✅ Verification passed', verifyFail:'❌ Verification failed', _langName:'English'
+    verifyOk:'✅ Verification passed', verifyFail:'❌ Verification failed', _langName:'English',
+    discTitle:'Selective Disclosure Verify', discHint:'Prove a fragment belongs to this sealed chain without revealing the full text. Verify a .rt file above first, then paste the disclosure proof.', discPlaceholder:'Paste disclosure proof (JSON), e.g. {"blockText":"...","proofPath":[...],"root":"..."}', discBtn:'Verify', discEmpty:'Please paste a disclosure proof', discParse:'JSON parse failed: ', discNoMerkle:'RtMerkle module missing, please refresh', discNoRoot:'No content binding root found (this .rt file has no merkleRoot)', discRootMismatch:'Proof root does not match the file content binding root', discPass:'Disclosure verified', discFail:'Disclosure verification failed'
   },
   ja: {
     brand:'真迹·RealTrace', osTag:'オフラインチェーン検証 · ネットワーク不要', pageTitle:'RealTrace · オフライン検証',
@@ -103,7 +115,8 @@ var I18N = {
     legacyId:'旧形式 ID（識別のみ）', idOk:'✓ チェーン内容と一致', idFail:'✗ チェーン内容と不一致',
     metaCid:'チェーン ID', metaPk:'公開鍵', metaStamps:'スタンプ数', metaRtVer:'rt バージョン', metaSealed:'封章日時', metaIdCheck:'ID 検証',
     stampUnit:'個', sep:'：',
-    verifyOk:'✅ 検証に合格', verifyFail:'❌ 検証に失敗', _langName:'日本語'
+    verifyOk:'✅ 検証に合格', verifyFail:'❌ 検証に失敗', _langName:'日本語',
+    discTitle:'選択的開示の検証', discHint:'全文を提示せずに、このチェーンに属することを証明できます。先に上で .rt ファイルを検証し、開示証明を貼り付けてください。', discPlaceholder:'開示証明（JSON）を貼り付け：{"blockText":"...","proofPath":[...],"root":"..."}', discBtn:'検証', discEmpty:'開示証明を入力してください', discParse:'JSON 解析に失敗：', discNoMerkle:'RtMerkle モジュールがありません。ページを更新してください', discNoRoot:'コンテンツバインドルートが見つかりません（この .rt ファイルに merkleRoot がありません）', discRootMismatch:'証明のルートがファイルのコンテンツバインドルートと一致しません', discPass:'開示検証に合格', discFail:'開示検証に失敗'
   },
   ko: {
     brand:'RealTrace', osTag:'오프라인 체인 검증 · 네트워크 불필요', pageTitle:'RealTrace · 오프라인 검증',
@@ -115,7 +128,8 @@ var I18N = {
     legacyId:'이전 형식 ID（식별 전용）', idOk:'✓ 체인 내용과 일치', idFail:'✗ 체인 내용과 불일치',
     metaCid:'체인 ID', metaPk:'공개 키', metaStamps:'스탬프 수', metaRtVer:'rt 버전', metaSealed:'봉인 시각', metaIdCheck:'ID 검증',
     stampUnit:'개', sep:': ',
-    verifyOk:'✅ 검증 통과', verifyFail:'❌ 검증 실패', _langName:'한국어'
+    verifyOk:'✅ 검증 통과', verifyFail:'❌ 검증 실패', _langName:'한국어',
+    discTitle:'선택적 공개 검증', discHint:'전체 텍스트를 공개하지 않고 이 체인에 속함을 증명할 수 있습니다. 먼저 위에서 .rt 파일을 검증한 뒤 공개 증명을 붙여넣으세요.', discPlaceholder:'공개 증명(JSON) 붙여넣기: {"blockText":"...","proofPath":[...],"root":"..."}', discBtn:'검증', discEmpty:'공개 증명을 입력하세요', discParse:'JSON 파싱 실패: ', discNoMerkle:'RtMerkle 모듈이 없습니다. 새로고침하세요', discNoRoot:'콘텐츠 바인딩 루트를 찾을 수 없습니다(이 .rt 파일에 merkleRoot 없음)', discRootMismatch:'증명의 루트가 파일 콘텐츠 바인딩 루트와 일치하지 않습니다', discPass:'공개 검증 통과', discFail:'공개 검증 실패'
   },
   fr: {
     brand:'RealTrace', osTag:'Vérification hors ligne · Aucun réseau requis', pageTitle:'RealTrace · Vérification hors ligne',
@@ -127,7 +141,8 @@ var I18N = {
     legacyId:'ID hérité (identification uniquement)', idOk:'✓ Correspond au contenu de la chaîne', idFail:'✗ Ne correspond pas au contenu de la chaîne',
     metaCid:'ID de chaîne', metaPk:'Clé publique', metaStamps:'Tampons', metaRtVer:'Version rt', metaSealed:'Scellé le', metaIdCheck:'Vérif. ID',
     stampUnit:'', sep:' : ',
-    verifyOk:'✅ Vérification réussie', verifyFail:'❌ Échec de la vérification', _langName:'Français'
+    verifyOk:'✅ Vérification réussie', verifyFail:'❌ Échec de la vérification', _langName:'Français',
+    discTitle:'Vérification de divulgation sélective', discHint:'Prouvez qu\'un fragment appartient à cette chaîne scellée sans révéler le texte complet. Vérifiez d\'abord un fichier .rt ci-dessus, puis collez la preuve de divulgation.', discPlaceholder:'Collez la preuve (JSON), ex. {"blockText":"...","proofPath":[...],"root":"..."}', discBtn:'Vérifier', discEmpty:'Veuillez coller une preuve de divulgation', discParse:'Échec de l\'analyse JSON : ', discNoMerkle:'Module RtMerkle manquant, veuillez actualiser', discNoRoot:'Aucune racine de liaison de contenu trouvée (ce fichier .rt n\'a pas de merkleRoot)', discRootMismatch:'La racine de la preuve ne correspond pas à la racine de liaison du fichier', discPass:'Divulgation vérifiée', discFail:'Échec de la vérification de divulgation'
   },
   de: {
     brand:'RealTrace', osTag:'Offline-Kettenprüfung · Kein Netzwerk nötig', pageTitle:'RealTrace · Offline-Verifizierung',
@@ -139,7 +154,8 @@ var I18N = {
     legacyId:'Altformat-ID (nur zur Identifikation)', idOk:'✓ Entspricht dem Ketteninhalt', idFail:'✗ Entspricht nicht dem Ketteninhalt',
     metaCid:'Ketten-ID', metaPk:'Öffentlicher Schlüssel', metaStamps:'Stempel', metaRtVer:'rt-Version', metaSealed:'Versiegelt am', metaIdCheck:'ID-Prüfung',
     stampUnit:'', sep:': ',
-    verifyOk:'✅ Verifizierung erfolgreich', verifyFail:'❌ Verifizierung fehlgeschlagen', _langName:'Deutsch'
+    verifyOk:'✅ Verifizierung erfolgreich', verifyFail:'❌ Verifizierung fehlgeschlagen', _langName:'Deutsch',
+    discTitle:'Selektive Offenlegung prüfen', discHint:'Beweisen Sie, dass ein Fragment zu dieser versiegelten Kette gehört, ohne den vollständigen Text zu offenbaren. Verifizieren Sie zuerst oben eine .rt-Datei, dann fügen Sie den Offenlegungsbeweis ein.', discPlaceholder:'Offenlegungsbeweis (JSON) einfügen, z. B. {"blockText":"...","proofPath":[...],"root":"..."}', discBtn:'Prüfen', discEmpty:'Bitte fügen Sie einen Offenlegungsbeweis ein', discParse:'JSON-Analyse fehlgeschlagen: ', discNoMerkle:'RtMerkle-Modul fehlt, bitte aktualisieren', discNoRoot:'Keine Inhaltsbindungs-Wurzel gefunden (diese .rt-Datei hat kein merkleRoot)', discRootMismatch:'Beweiswurzel stimmt nicht mit der Inhaltsbindungs-Wurzel der Datei überein', discPass:'Offenlegung verifiziert', discFail:'Offenlegungsprüfung fehlgeschlagen'
   }
 };
 function t(key, params) {
@@ -229,6 +245,7 @@ function mountTimeline(pkg) {
   var drop = document.getElementById('drop');
   var fileInput = document.getElementById('fileInput');
 
+
   drop.addEventListener('click', function() { fileInput.click(); });
   drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('over'); });
   drop.addEventListener('dragleave', function() { drop.classList.remove('over'); });
@@ -252,6 +269,13 @@ function mountTimeline(pkg) {
     var stamps = (pkg && pkg.stamps) || [];
     var res = await RtVerifier.verifyChain(stamps);
     _dlContent = '';
+    // 提取内容绑定根：pkg.merkleRoot 或最后 binding stamp 的 contentHash
+    lastMerkleRoot = pkg.merkleRoot || '';
+    if (!lastMerkleRoot && stamps.length) {
+      for (var mi = stamps.length - 1; mi >= 0; mi--) {
+        if (stamps[mi].binding) { lastMerkleRoot = stamps[mi].contentHash || ''; break; }
+      }
+    }
     renderResult(pkg, res, await checkChainId(pkg));
   }
 
@@ -276,14 +300,49 @@ function mountTimeline(pkg) {
       if (certStore && certStore.stamps && certStore.stamps.length > 0) {
         var res = await RtVerifier.verifyChain(certStore.stamps);
         _dlContent = certStore.content || '';
-        renderResult({ chainId: certStore.chainId || '', sessionId: certStore.sessionId, publicKey: certStore.publicKey, stamps: certStore.stamps, rtVersion: certStore.rtVersion || '2.0', sealedAt: certStore.sealedAt || '' }, res, await checkChainId({ chainId: certStore.chainId || '', pk: certStore.publicKey || '', stamps: certStore.stamps || [] }));
+        lastMerkleRoot = certStore.merkleRoot || '';
+        if (!lastMerkleRoot && certStore.stamps && certStore.stamps.length) {
+          for (var csi = certStore.stamps.length - 1; csi >= 0; csi--) {
+            if (certStore.stamps[csi].binding) { lastMerkleRoot = certStore.stamps[csi].contentHash || ''; break; }
+          }
+        }
+        renderResult({ chainId: certStore.chainId || '', sessionId: certStore.sessionId, publicKey: certStore.publicKey, stamps: certStore.stamps, rtVersion: certStore.rtVersion || '2.0', sealedAt: certStore.sealedAt || '', merkleRoot: certStore.merkleRoot || '', bindMode: certStore.bindMode || '' }, res, await checkChainId({ chainId: certStore.chainId || '', pk: certStore.publicKey || '', stamps: certStore.stamps || [] }));
         sessionStorage.removeItem('rt_cert_data');
       }
     }
   } catch (e) { /* 忽略会话数据异常 */ }
 
   applyLang((function(){ try { return localStorage.getItem('rt_verify_lang') || 'zh'; } catch(e){ return 'zh'; } })());
+
 })();
+
+// ─── 选择性披露验证（全局：供按钮 onclick 调用） ───
+var lastMerkleRoot = '';
+function showDisc(type, msg) {
+  var el = document.getElementById('discResult');
+  if (!el) return;
+  el.innerHTML = '<div class="badge ' + (type === 'pass' ? 'ok' : 'fail') + '">' + (type === 'pass' ? t('discPass') : t('discFail')) + '</div><div style="font-size:12px;color:#94A3B8;line-height:1.7">' + msg + '</div>';
+}
+function handleDisclosure() {
+  var input = document.getElementById('discInput');
+  var raw = (input && input.value || '').trim();
+  if (!raw) { showDisc('fail', t('discEmpty')); return; }
+  var proof;
+  try { proof = JSON.parse(raw); } catch(e) { showDisc('fail', t('discParse') + escapeHtml(e.message)); return; }
+  if (typeof RtMerkle === 'undefined') { showDisc('fail', t('discNoMerkle')); return; }
+  var targetRoot = lastMerkleRoot;
+  if (!targetRoot) { showDisc('fail', t('discNoRoot')); return; }
+  if (proof.root && proof.root !== targetRoot) { showDisc('fail', t('discRootMismatch')); return; }
+  proof.root = proof.root || targetRoot;
+  RtMerkle.verifyProof(proof).then(function(res) {
+    if (res.valid) {
+      var preview = (proof.blockText || '').length > 60 ? proof.blockText.substring(0, 60) + '...' : proof.blockText;
+      showDisc('pass', '#' + (proof.blockIndex !== undefined ? proof.blockIndex : 0) + ' / ' + (proof.blockCount || '?') + ' · &ldquo;' + escapeHtml(preview) + '&rdquo;');
+    } else {
+      showDisc('fail', escapeHtml(res.error || 'root mismatch'));
+    }
+  }).catch(function(e) { showDisc('fail', escapeHtml(e.message)); });
+}
 </script>
 </body>
 </html>

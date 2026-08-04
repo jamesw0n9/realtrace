@@ -137,6 +137,7 @@ window.StampChain = (() => {
     if (typeof crypto !== 'undefined' && crypto.getRandomValues) crypto.getRandomValues(saltArr);
     var salt = b2h(saltArr);
     var contentHash = (params && params.contentHash) || '';
+    var isBinding = !!(params && params.binding);
     var prevChainHash = chain.prevChainHash || '';
     var index = chain.stamps.length;
 
@@ -172,6 +173,7 @@ window.StampChain = (() => {
       prevChainHash: prevChainHash,
       signature: signature,
       publicKey: pubHex,
+      binding: isBinding,
       seq: seq,
       ts: now,
       duration: duration,

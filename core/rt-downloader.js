@@ -124,6 +124,8 @@ window.RtDownloader = (() => {
       chainId: data.chainId,
       publicKey: data.publicKey || data.pk || '',
       sealedAt: data.sealedAt || '',
+      merkleRoot: data.merkleRoot || '',
+      bindMode: data.bindMode || '',
       status: 'locked',
       lockedAt: data.lockedAt || (data.sealedAt ? new Date(data.sealedAt).getTime() : Date.now()),
       createdAt: data.sealedAt || data.ts || null

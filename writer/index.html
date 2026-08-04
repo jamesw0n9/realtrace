@@ -89,6 +89,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 </div>
 <script src="../core/lib/tweetnacl.min.js?v=2"></script>
 <script src="../core/rt-crypto.js?v=2"></script>
+<script src="../core/rt-merkle.js?v=2"></script>
 <script src="../core/key-vault.js?v=2"></script>
 <script src="../core/stamp.js?v=2"></script>
 <script src="../core/rt-lambda.js?v=2"></script>
@@ -424,7 +425,7 @@ async function doFinalSeal(result) {
     anchorToGenesis(chainId, rootH, pubKey, sessionId, stamps.length);
 
     try {
-      var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH };
+      var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH, merkleRoot: result.merkleRoot || '', merkleMeta: result.merkleMeta || null, bindMode: result.bindMode || '' };
       sessionStorage.setItem('rt_cert_data', JSON.stringify(certStore));
       sessionStorage.setItem('rt_cert_id', result.certificateId || '');
     } catch(e) {}

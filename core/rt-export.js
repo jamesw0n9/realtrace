@@ -63,7 +63,7 @@ window.RtExport = (() => {
         hash: s.hash || s.chainHash || '',
         sig: s.sig || s.signature || ''
       };
-      ['sessionId', 'salt', 'nonce', 'timestamp', 'contentHash', 'prevChainHash', 'publicKey', 'signature', 'chainHash', 'behaviorHash', 'chainAnchor'].forEach(function(k) {
+      ['sessionId', 'salt', 'nonce', 'timestamp', 'contentHash', 'prevChainHash', 'publicKey', 'signature', 'chainHash', 'behaviorHash', 'chainAnchor', 'binding'].forEach(function(k) {
         if (s[k] !== undefined) o[k] = s[k];
       });
       return o;
@@ -91,6 +91,8 @@ window.RtExport = (() => {
         algorithm: 'Ed25519',
         count: v2Stamps.length
       },
+      merkleRoot: chainData.merkleRoot || '',
+      bindMode: chainData.bindMode || '',
       stamps: v2Stamps,
       ts: chainData.createdAt || (firstStamp ? firstStamp.ts : Date.now()),
       lockedAt: chainData.lockedAt || (chainData.status === 'locked' ? Date.now() : null)
@@ -135,6 +137,8 @@ window.RtExport = (() => {
       sessionId: sealResult.sessionId,
       chainId: chainId,
       publicKey: pubKeyHex,
+      merkleRoot: sealResult.merkleRoot || '',
+      bindMode: sealResult.bindMode || '',
       encryptedPrivateKey: encryptedKey || sealResult.encryptedPrivateKey || null,
       createdAt: sealResult.createdAt || sealResult.sealedAt || null,
       status: sealResult.status || 'locked',
