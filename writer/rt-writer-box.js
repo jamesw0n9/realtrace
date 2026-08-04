@@ -1,5 +1,5 @@
 // ========================================
-// Realtrace · 写作框（Writer Box）
+// RealTrace · 写作框（Writer Box）
 // 依赖: ../core/stamp.js (StampChain) · ../core/rt-crypto.js · ../core/key-vault.js
 // 职责: 写作输入区 + 自动打章 + 封章导出（纯前端，零网络依赖）
 // ========================================
@@ -121,16 +121,11 @@ window.RtWriterBox = (function() {
         clearInterval(state.timerInterval); btn.disabled = true; btn.textContent = _t('sealing');
         var contentHash = await StampChain.computeContentHash(area.value);
         var pubKey = (state.stamps.length > 0 ? state.stamps[state.stamps.length-1].publicKey : '') || (state.kp ? await StampChain.exportPubHex(state.kp.publicKey) : '');
-        if (state.apiBase) {
-          var resp = await fetch(state.apiBase + '/seal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contentHash, sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps }) });
-          var data = await resp.json();
-          if (data.success && data.certificateId) { showToast(_t('sealSuccess') + ': ' + data.certificateId, 'success'); if (state.onSeal) state.onSeal(data); }
-          else { showToast(_t('sealFailed') + ': ' + (data.error || _t('unknownError')), 'error'); }
-        } else {
-          // 离线模式：无 apiBase 时纯本地封章，不请求服务器，直接走本地导出 + 跳转离线认证
-          showToast(_t('sealSuccessOffline'), 'success');
-          if (state.onSeal) state.onSeal({ success: true, certificateId: 'offline-' + state.sessionId.substring(0, 8), sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps });
-        }
+        // 封章在本地完成（不占服务器资源）；是否上链由页面层根据网络情况决定
+        var lastSt = state.stamps[state.stamps.length - 1];
+        var rootHash = (lastSt && (lastSt.hash || lastSt.chainHash)) || '';
+        showToast(_t('sealSuccessOffline'), 'success');
+        if (state.onSeal) state.onSeal({ success: true, certificateId: 'offline-' + state.sessionId.substring(0, 8), sessionId: state.sessionId, publicKey: pubKey, stamps: state.stamps, rootHash: rootHash });
       } catch(e) { showToast(_t('sealFailed') + ': ' + e.message, 'error'); }
       btn.textContent = '\u5c01\u7ae0\u4e0a\u94fe'; btn.disabled = false;
     }

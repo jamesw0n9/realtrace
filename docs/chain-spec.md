@@ -1,4 +1,4 @@
-# Realtrace · 链规格（Chain Spec）
+# RealTrace · 链规格（Chain Spec）
 
 > 版本：V2.0.0（F2 标准化）
 > 本文描述 stamp 链的密码学构造，前端、离线验证器、服务端三者行为必须一致。

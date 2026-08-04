@@ -1,4 +1,4 @@
-# Realtrace · 官方创世链锚定 API
+# RealTrace · 官方创世链锚定 API
 
 > 个人创作上链**免费**；联合授权平台使用**单独支链**并另行授权。
 > 开源仓库内置客户端 `anchor/anchor-client.js`，仅需配置端点即可启用。

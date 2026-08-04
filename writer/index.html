@@ -67,7 +67,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <link rel="stylesheet" href="rt-theme.css">
 </head>
 <body>
-<div id="h"><div class="hi"><a href="./" class="l"><span class="li">R</span>真迹·Realtrace</a><div class="n"><span class="os-tag" data-i18n="osTag">Realtrace 开源版</span><div class="lang-wrap"><button class="lang-btn" id="langBtn" type="button"><span id="langBtnText">中文</span><span class="lang-caret">▾</span></button><div class="lang-menu" id="langMenu"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">English</button><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="ko">한국어</button><button type="button" data-lang="fr">Français</button><button type="button" data-lang="de">Deutsch</button></div></div></div></div></div>
+<div id="h"><div class="hi"><a href="./" class="l"><span class="li">R</span>真迹·RealTrace</a><div class="n"><span class="os-tag" data-i18n="osTag">RealTrace 开源版</span><div class="lang-wrap"><button class="lang-btn" id="langBtn" type="button"><span id="langBtnText">中文</span><span class="lang-caret">▾</span></button><div class="lang-menu" id="langMenu"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">English</button><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="ko">한국어</button><button type="button" data-lang="fr">Français</button><button type="button" data-lang="de">Deutsch</button></div></div></div></div></div>
 <div class="main-wrap">
   <div class="mode-bar">
     <span class="mode-badge" id="modeBadge">✏️ 匿名写作</span>
@@ -102,7 +102,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <script>
 var I18N = {
   zh: {
-    osTag:'Realtrace 开源版', modeAnon:'✏️ 匿名写作', modeRt:'📂 rt 续写', chainId:'链 ID', modeSelectTitle:'选择创作方式', modeAnonBtn:'✏️ 匿名写作', modeImportBtn:'📂 使用 .rt 续写',
+    osTag:'RealTrace 开源版', modeAnon:'✏️ 匿名写作', modeRt:'📂 rt 续写', chainId:'链 ID', modeSelectTitle:'选择创作方式', modeAnonBtn:'✏️ 匿名写作', modeImportBtn:'📂 使用 .rt 续写',
     imported:'已导入 {n} 个印章', importFail:'导入失败',
     modeSelectDesc:'匿名写作：无需注册，即写即签，私钥不留存。<br>使用 .rt 续写：导入已有链文件，接续创作历史。',
     importChainNote:'已导入链：{n} 个 stamp，续写将延续该链',
@@ -118,7 +118,7 @@ var I18N = {
     pageTitle:'真迹 · 创作封章认证', _langName:'中文'
   },
   en: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonymous writing', modeRt:'📂 .rt continuation', chainId:'Chain ID', modeSelectTitle:'Choose writing mode', modeAnonBtn:'✏️ Anonymous writing', modeImportBtn:'📂 Continue with .rt',
+    osTag:'RealTrace Open Source', modeAnon:'✏️ Anonymous writing', modeRt:'📂 .rt continuation', chainId:'Chain ID', modeSelectTitle:'Choose writing mode', modeAnonBtn:'✏️ Anonymous writing', modeImportBtn:'📂 Continue with .rt',
     imported:'Imported {n} stamps', importFail:'Import failed',
     modeSelectDesc:'Anonymous writing: no sign-up, write & sign on the fly, key is not kept.<br>Continue with .rt: import an existing chain file to extend your creation history.',
     importChainNote:'Chain imported: {n} stamps. New stamps will extend this chain.',
@@ -134,7 +134,7 @@ var I18N = {
     pageTitle:'RealTrace · Creation Seal', _langName:'English'
   },
   ja: {
-    osTag:'Realtrace オープンソース版', modeAnon:'✏️ 匿名で執筆', modeRt:'📂 .rt で続きを書く', chainId:'チェーン ID', modeSelectTitle:'創作方法を選択', modeAnonBtn:'✏️ 匿名で執筆', modeImportBtn:'📂 .rt で続きを書く',
+    osTag:'RealTrace オープンソース版', modeAnon:'✏️ 匿名で執筆', modeRt:'📂 .rt で続きを書く', chainId:'チェーン ID', modeSelectTitle:'創作方法を選択', modeAnonBtn:'✏️ 匿名で執筆', modeImportBtn:'📂 .rt で続きを書く',
     imported:'{n} 個のスタンプを読み込みました', importFail:'読み込みに失敗しました',
     modeSelectDesc:'匿名で執筆：登録不要、書いて即署名、秘密鍵は保存されません。<br>.rt で続きを書く：既存のチェーンファイルを読み込み、創作履歴を引き継ぎます。',
     importChainNote:'チェーンを読み込みました：{n} スタンプ。続きのスタンプはこのチェーンに連結されます。',
@@ -150,7 +150,7 @@ var I18N = {
     pageTitle:'真迹 · 創作封章認証', _langName:'日本語'
   },
   ko: {
-    osTag:'Realtrace 오픈소스', modeAnon:'✏️ 익명 작성', modeRt:'📂 .rt 이어쓰기', chainId:'체인 ID', modeSelectTitle:'작성 방식 선택', modeAnonBtn:'✏️ 익명 작성', modeImportBtn:'📂 .rt 이어쓰기',
+    osTag:'RealTrace 오픈소스', modeAnon:'✏️ 익명 작성', modeRt:'📂 .rt 이어쓰기', chainId:'체인 ID', modeSelectTitle:'작성 방식 선택', modeAnonBtn:'✏️ 익명 작성', modeImportBtn:'📂 .rt 이어쓰기',
     imported:'스탬프 {n}개를 가져왔습니다', importFail:'가져오기 실패',
     modeSelectDesc:'익명 작성: 가입 없이 즉시 작성·서명, 개인 키가 저장되지 않습니다.<br>.rt 이어쓰기: 기존 체인 파일을 가져와 창작 기록을 이어갑니다.',
     importChainNote:'체인 가져옴: {n}개 스탬프. 이후 스탬프는 이 체인에 연결됩니다.',
@@ -166,7 +166,7 @@ var I18N = {
     pageTitle:'RealTrace · 창작 봉인', _langName:'한국어'
   },
   fr: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Écriture anonyme', modeRt:'📂 Continuer avec .rt', chainId:'ID de chaîne', modeSelectTitle:'Choisissez le mode de création', modeAnonBtn:'✏️ Écriture anonyme', modeImportBtn:'📂 Continuer avec .rt',
+    osTag:'RealTrace Open Source', modeAnon:'✏️ Écriture anonyme', modeRt:'📂 Continuer avec .rt', chainId:'ID de chaîne', modeSelectTitle:'Choisissez le mode de création', modeAnonBtn:'✏️ Écriture anonyme', modeImportBtn:'📂 Continuer avec .rt',
     imported:'{n} tampons importés', importFail:'Échec de l\'import',
     modeSelectDesc:'Écriture anonyme : sans inscription, écrivez et signez immédiatement, la clé privée n\'est pas conservée.<br>Continuer avec .rt : importez un fichier de chaîne existant pour prolonger votre historique.',
     importChainNote:'Chaîne importée : {n} tampons. Les nouveaux tampons prolongeront cette chaîne.',
@@ -182,7 +182,7 @@ var I18N = {
     pageTitle:'RealTrace · Scellement de création', _langName:'Français'
   },
   de: {
-    osTag:'Realtrace Open Source', modeAnon:'✏️ Anonym schreiben', modeRt:'📂 .rt fortsetzen', chainId:'Ketten-ID', modeSelectTitle:'Schreibmodus wählen', modeAnonBtn:'✏️ Anonym schreiben', modeImportBtn:'📂 Mit .rt fortsetzen',
+    osTag:'RealTrace Open Source', modeAnon:'✏️ Anonym schreiben', modeRt:'📂 .rt fortsetzen', chainId:'Ketten-ID', modeSelectTitle:'Schreibmodus wählen', modeAnonBtn:'✏️ Anonym schreiben', modeImportBtn:'📂 Mit .rt fortsetzen',
     imported:'{n} Stempel importiert', importFail:'Import fehlgeschlagen',
     modeSelectDesc:'Anonym schreiben: keine Anmeldung, sofort schreiben & signieren, privater Schlüssel wird nicht gespeichert.<br>Mit .rt fortsetzen: vorhandene Kettendatei importieren und Schreibverlauf erweitern.',
     importChainNote:'Kette importiert: {n} Stempel. Neue Stempel verlängern diese Kette.',
@@ -367,6 +367,31 @@ function showModal(opts) {
     overlay.classList.add('active');
   });
 }
+// 根据网络情况静默上报创世链锚定（零内容，仅链根等元数据；失败/离线不阻塞）
+async function anchorToGenesis(chainId, rootHash, pubKey, sessionId, stampCount) {
+  try {
+    if (!rootHash) return;
+    var cfg = (window.RT_CONFIG && window.RT_CONFIG.anchor) || {};
+    if (!cfg.enabled || !cfg.apiBase) return;
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+    var payload = {
+      chainId: chainId,
+      rootHash: rootHash,
+      publicKey: pubKey || '',
+      sessionId: sessionId,
+      stampCount: stampCount,
+      rtVersion: '2.0',
+      sealedAt: new Date().toISOString()
+    };
+    var url = cfg.apiBase.replace(/\/+$/, '') + '/api/v1/genesis/anchor';
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function() {});
+  } catch(e) { /* 静默：网络不可用时不打扰用户 */ }
+}
 async function doFinalSeal(result) {
   var area = document.getElementById('rtTextarea');
   var content = area ? area.value : '';
@@ -396,6 +421,7 @@ async function doFinalSeal(result) {
     var lastSt = stamps.length > 0 ? stamps[stamps.length - 1] : null;
     var rootH = (lastSt && (lastSt.hash || lastSt.chainHash)) || result.rootHash || '';
     var chainId = await RtExport.deriveChainId(pubKey, rootH, 'web', 'personal');
+    anchorToGenesis(chainId, rootH, pubKey, sessionId, stamps.length);
 
     try {
       var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH };
