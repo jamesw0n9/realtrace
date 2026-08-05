@@ -13,7 +13,7 @@
 > Ed25519-Signaturkette · Echtzeit-Stempeln · Keine Inhalts-Uploads · Offline-Verifizierung · Offizielle Genesis-Ketten-Ankerung (für Einzelpersonen kostenlos)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > Wenn alles gefälscht werden kann, wird Authentizität zum Luxusgut. **Detektoren raten. RealTrace beweist.**
@@ -177,10 +177,11 @@ npm test
 | 2026.07 | **Modulare Umstrukturierung**: Stempelkern `stamp.js` als eigenes Modul, Krypto-Toolkit `rt-crypto.js` geschichtet, Schreibwerkzeug / Verifizierer / Anker-Dienst entkoppelt; offizielle Umbenennung in **RealTrace**; offizieller Genesis-Ketten-Ankerungs-Dienst gestartet |
 | 2026.08 | **Open-Source-MVP v0.1.0 veröffentlicht** (AGPL-3.0 + kommerzielle Dual-Lizenz); Unternehmenslizenzmodell in Planung |
 | 2026.08 | **v0.2.0 veröffentlicht**: Merkle-selektive Offenlegung + Offenlegungsnachweis-Generierung, sechssprachige Oberfläche, Chain-ID-Namensregeln, Wahl des Schreibmodus, modulares Timeline |
+| 2026.08 | **v0.3.0 veröffentlicht**: Genesis-Anker-Warteschlange (Offline-Warteschlange + automatische Wiederholung + Signatur gegen Fälschung), sechssprachiges Anker-Panel in der Writer-Seite |
 
 ---
 
-## Was diese Version enthält (v0.2.0)
+## Was diese Version enthält (v0.3.0)
 
 Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollständigen Kreislauf „Schreiben → Stempeln → Besiegeln → Verifizieren" mit möglichst wenig Code. Diese Version enthält:
 
@@ -197,6 +198,10 @@ Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollstä
 - **Chain-ID-Namensregeln**: 23-stellige Chain-ID (`web-personal-…`) aus öffentlichem Schlüssel + Wurzel-Hash — verifizierbar, nicht umkehrbar;
 - **Wahl des Schreibmodus**: vor dem Schreiben „Anonym schreiben" oder „.rt importieren und fortsetzen" wählen; Fortsetzen verlängert automatisch die ursprüngliche Kette.
 - **Modulares Timeline**: das skalierbare Histogramm-Timeline ist in das gemeinsame Modul `core/rt-timeline.js` ausgegliedert und macht den Schreibrhythmus auf einen Blick sichtbar.
+
+- **Genesis-Anker-Warteschlange**: Nach dem Versiegeln werden Ketten-Metadaten zuerst lokal in die Warteschlange geschrieben und bei Netzwiederkehr automatisch nachgesendet. Ed25519-Signatur (`chainId|rootHash`) verhindert Fälschung;
+- **Anker-Panel (sechssprachig)**: ⛓ Statusanzeige / Ein-Klick-Manual-Sync / Auto-Sync-Umschalter in der Writer-Seite – Zero-Content-Upload bleibt gewahrt;
+- **Datenschutzhinweis aktualisiert**: Klarstellung, dass nach dem Versiegeln nur Ketten-Metadaten mit der Genesis-Kette synchronisiert werden können und dass Auto-Sync im „⛓“-Panel deaktiviert werden kann.
 
 > Vollständige Änderungshistorie: [CHANGELOG.md](CHANGELOG.md).
 

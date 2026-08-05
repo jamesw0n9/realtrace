@@ -13,7 +13,7 @@
 > Ed25519 서명 체인 · 실시간 스탬프 · 콘텐츠 미업로드 · 오프라인 검증 · 공식 창세 체인 앵커링(개인 무료)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > 모든 것이 위조될 수 있는 세상에서, "진짜"는 사치품이 된다. **탐지기는 추측한다. RealTrace는 증명한다.**
@@ -177,10 +177,11 @@ npm test
 | 2026.07 | **모듈화 리팩터**: 스탬프 핵심 `stamp.js`를 독립 모듈로 분리, 암호 도구 `rt-crypto.js`를 계층화, 라이팅 / 검증 / 앵커 서비스 분리. 공식 명칭 **RealTrace**로 변경. 공식 창세 체인 앵커링 서비스 가동 |
 | 2026.08 | **오픈소스 MVP v0.1.0 공개**(AGPL-3.0 + 상업 듀얼 라이선스). 기업 라이선스 모델 기획 중 |
 | 2026.08 | **v0.2.0 출시**: Merkle 선택적 공개 + 공개 증명 생성, 6개 언어 UI, 체인 ID 명명 규칙, 작성 모드 선택, 타임라인 모듈화 |
+| 2026.08 | **v0.3.0 출시**: 창세 체인 앵커 큐(오프라인 큐 + 자동 재전송 + 서명 위조 방지), 작문 페이지에 6개 언어 앵커 큐 패널 통합 |
 
 ---
 
-## 이 버전의 기능(v0.2.0)
+## 이 버전의 기능(v0.3.0)
 
 이 리포지토리는 **MVP 최소 버전**: 최소한의 코드로 "작성 → 스탬프 → 봉인 → 검증" 완전 루프를 구현한다. 이 버전에는 다음이 포함된다:
 
@@ -197,6 +198,10 @@ npm test
 - **체인 ID 명명 규칙**: 공개 키 + 루트 해시를 이중 바인딩한 23자리 체인 ID(`web-personal-…`). 검증 가능, 역산 불가;
 - **작성 모드 선택**: 작성 전에 "익명 작성" 또는 ".rt 가져와 이어쓰기" 선택. 이어쓰기는 원래 체인을 자동 연장.
 - **타임라인 모듈화**: 확대/축소 가능한 히스토그램 타임라인을 공용 모듈 `core/rt-timeline.js`로 분리하여 작성 리듬을 한눈에 파악 가능.
+
+- **창세 체인 앵커 큐**: 봉인 후 체인 메타데이터를 먼저 로컬 큐에 저장하고, 네트워크 복구 시 자동 재전송. Ed25519 서명(`chainId|rootHash`)으로 위조 방지;
+- **앵커 큐 패널(6개 언어)**: 작문 페이지에 ⛓ 상태 표시 / 원클릭 수동 동기화 / 자동 동기화 토글. 콘텐츠 미업로드 유지;
+- **개인정보 안내 업데이트**: 봉인 후 체인 메타데이터만 창세 체인에 동기화될 수 있으며, 「⛓」 패널에서 자동 동기화를 끌 수 있음을 명시.
 
 > 전체 변경 기록: [CHANGELOG.md](CHANGELOG.md).
 

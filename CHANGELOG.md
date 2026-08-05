@@ -1,5 +1,17 @@
 # Changelog / 变更记录
 
+## [v0.3.0] - 2026-08-06
+
+### Added
+- **Genesis anchor queue module** (`core/rt-anchor-queue.js`): after sealing, chain metadata is always written to a local queue first — online or offline; auto-retries once the network returns; an Ed25519 signature (`chainId|rootHash`) prevents claim hijacking.
+- **Anchor queue panel in the writer page**: six-language ⛓ status indicator, one-click manual sync, auto-sync toggle, and a visible queue status list — zero-content upload maintained.
+- **Privacy notice update**: clarifies that after sealing, only chain metadata (root hash / public key / signature) may sync to the genesis chain, and that auto-sync can be turned off in the ⛓ panel.
+
+### 新增
+- **创世链锚定队列模块**（`core/rt-anchor-queue.js`）：封章后无论在线/离线，先把链元数据写入本地队列；检测到网络自动补传；用 Ed25519 签名（`chainId|rootHash`）防冒领。
+- **写作页锚定队列面板**：六语 ⛓ 状态指示、一键手动同步、自动同步开关、队列状态可视化——保持零内容上传。
+- **隐私须知更新**：说明封章后仅链元数据（根哈希/公钥/签名）可能同步至创世链，并可在「⛓」面板关闭自动同步。
+
 ## [v0.2.0] - 2026-08-05
 
 ### Added

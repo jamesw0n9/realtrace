@@ -13,7 +13,7 @@
 > Ed25519 signature chain · Real-time stamping · Zero content upload · Offline verification · Official genesis-chain anchoring (free for individuals)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > When everything can be forged, authenticity becomes a luxury. **Detectors guess. RealTrace proves.**
@@ -177,10 +177,11 @@ npm test
 | 2026.07 | **Modular refactor**: stamping core `stamp.js` extracted as a module, crypto toolkit `rt-crypto.js` layered, writer / verifier / anchor service decoupled; officially renamed **RealTrace**; official genesis-chain anchoring service launched |
 | 2026.08 | **Open-source MVP v0.1.0 released** (AGPL-3.0 + commercial dual license); enterprise licensing model under planning |
 | 2026.08 | **v0.2.0 released**: Merkle selective disclosure + disclosure proof generation, six-language UI, chain ID naming rules, creation-mode selection, modular timeline |
+| 2026.08 | **v0.3.0 released**: genesis anchor queue (offline queueing + auto-retry + signature anti-hijack), six-language anchor queue panel integrated into the writer |
 
 ---
 
-## What's in this release (v0.2.0)
+## What's in this release (v0.3.0)
 
 This repository is an **MVP minimal build**: it implements the complete "write → stamp → seal → verify" loop with the least code. This release includes:
 
@@ -197,6 +198,10 @@ This repository is an **MVP minimal build**: it implements the complete "write �
 - **Chain ID naming rules**: 23-character chain ID (`web-personal-…`) binding public key + root hash — verifiable, not reversible;
 - **Creation-mode selection**: choose "Anonymous writing" or "Import .rt to continue" before writing; continuing automatically extends the original chain.
 - **Modular timeline**: the scalable histogram timeline is extracted into the shared module `core/rt-timeline.js`, making the writing rhythm visible at a glance.
+
+- **Genesis anchor queue**: after sealing, chain metadata is queued locally first and auto-synced when back online; an Ed25519 signature (`chainId|rootHash`) prevents claim hijacking;
+- **Anchor queue panel (six languages)**: ⛓ status indicator / one-click manual sync / auto-sync toggle in the writer — zero-content upload maintained;
+- **Privacy notice update**: clarifies that after sealing, only chain metadata may sync to the genesis chain, and that auto-sync can be disabled in the ⛓ panel.
 
 > Full changelog: [CHANGELOG.md](CHANGELOG.md).
 

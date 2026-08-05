@@ -13,7 +13,7 @@
 > Chaîne de signatures Ed25519 · Estampillage en temps réel · Aucun upload de contenu · Vérification hors ligne · Ancrage à la chaîne de genèse officielle (gratuit pour les particuliers)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.2.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > Quand tout peut être falsifié, l'authenticité devient un luxe. **Les détecteurs devinent. RealTrace prouve.**
@@ -177,10 +177,11 @@ npm test
 | 2026.07 | **Refactorisation modulaire** : le noyau d'estampillage `stamp.js` devient un module indépendant, la boîte à outils crypto `rt-crypto.js` est stratifiée, outil d'écriture / vérificateur / service d'ancrage découplés ; renommage officiel en **RealTrace** ; lancement du service d'ancrage à la chaîne de genèse officielle |
 | 2026.08 | **MVP open source v0.1.0 publié** (double licence AGPL-3.0 + commerciale) ; modèle de licence entreprise en planification |
 | 2026.08 | **v0.2.0 publié** : divulgation sélective Merkle + génération de preuve de divulgation, interface en six langues, règles de nommage des ID de chaîne, choix du mode de création, chronologie modulaire |
+| 2026.08 | **v0.3.0 publié** : file d'ancrage de la chaîne genèse (file d'attente hors ligne + nouvelle tentative automatique + signature anti-usurpation), panneau de file d'ancrage en six langues intégré à l'éditeur |
 
 ---
 
-## Ce que contient cette version (v0.2.0)
+## Ce que contient cette version (v0.3.0)
 
 Ce dépôt est une **construction MVP minimale** : il implémente la boucle complète « écrire → estampiller → sceller → vérifier » avec le moins de code possible. Cette version inclut :
 
@@ -197,6 +198,10 @@ Ce dépôt est une **construction MVP minimale** : il implémente la boucle comp
 - **Règles de nommage des ID de chaîne** : ID de chaîne de 23 caractères (`web-personal-…`) liant clé publique + racine — vérifiable, non réversible ;
 - **Choix du mode de création** : choisir « Écriture anonyme » ou « Importer .rt pour continuer » avant d'écrire ; la continuation prolonge automatiquement la chaîne d'origine.
 - **Chronologie modulaire** : la chronologie en histogramme redimensionnable est extraite dans le module partagé `core/rt-timeline.js`, rendant le rythme d'écriture visible d'un coup d'œil.
+
+- **File d''ancrage de la chaîne genèse** : après le scellement, les métadonnées de chaîne sont d''abord mises en file locale, puis synchronisées automatiquement au retour du réseau. Signature Ed25519 (`chainId|rootHash`) anti-usurpation ;
+- **Panneau de file d''ancrage (six langues)** : indicateur d''état ⛓ / synchronisation manuelle en un clic / bascule auto-sync dans l''éditeur — aucun contenu téléversé ;
+- **Avis de confidentialité mis à jour** : précise que seules les métadonnées de chaîne peuvent être synchronisées vers la chaîne genèse après le scellement, et que l''auto-sync peut être désactivée dans le panneau « ⛓ ».
 
 > Journal des modifications complet : [CHANGELOG.md](CHANGELOG.md).
 

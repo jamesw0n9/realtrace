@@ -73,6 +73,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
     <span class="mode-badge" id="modeBadge">✏️ 匿名写作</span>
     <span class="mode-chain" id="modeChainId" style="display:none"></span>
     <span id="writerStats" style="font-size:13px;color:#94A3B8;"></span><span class="mode-spacer"></span>
+    <button class="mode-btn" id="anchorStatus" onclick="showAnchorPanel()" style="display:none">⛓ 待同步 0</button>
   </div>
 
   <div id="writerBoxContainer" style="display:none"></div>
@@ -93,6 +94,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 <script src="../core/key-vault.js?v=2"></script>
 <script src="../core/stamp.js?v=2"></script>
 <script src="../core/rt-lambda.js?v=2"></script>
+<script src="../core/rt-anchor-queue.js?v=2"></script>
 <script src="../config.js?v=2"></script>
 <script>window.RT_CONFIG = window.RT_CONFIG || { anchor: { apiBase: "", genesisPublicKey: "", enabled: false } };</script>
 <script src="rt-writer-box.js?v=2"></script>
@@ -110,7 +112,8 @@ var I18N = {
     stampUnit:'章', duration:'创作时长', sec:'秒', min:'分', hour:'时',
     modalTitle:'提示', modalDesc:'描述',
     privacyTitle:'隐私与安全须知',
-    privacyDesc:'• 所有创作数据默认存储在本地<br>• 封章使用 Ed25519 加密签名，内容不上传服务器<br>• 可选择将链文件上传至服务器托管（需登录）<br>• 离线 .rt 文件请自行妥善保管<br><br>继续使用即代表您理解并接受上述条款。',
+    privacyDesc:'• 所有创作数据默认存储在本地<br>• 封章使用 Ed25519 加密签名，内容不上传服务器<br>• 封章后链元数据（根哈希/公钥/签名）将自动同步至创世链（可在「⛓」面板关闭）<br>• 可选择将链文件上传至服务器托管（需登录）<br>• 离线 .rt 文件请自行妥善保管<br><br>继续使用即代表您理解并接受上述条款。',
+    anchorTitle:'创世链上链队列', anchorDesc:'封章后的链元数据（根哈希 / 公钥 / Ed25519 签名）会自动同步至官方创世链。<br>仅上传签名链元数据，不含正文，保持零内容上传原则。', anchorAutoOn:'自动同步：开', anchorAutoOff:'自动同步：关', anchorFlush:'立即同步', anchorClose:'关闭', anchorEmpty:'暂无记录', anchorPendingLabel:'待同步', anchorSyncedLabel:'已同步', anchorFailedLabel:'失败',
     gotIt:'我知道了',
     sealConfirmTitle:'确认封章上链',
     sealConfirmDesc:'封章后将生成加密签名链，内容将被记录且无法修改。<br><br>⚠️ 请确认：<br>• 创作内容为本人原创<br>• 已检查无敏感信息<br>• 确认封章上链',
@@ -126,7 +129,8 @@ var I18N = {
     stampUnit:'stamps', duration:'Writing time', sec:'s', min:'m', hour:'h',
     modalTitle:'Notice', modalDesc:'Description',
     privacyTitle:'Privacy & Security Notice',
-    privacyDesc:'• All creation data is stored locally by default<br>• Sealing uses Ed25519 signatures; content never leaves your device<br>• You may optionally upload the chain file for cloud hosting (login required)<br>• Keep offline .rt files safe yourself<br><br>By continuing, you understand and accept these terms.',
+    privacyDesc:'• All creation data is stored locally by default<br>• Sealing uses Ed25519 signatures; content never leaves your device<br>• After sealing, chain metadata (root hash / public key / signature) auto-syncs to the genesis chain (disable in the ⛓ panel)<br>• You may optionally upload the chain file for cloud hosting (login required)<br>• Keep offline .rt files safe yourself<br><br>By continuing, you understand and accept these terms.',
+    anchorTitle:'Genesis Anchor Queue', anchorDesc:'After sealing, chain metadata (root hash / public key / Ed25519 signature) is automatically synced to the official genesis chain.<br>Only signed chain metadata is uploaded; content never leaves your device.', anchorAutoOn:'Auto-sync: On', anchorAutoOff:'Auto-sync: Off', anchorFlush:'Sync now', anchorClose:'Close', anchorEmpty:'No records yet', anchorPendingLabel:'Pending', anchorSyncedLabel:'Synced', anchorFailedLabel:'Failed',
     gotIt:'Got it',
     sealConfirmTitle:'Confirm Sealing',
     sealConfirmDesc:'Sealing generates an encrypted signature chain; the content is recorded and cannot be modified.<br><br>⚠️ Please confirm:<br>• The content is your original work<br>• No sensitive information is included<br>• You agree to seal and anchor',
@@ -142,7 +146,8 @@ var I18N = {
     stampUnit:'スタンプ', duration:'執筆時間', sec:'秒', min:'分', hour:'時間',
     modalTitle:'お知らせ', modalDesc:'説明',
     privacyTitle:'プライバシーとセキュリティの注意事項',
-    privacyDesc:'• 創作データはデフォルトでローカルに保存されます<br>• 封章は Ed25519 署名を使用し、内容はサーバーに送信されません<br>• チェーンファイルをサーバーにアップロードして管理することも可能です（ログインが必要）<br>• オフラインの .rt ファイルはご自身で安全に保管してください<br><br>続行することで、上記の条項を理解し承諾したものとみなされます。',
+    privacyDesc:'• 創作データはデフォルトでローカルに保存されます<br>• 封章は Ed25519 署名を使用し、内容はサーバーに送信されません<br>• 封章後、チェーンメタデータ（ルートハッシュ/公開鍵/署名）は創世チェーンに自動同期されます（「⛓」パネルで無効化可能）<br>• チェーンファイルをサーバーにアップロードして管理することも可能です（ログインが必要）<br>• オフラインの .rt ファイルはご自身で安全に保管してください<br><br>続行することで、上記の条項を理解し承諾したものとみなされます。',
+    anchorTitle:'創世チェーン上鏈キュー', anchorDesc:'封章後、チェーンメタデータ（ルートハッシュ / 公開鍵 / Ed25519 署名）は公式の創世チェーンに自動同期されます。<br>署名済みチェーンメタデータのみをアップロードし、本文は送信されません。', anchorAutoOn:'自動同期：オン', anchorAutoOff:'自動同期：オフ', anchorFlush:'今すぐ同期', anchorClose:'閉じる', anchorEmpty:'記録はまだありません', anchorPendingLabel:'待機中', anchorSyncedLabel:'同期済み', anchorFailedLabel:'失敗',
     gotIt:'了解しました',
     sealConfirmTitle:'封章を確定',
     sealConfirmDesc:'封章後は暗号署名チェーンが生成され、内容が記録され変更できなくなります。<br><br>⚠️ ご確認ください：<br>• 内容は本人のオリジナル作品です<br>• 機密情報が含まれていないことを確認しました<br>• 封章してチェーンに記録することに同意します',
@@ -158,7 +163,8 @@ var I18N = {
     stampUnit:'스탬프', duration:'작성 시간', sec:'초', min:'분', hour:'시간',
     modalTitle:'알림', modalDesc:'설명',
     privacyTitle:'개인정보 및 보안 안내',
-    privacyDesc:'• 모든 창작 데이터는 기본적으로 로컬에 저장됩니다<br>• 봉인은 Ed25519 서명을 사용하며, 내용은 서버에 업로드되지 않습니다<br>• 체인 파일을 서버에 업로드하여 관리할 수 있습니다 (로그인 필요)<br>• 오프라인 .rt 파일은 직접 안전하게 보관하세요<br><br>계속 사용하면 위 약관을 이해하고 수락한 것으로 간주됩니다.',
+    privacyDesc:'• 모든 창작 데이터는 기본적으로 로컬에 저장됩니다<br>• 봉인은 Ed25519 서명을 사용하며, 내용은 서버에 업로드되지 않습니다<br>• 봉인 후 체인 메타데이터(루트 해시/공개 키/서명)가 창세 체인에 자동 동기화됩니다(「⛓」패널에서 끌 수 있음)<br>• 체인 파일을 서버에 업로드하여 관리할 수 있습니다 (로그인 필요)<br>• 오프라인 .rt 파일은 직접 안전하게 보관하세요<br><br>계속 사용하면 위 약관을 이해하고 수락한 것으로 간주됩니다.',
+    anchorTitle:'창세 체인 앵커 큐', anchorDesc:'봉인 후 체인 메타데이터(루트 해시 / 공개 키 / Ed25519 서명)가 공식 창세 체인에 자동 동기화됩니다.<br>서명된 체인 메타데이터만 업로드되며 본문은 전송되지 않습니다.', anchorAutoOn:'자동 동기화: 켜짐', anchorAutoOff:'자동 동기화: 꺼짐', anchorFlush:'지금 동기화', anchorClose:'닫기', anchorEmpty:'기록이 없습니다', anchorPendingLabel:'대기 중', anchorSyncedLabel:'동기화됨', anchorFailedLabel:'실패',
     gotIt:'확인했습니다',
     sealConfirmTitle:'봉인 확정',
     sealConfirmDesc:'봉인하면 암호화 서명 체인이 생성되며 내용이 기록되어 수정할 수 없습니다.<br><br>⚠️ 확인하세요:<br>• 창작 내용은 본인의 원작입니다<br>• 민감한 정보가 없음을 확인했습니다<br>• 봉인 및 체인 기록에 동의합니다',
@@ -174,7 +180,8 @@ var I18N = {
     stampUnit:'tampons', duration:'Durée d\'écriture', sec:'s', min:'m', hour:'h',
     modalTitle:'Avis', modalDesc:'Description',
     privacyTitle:'Avis de confidentialité et de sécurité',
-    privacyDesc:'• Toutes les données de création sont stockées localement par défaut<br>• Le scellement utilise des signatures Ed25519 ; le contenu n\'est jamais envoyé au serveur<br>• Vous pouvez éventuellement héberger le fichier de chaîne (connexion requise)<br>• Conservez vous-même vos fichiers .rt hors ligne en lieu sûr<br><br>En continuant, vous comprenez et acceptez ces conditions.',
+    privacyDesc:'• Toutes les données de création sont stockées localement par défaut<br>• Le scellement utilise des signatures Ed25519 ; le contenu n\'est jamais envoyé au serveur<br>• Après le scellement, les métadonnées de chaîne sont synchronisées automatiquement (désactivable dans le panneau ⛓)<br>• Vous pouvez éventuellement héberger le fichier de chaîne (connexion requise)<br>• Conservez vous-même vos fichiers .rt hors ligne en lieu sûr<br><br>En continuant, vous comprenez et acceptez ces conditions.',
+    anchorTitle:'File d\'ancrage de la chaîne genèse', anchorDesc:'Après le scellement, les métadonnées de chaîne (hachage racine / clé publique / signature Ed25519) sont automatiquement synchronisées avec la chaîne genèse officielle.<br>Seules les métadonnées signées sont envoyées ; le contenu ne quitte jamais votre appareil.', anchorAutoOn:'Synchro auto : On', anchorAutoOff:'Synchro auto : Off', anchorFlush:'Synchroniser', anchorClose:'Fermer', anchorEmpty:'Aucun enregistrement', anchorPendingLabel:'En attente', anchorSyncedLabel:'Synchronisé', anchorFailedLabel:'Échec',
     gotIt:'Compris',
     sealConfirmTitle:'Confirmer le scellement',
     sealConfirmDesc:'Le scellement génère une chaîne de signatures chiffrées ; le contenu est enregistré et ne peut plus être modifié.<br><br>⚠️ Veuillez confirmer :<br>• Le contenu est votre création originale<br>• Aucune information sensible incluse<br>• Vous acceptez de sceller et d\'ancrer',
@@ -190,7 +197,8 @@ var I18N = {
     stampUnit:'Stempel', duration:'Schreibzeit', sec:'s', min:'min', hour:'h',
     modalTitle:'Hinweis', modalDesc:'Beschreibung',
     privacyTitle:'Datenschutz- und Sicherheitshinweis',
-    privacyDesc:'• Alle Schreibdaten werden standardmäßig lokal gespeichert<br>• Versiegelung nutzt Ed25519-Signaturen; Inhalte verlassen nie Ihr Gerät<br>• Sie können die Chain-Datei optional hochladen (Anmeldung erforderlich)<br>• Bewahren Sie Offline-.rt-Dateien selbst sicher auf<br><br>Durch die Fortsetzung akzeptieren Sie diese Bedingungen.',
+    privacyDesc:'• Alle Schreibdaten werden standardmäßig lokal gespeichert<br>• Versiegelung nutzt Ed25519-Signaturen; Inhalte verlassen nie Ihr Gerät<br>• Nach dem Versiegeln werden Ketten-Metadaten automatisch synchronisiert (im ⛓-Panel abschaltbar)<br>• Sie können die Chain-Datei optional hochladen (Anmeldung erforderlich)<br>• Bewahren Sie Offline-.rt-Dateien selbst sicher auf<br><br>Durch die Fortsetzung akzeptieren Sie diese Bedingungen.',
+    anchorTitle:'Genesis-Anker-Warteschlange', anchorDesc:'Nach dem Versiegeln werden Ketten-Metadaten (Root-Hash / öffentlicher Schlüssel / Ed25519-Signatur) automatisch mit der offiziellen Genesis-Kette synchronisiert.<br>Nur signierte Ketten-Metadaten werden hochgeladen; Inhalte verlassen nie Ihr Gerät.', anchorAutoOn:'Auto-Sync: An', anchorAutoOff:'Auto-Sync: Aus', anchorFlush:'Jetzt synchronisieren', anchorClose:'Schließen', anchorEmpty:'Noch keine Einträge', anchorPendingLabel:'Ausstehend', anchorSyncedLabel:'Synchronisiert', anchorFailedLabel:'Fehlgeschlagen',
     gotIt:'Verstanden',
     sealConfirmTitle:'Versiegelung bestätigen',
     sealConfirmDesc:'Durch die Versiegelung wird eine verschlüsselte Signaturkette erzeugt; der Inhalt wird aufgezeichnet und kann nicht mehr geändert werden.<br><br>⚠️ Bitte bestätigen Sie:<br>• Der Inhalt ist Ihr eigenes Originalwerk<br>• Keine sensiblen Informationen enthalten<br>• Sie stimmen der Versiegelung und Verankerung zu',
@@ -326,6 +334,8 @@ async function enterWriterBox(pkg) {
       title: t('privacyTitle'),
       desc: t('privacyDesc'),
       actions: [{ label: t('gotIt'), class: 'btn-primary', value: 'ok' }]
+    }).then(function() {
+      if (window.RtAnchorQueue) RtAnchorQueue.markNotified();
     });
   } catch(e) { console.error('WriterBox:', e); }
 }
@@ -368,30 +378,62 @@ function showModal(opts) {
     overlay.classList.add('active');
   });
 }
-// 根据网络情况静默上报创世链锚定（零内容，仅链根等元数据；失败/离线不阻塞）
-async function anchorToGenesis(chainId, rootHash, pubKey, sessionId, stampCount) {
+function updateAnchorStatus() {
+  var el = document.getElementById('anchorStatus');
+  if (!el || !window.RtAnchorQueue) return;
+  var st = RtAnchorQueue.getStatus();
+  if (st.total === 0) { el.style.display = 'none'; return; }
+  el.style.display = 'inline-block';
+  el.textContent = '⛓ ' + st.pending + '/' + st.total + (st.failed > 0 ? ' ⚠' : '');
+}
+function showAnchorPanel() {
+  var st = RtAnchorQueue.getStatus();
+  var items = RtAnchorQueue.getItems();
+  var auto = RtAnchorQueue.isAuto();
+  var lines = items.slice(-8).reverse().map(function(i) {
+    var label = i.status === 'synced' ? t('anchorSyncedLabel') : i.status === 'failed' ? t('anchorFailedLabel') : t('anchorPendingLabel');
+    return (i.status === 'synced' ? '✅' : i.status === 'failed' ? '❌' : '⏳') + ' ' + (i.chainId || i.rootHash.slice(0, 12)) + ' → ' + label + (i.error ? ' (' + i.error + ')' : '');
+  }).join('<br>');
+  showModal({
+    icon: '⛓',
+    title: t('anchorTitle'),
+    desc: t('anchorDesc') + (lines ? '<br><br>' + lines : '<br><br>' + t('anchorEmpty')),
+    actions: [
+      { label: auto ? t('anchorAutoOn') : t('anchorAutoOff'), class: 'btn-secondary', value: 'toggle' },
+      { label: t('anchorFlush'), class: 'btn-primary', value: 'flush' },
+      { label: t('anchorClose'), class: 'btn-secondary', value: 'close' }
+    ],
+    footnote: 'Queue is stored locally · auto-sync can be turned off'
+  }).then(function(choice) {
+    if (choice === 'toggle') { RtAnchorQueue.setAuto(!auto); showAnchorPanel(); }
+    else if (choice === 'flush') {
+      RtAnchorQueue.flush().then(function() { showToast('✓ synced', 'success'); updateAnchorStatus(); showAnchorPanel(); });
+    }
+  });
+}
+// 封章后入队创世链锚定（零内容；离线时入队，联网自动补传；未配置官方服务则纯离线）
+async function anchorToGenesis(chainId, rootHash, pubKey, sessionId, stampCount, kp) {
   try {
     if (!rootHash) return;
     var cfg = (window.RT_CONFIG && window.RT_CONFIG.anchor) || {};
-    if (!cfg.enabled || !cfg.apiBase) return;
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
-    var payload = {
+    var apiBase = (cfg.enabled && cfg.apiBase) ? cfg.apiBase : '';
+    if (!apiBase) return;
+    var signMsg = chainId + '|' + rootHash;
+    var signature = RtAnchorQueue.sign(kp, signMsg);
+    RtAnchorQueue.configure({ apiBase: apiBase });
+    RtAnchorQueue.enqueue({
       chainId: chainId,
       rootHash: rootHash,
       publicKey: pubKey || '',
       sessionId: sessionId,
       stampCount: stampCount,
       rtVersion: '2.0',
-      sealedAt: new Date().toISOString()
-    };
-    var url = cfg.apiBase.replace(/\/+$/, '') + '/api/v1/genesis/anchor';
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      keepalive: true
-    }).catch(function() {});
-  } catch(e) { /* 静默：网络不可用时不打扰用户 */ }
+      sealedAt: new Date().toISOString(),
+      signature: signature
+    });
+    if (RtAnchorQueue.isAuto()) RtAnchorQueue.flush().catch(function() {});
+    updateAnchorStatus();
+  } catch(e) { /* 静默：本地队列保证不丢 */ }
 }
 async function doFinalSeal(result) {
   var area = document.getElementById('rtTextarea');
@@ -407,6 +449,11 @@ async function doFinalSeal(result) {
   if (stamps.length === 0 && result.stamps) stamps = result.stamps;
   var sessionId = (st && st.sessionId) || (stamps.length > 0 && stamps[0].sessionId) || result.sessionId || ('web-' + Date.now().toString(36));
   var pubKey = result.publicKey || (stamps.length > 0 && stamps[0].publicKey) || '';
+  var kp = null;
+  try {
+    var gs = (_rtWriterBox && typeof _rtWriterBox.getState === 'function') ? _rtWriterBox.getState() : null;
+    kp = (gs && gs.kp) || (st && st.kp) || null;
+  } catch(e) { kp = null; }
   try {
     // V2.0.0: .rt 文件是 ZIP 容器（仅链数据），内容独立 .txt 下载
     var sealData = {
@@ -422,7 +469,7 @@ async function doFinalSeal(result) {
     var lastSt = stamps.length > 0 ? stamps[stamps.length - 1] : null;
     var rootH = (lastSt && (lastSt.hash || lastSt.chainHash)) || result.rootHash || '';
     var chainId = await RtExport.deriveChainId(pubKey, rootH, 'web', 'personal');
-    anchorToGenesis(chainId, rootH, pubKey, sessionId, stamps.length);
+    anchorToGenesis(chainId, rootH, pubKey, sessionId, stamps.length, kp);
 
     try {
       var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH, merkleRoot: result.merkleRoot || '', merkleMeta: result.merkleMeta || null, bindMode: result.bindMode || '' };
@@ -435,6 +482,13 @@ async function doFinalSeal(result) {
   setTimeout(function(){ window.location.href = '../verify/index.html'; }, 800);
 }
 document.addEventListener('DOMContentLoaded', function() {
+  try {
+    if (window.RtAnchorQueue) {
+      RtAnchorQueue.configure({ apiBase: '', onChange: updateAnchorStatus });
+      RtAnchorQueue.startAuto();
+      updateAnchorStatus();
+    }
+  } catch(e) {}
   chooseMode();
   applyLang(curLang);
 });
