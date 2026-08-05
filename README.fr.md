@@ -260,6 +260,7 @@ Le projet vous plaît ? Offrez-moi un café ☕ :
 **Double licence AGPL-3.0 + commerciale** (la partie open source est régie par le texte intégral de l'AGPL-3.0 dans [`LICENSE`](LICENSE)) :
 
 - **Particuliers** : libres d'utiliser, modifier et distribuer ; les chaînes de création auto-construites / auto-signées sont entièrement gratuites et vérifiables hors ligne ; l'ancrage à la chaîne de genèse officielle est gratuit pour les particuliers ;
+- **Organisations à but non lucratif / petits cercles** (écoles publiques ou à but non lucratif, associations d'écrivains / de professionnels, etc., vérifiées par l'enregistrement à but non lucratif / le certificat de personne morale) : gratuits pour le seul usage interne des membres — pas de services payants externes, pas d'exploitation de plateforme publique, pas de revente ni de redistribution après intégration ;
 - **Entreprises / plateformes** : la coopération est sous licence — voir [`LICENSE.commercial`](LICENSE.commercial).
 
 > Gratuit pour un usage personnel ; l'intégration commerciale par des entreprises / plateformes nécessite une licence séparée. Issues et Pull Requests sont les bienvenus — compatibilité du format de chaîne, exactitude de la vérification et questions de vie privée / sécurité en priorité.

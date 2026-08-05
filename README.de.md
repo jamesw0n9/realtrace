@@ -260,6 +260,7 @@ Gefällt Ihnen das Projekt? Laden Sie mich auf einen Kaffee ein ☕:
 **AGPL-3.0 + kommerzielle Dual-Lizenz** (der Open-Source-Teil richtet sich nach dem vollständigen AGPL-3.0-Text in [`LICENSE`](LICENSE)):
 
 - **Einzelpersonen**: frei zu nutzen, zu verändern und weiterzugeben; selbst erstellte / selbst signierte Schöpfungsketten sind völlig kostenlos und offline selbst verifizierbar; die Ankerung an die offizielle Genesis-Kette ist für Einzelpersonen kostenlos;
+- **Gemeinnützige Organisationen / kleine Kreise** (öffentliche oder gemeinnützige Schulen, Autoren- / Branchenverbände usw., nachgewiesen durch gemeinnützige Registrierung / Vereinsregister): nur für die interne Nutzung durch Mitglieder kostenlos — keine externen kostenpflichtigen Dienste, kein öffentlicher Plattformbetrieb, kein Weiterverkauf oder Weitervertrieb nach Integration;
 - **Unternehmen / Plattformen**: Unternehmenskooperationen sind lizenziert – siehe [`LICENSE.commercial`](LICENSE.commercial).
 
 > Kostenlos für den persönlichen Gebrauch; die kommerzielle Integration durch Unternehmen / Plattformen erfordert eine separate Lizenz. Issues und Pull Requests sind willkommen – Kettenformat-Kompatibilität, Verifizierungskorrektheit sowie Datenschutz-/Sicherheitsfragen haben Priorität.

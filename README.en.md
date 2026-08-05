@@ -260,6 +260,7 @@ Enjoy the project? Buy me a coffee ☕:
 **AGPL-3.0 + commercial dual license** (the open-source part is governed by the full AGPL-3.0 text in [`LICENSE`](LICENSE)):
 
 - **Individuals**: free to use, modify and distribute; self-built / self-signed creation chains are completely free and can be self-verified offline; anchoring to the official genesis chain is free for individuals;
+- **Non-commercial organizations / small circles** (public or non-profit schools, writers' / industry associations, etc., verified by non-profit registration / legal-entity certificate): free for internal member use only — no external paid services, no public platform operation, no resale or redistribution after integration;
 - **Enterprises / platforms**: cooperation is licensed — see [`LICENSE.commercial`](LICENSE.commercial).
 
 > Free for personal use; enterprise / platform commercial integration requires a separate license. Issues and Pull Requests are welcome — chain-format compatibility, verification correctness and privacy/security issues get priority.
