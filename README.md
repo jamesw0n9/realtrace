@@ -247,9 +247,9 @@ npm test
 - [Ko-fi](https://ko-fi.com/realtrace)
 - 国内赞助：支付宝 / 微信扫码（仅个人小额打赏，非商业授权）
 
-<p align="center">
-  <img src="site/sponsor/alipay.png" width="180" alt="支付宝收款码"> <img src="site/sponsor/wechat.png" width="180" alt="微信收款码">
-</p>
+| 支付宝 Alipay | 微信 WeChat Pay |
+|:---:|:---:|
+| <img src="site/sponsor/alipay.png" width="130" alt="支付宝收款码"> | <img src="site/sponsor/wechat.png" width="130" alt="微信收款码"> |
 
 > 赞助只是表达支持，**不是商业授权**：个人使用始终免费；企业 / 平台集成仍按 [`LICENSE.commercial`](LICENSE.commercial) 另行授权。
 

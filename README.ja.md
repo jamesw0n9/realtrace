@@ -247,9 +247,9 @@ npm test
 - [Ko-fi](https://ko-fi.com/realtrace)
 - 中国国内：Alipay / WeChat Pay の QR コード（個人の少額チップのみ。商用ライセンスではありません）
 
-<p align="center">
-  <img src="site/sponsor/alipay.png" width="180" alt="Alipay QR"> <img src="site/sponsor/wechat.png" width="180" alt="WeChat Pay QR">
-</p>
+| Alipay | WeChat Pay |
+|:---:|:---:|
+| <img src="site/sponsor/alipay.png" width="130" alt="Alipay QR"> | <img src="site/sponsor/wechat.png" width="130" alt="WeChat Pay QR"> |
 
 > スポンサーは応援の気持ちを示すだけのもので、**商用ライセンスではありません**。個人利用は常に無料です。企業・プラットフォームの導入は [`LICENSE.commercial`](LICENSE.commercial) に基づく別途ライセンスが必要です。
 

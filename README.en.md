@@ -247,9 +247,9 @@ Enjoy the project? Buy me a coffee ☕:
 - [Ko-fi](https://ko-fi.com/realtrace)
 - China: Alipay / WeChat Pay QR codes (personal small tips only, not a commercial license)
 
-<p align="center">
-  <img src="site/sponsor/alipay.png" width="180" alt="Alipay QR"> <img src="site/sponsor/wechat.png" width="180" alt="WeChat Pay QR">
-</p>
+| Alipay | WeChat Pay |
+|:---:|:---:|
+| <img src="site/sponsor/alipay.png" width="130" alt="Alipay QR"> | <img src="site/sponsor/wechat.png" width="130" alt="WeChat Pay QR"> |
 
 > Sponsorship is just a token of support — **it is not a commercial license**. Personal use stays free; enterprise / platform integration is licensed separately via [`LICENSE.commercial`](LICENSE.commercial).
 
