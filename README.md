@@ -17,10 +17,13 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
-  <video src="docs/demo/realtrace-demo-25s-zh.mp4" autoplay loop muted playsinline controls style="max-width:720px;width:100%;border-radius:12px"></video>
+  <img src="docs/demo/realtrace-demo-25s-zh.gif" alt="RealTrace demo" width="640" /></video>
   <br />
   <em>25 秒 · 从实时打章到离线验证（演示视频 · 无音频）</em>
+  <br />
+  <a href="docs/demo/realtrace-demo-25s-zh.mp4">▶ 查看完整演示视频（MP4）</a>
 </p>
+
 > 当一切都可以被伪造，真实反而成了奢侈品。**检测器在猜，真迹在证明。**
 
 真迹（RealTrace）是一套**人类创作在场认证系统**：它用密码学签名链证明一份内容「确实是人类实时写出来的」——不是 AI 生成的、不是事后粘贴的、不是被改过的。

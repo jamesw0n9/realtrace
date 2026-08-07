@@ -17,10 +17,13 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
-  <video src="docs/demo/realtrace-demo-25s-en.mp4" autoplay loop muted playsinline controls style="max-width:720px;width:100%;border-radius:12px"></video>
+  <img src="docs/demo/realtrace-demo-25s-en.gif" alt="RealTrace demo" width="640" /></video>
   <br />
   <em>25 Sekunden · vom Echtzeit-Stempeln bis zur Offline-Verifikation (Demo · ohne Ton)</em>
+  <br />
+  <a href="docs/demo/realtrace-demo-25s-en.mp4">▶ Vollständiges Demovideo ansehen (MP4)</a>
 </p>
+
 > Wenn alles gefälscht werden kann, wird Authentizität zum Luxusgut. **Detektoren raten. RealTrace beweist.**
 
 RealTrace ist ein **Präsenz-Zertifizierungssystem für menschliches Schaffen**: Es beweist mit einer kryptografischen Signaturkette, dass ein Inhalt „tatsächlich von einem Menschen in Echtzeit geschrieben wurde" – nicht KI-generiert, nicht nachträglich eingefügt, nicht verändert.

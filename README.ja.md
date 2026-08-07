@@ -17,10 +17,13 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
-  <video src="docs/demo/realtrace-demo-25s-en.mp4" autoplay loop muted playsinline controls style="max-width:720px;width:100%;border-radius:12px"></video>
+  <img src="docs/demo/realtrace-demo-25s-en.gif" alt="RealTrace demo" width="640" /></video>
   <br />
   <em>25秒 · リアルタイム打章からオフライン検証まで（デモ · 音声なし）</em>
+  <br />
+  <a href="docs/demo/realtrace-demo-25s-en.mp4">▶ フルデモ動画（MP4）を見る</a>
 </p>
+
 > すべてが偽造できる世界では、「本物」はぜいたく品になる。**検出器は推測する。RealTrace は証明する。**
 
 RealTrace は、人間の創作であることを証明する**実在証明システム**だ。暗号署名チェーンによって、あるコンテンツが「本当に人間がリアルタイムに書いたもの」であることを証明する——AI が生成したのでも、後から貼り付けたのでも、改変されたのでもない。

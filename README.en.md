@@ -17,10 +17,13 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
-  <video src="docs/demo/realtrace-demo-25s-en.mp4" autoplay loop muted playsinline controls style="max-width:720px;width:100%;border-radius:12px"></video>
+  <img src="docs/demo/realtrace-demo-25s-en.gif" alt="RealTrace demo" width="640" /></video>
   <br />
   <em>25 seconds · from real-time stamping to offline verification (demo · no audio)</em>
+  <br />
+  <a href="docs/demo/realtrace-demo-25s-en.mp4">▶ Watch full demo video (MP4)</a>
 </p>
+
 > When everything can be forged, authenticity becomes a luxury. **Detectors guess. RealTrace proves.**
 
 RealTrace is a **human creation presence certification system**: it uses a cryptographic signature chain to prove that a piece of content "was genuinely written by a human in real time" — not AI-generated, not pasted in afterwards, not altered.

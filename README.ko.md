@@ -17,10 +17,13 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
-  <video src="docs/demo/realtrace-demo-25s-en.mp4" autoplay loop muted playsinline controls style="max-width:720px;width:100%;border-radius:12px"></video>
+  <img src="docs/demo/realtrace-demo-25s-en.gif" alt="RealTrace demo" width="640" /></video>
   <br />
   <em>25초 · 실시간 스탬핑부터 오프라인 검증까지 (데모 · 무음)</em>
+  <br />
+  <a href="docs/demo/realtrace-demo-25s-en.mp4">▶ 전체 데모 영상 보기 (MP4)</a>
 </p>
+
 > 모든 것이 위조될 수 있는 세상에서, "진짜"는 사치품이 된다. **탐지기는 추측한다. RealTrace는 증명한다.**
 
 RealTrace는 인간의 창작임을 증명하는 **현장 증명 시스템**이다. 암호 서명 체인으로 어떤 콘텐츠가 "정말 인간이 실시간으로 쓴 것"임을 증명한다——AI가 생성한 것도, 나중에 붙여 넣은 것도, 변경된 것도 아니다.
