@@ -303,6 +303,7 @@ async function enterWriterBox(pkg) {
       maxChars: 999999,
       onSeal: function(result) { doFinalSeal(result); }
     });
+    if (_rtWriterBox && typeof _rtWriterBox.setLang === 'function') _rtWriterBox.setLang(curLang);
     if (_rtWriterBox) {
       var origSeal = _rtWriterBox.seal;
       _rtWriterBox.seal = function() {

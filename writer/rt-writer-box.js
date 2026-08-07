@@ -38,7 +38,9 @@ window.RtWriterBox = (function() {
     fr: { placeholder:'Commencez à écrire ici...', sealBtn:'Sceller & ancrer', stampLabel:'tampons', charLabel:'caractères', duration:'Durée', needContent:'Veuillez d\'abord saisir du contenu', stampFail:'Échec du tamponnage', sealing:'Scellement...', sealSuccess:'Scellement réussi', sealFailed:'Échec du scellement', unknownError:'Erreur inconnue', sealSuccessOffline:'Scellé avec succès (hors ligne)', pasteDetected:'Collage massif détecté', noDragDrop:'Glisser-déposer non pris en charge' },
     de: { placeholder:'Beginnen Sie hier zu schreiben...', sealBtn:'Versiegeln & verankern', stampLabel:'Stempel', charLabel:'Zeichen', duration:'Zeit', needContent:'Bitte zuerst Inhalt eingeben', stampFail:'Stempeln fehlgeschlagen', sealing:'Versiegele...', sealSuccess:'Erfolgreich versiegelt', sealFailed:'Versiegelung fehlgeschlagen', unknownError:'Unbekannter Fehler', sealSuccessOffline:'Erfolgreich versiegelt (offline)', pasteDetected:'Großes Einfügen erkannt', noDragDrop:'Drag & Drop wird nicht unterstützt' }
   };
-  var _wbLang = 'zh';
+  var _wbLang = (function() {
+    try { return localStorage.getItem('rt_writer_lang') || 'zh'; } catch(e) { return 'zh'; }
+  })();
   function _t(key) {
     var d = _WB_I18N[_wbLang] || _WB_I18N.zh;
     var v = d[key];
@@ -380,6 +382,7 @@ return {
     if (instances[containerId]) {
       instances[containerId].destroy();
     }
+    try { _wbLang = localStorage.getItem('rt_writer_lang') || 'zh'; } catch(e) { _wbLang = 'zh'; }
     instances[containerId] = createInstance(containerId, options);
     return instances[containerId];
   },
