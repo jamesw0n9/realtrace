@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="README.md">简体中文</a> ·
-  <a href="README.en.md">English</a> ·
+  <a href="README.md">English</a> ·
+  <a href="README.zh.md">简体中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
@@ -17,7 +17,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
-  <img src="docs/demo/realtrace-demo-25s-en.gif" alt="RealTrace demo" width="640" /></video>
+  <img src="docs/demo/realtrace-demo-25s-en.gif" alt="RealTrace demo" width="640" />
   <br />
   <em>25 secondes · du marquage en temps réel à la vérification hors ligne (démo · sans audio)</em>
   <br />

@@ -1,161 +1,161 @@
 <p align="center">
-  <a href="README.md">简体中文</a> ·
-  <a href="README.en.md">English</a> ·
+  <a href="README.md">English</a> ·
+  <a href="README.zh.md">简体中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
   <a href="README.fr.md">Français</a>
 </p>
-# RealTrace · 真迹
+# RealTrace
 
-> **让人类创作，在 AI 时代依然可被证明。**
+> **Human creation should remain provable in the age of AI.**
 >
-> Ed25519 签名链 · 实时打章 · 零内容上传 · 离线验证 · 官方创世链锚定（个人免费）
+> Ed25519 signature chain · Real-time stamping · Zero content upload · Offline verification · Official genesis-chain anchoring (free for individuals)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
-  <img src="docs/demo/realtrace-demo-25s-zh.gif" alt="RealTrace demo" width="640" /></video>
+  <img src="docs/demo/realtrace-demo-25s-en.gif" alt="RealTrace demo" width="640" />
   <br />
-  <em>25 秒 · 从实时打章到离线验证（演示视频 · 无音频）</em>
+  <em>25 seconds · from real-time stamping to offline verification (demo · no audio)</em>
   <br />
-  <a href="docs/demo/realtrace-demo-25s-zh.mp4">▶ 查看完整演示视频（MP4）</a>
+  <a href="docs/demo/realtrace-demo-25s-en.mp4">▶ Watch full demo video (MP4)</a>
 </p>
 
-> 当一切都可以被伪造，真实反而成了奢侈品。**检测器在猜，真迹在证明。**
+> When everything can be forged, authenticity becomes a luxury. **Detectors guess. RealTrace proves.**
 
-真迹（RealTrace）是一套**人类创作在场认证系统**：它用密码学签名链证明一份内容「确实是人类实时写出来的」——不是 AI 生成的、不是事后粘贴的、不是被改过的。
+RealTrace is a **human creation presence certification system**: it uses a cryptographic signature chain to prove that a piece of content "was genuinely written by a human in real time" — not AI-generated, not pasted in afterwards, not altered.
 
 ```text
-人类创作 ── 实时打章 ── 签名链 ── 封章上链 ── 可验证 · 可溯源 · 不可篡改
+Human creation ── real-time stamping ── signature chain ── sealed & anchored ── verifiable · traceable · tamper-proof
 ```
 
 ---
 
-## 宣言
+## Manifesto
 
-2022 年 11 月，ChatGPT 诞生。从那一天起，当一切都可以被伪造，真实反而成了奢侈品。
+In November 2022, ChatGPT was born. From that day on, in a world where everything can be forged, authenticity became a luxury.
 
-AI 可以模仿任何风格——除了你打字的时间。检测器在猜，真迹在证明。
+AI can imitate any style — except the time of your typing. Detectors guess. RealTrace proves.
 
-真迹是一套**人类创作在场认证系统**：从你落笔第一秒起，每一次停顿、每一段删改、每一个字的节奏，都被实时记录，并用 Ed25519 签名锁进一条不可篡改的创作链。写完的那一刻，你拿到一份 `.rt` 链文件——可验证、可溯源、不可篡改。
+RealTrace is a **human creation presence certification system**: from the first second you start writing, every pause, every deletion, every rhythm of your keystrokes is recorded in real time and locked by Ed25519 signatures into an immutable creation chain. When you finish, you hold a `.rt` chain file — verifiable, traceable, tamper-proof.
 
-**这不再是一道选择题。** 每个封章都引用前一个封章的哈希，因果序由密码学锁死，任何回顾性修改在数学上可检测。这是物理与数学给的证据，不是统计模型的猜测。
+**This is no longer a multiple-choice question.** Every seal references the hash of the one before it. The causal order is locked by cryptography; any retrospective modification is mathematically detectable. This is evidence from physics and mathematics, not a guess from a statistical model.
 
-**你是原创者，你该有证据。** 被质疑「这是不是 AI 写的」的时候，不该只能解释。真迹给你一份可以独立验证的在场证明——投稿、维权、举证，创作者不该赤手空拳。
+**You are the author. You deserve proof.** When someone asks "did AI write this?", you shouldn't have to explain. RealTrace gives you an independently verifiable proof of presence — for publishing, for defending your rights, for evidence. Creators shouldn't fight bare-handed.
 
-**你的内容，永远只属于你。** 正文永远留在你的设备上，链上只记录哈希与行为特征。不是我们承诺保护隐私，是架构上根本拿不到你的内容——打章、验章、证书验证全部离线完成，关站也不失效。
+**Your content belongs to you. Always.** The text never leaves your device; the chain only records hashes and behavioral traits. We don't promise to protect your privacy — the architecture makes it impossible for us to have your content. Stamping, verification, and certificate checks all happen offline. The chain keeps working even if our site goes down.
 
-**信任，不该由平台自己说了算。** 子链根哈希锚定进官方创世链，任何平台签出的链都能回溯到同一个公开锚点，独立审计。
+**Trust shouldn't be decided by the platform alone.** Sub-chain root hashes anchor into the official genesis chain. Chains signed on any platform can trace back to the same public anchor for independent audit.
 
-真迹开源，个人免费。每个创作者都可以为自己的创作封章。
+RealTrace is open source. Free for individuals. Every creator can seal their own work.
 
-**你的创作，你的在场证明。**
-
----
-
-## 当人类创作，开始被囤积
-
-2026 年 7 月，法庭解封的文件揭开了 Anthropic 的「巴拿马计划」：通过二手书商批量收购上百万册实体旧书，用液压机切下书脊、逐页扫描，再销毁原书——为的只是让 Claude 多读到一些「人类亲手写的字」。另一案中，未经授权的约 700 万册图书被用于训练，最终以 15 亿美元达成和解，创下美国版权案纪录。
-
-AI 公司正在囤积人类创作。因为它们比任何人都清楚：模型可以无限生成，人类的思考、经历与选择，是有限的。旧书会被买光、扫完、销毁；新一代人类写下的内容，却淹没在 AI 的洪流里，甚至无法证明「这是我写的」。
-
-当人类创作成为稀缺品，它就更需要被证明、被守护。
-
-真迹做的，正是这件事：从你落笔的第一秒起，把创作过程锁进可验证、不可篡改的签名链。你的文字始终属于你，你的创作有在场证明。
-
-**当人类创作成为稀缺品，真迹就是它的在场证明。**
+**Your creation. Your proof of presence.**
 
 ---
 
-## 为什么会有真迹
+## When human creation becomes something to hoard
 
-2022 年 11 月，ChatGPT 诞生。从那一天起，互联网上的一切都变得「不可信任」：新闻、评论、论文、诗歌、代码、合同、诉状——没有任何人，包括作者自己，能凭肉眼分辨一段文字究竟出自人类，还是出自机器。
+In July 2026, unsealed court documents revealed Anthropic's "Project Panama": bulk purchases of over a million used physical books through secondhand dealers — spines sliced off with a hydraulic press, scanned page by page, then destroyed — all so Claude could read more "words written by human hands." In a separate case, roughly 7 million unauthorized books were used for training, ending in a $1.5 billion settlement, a record in U.S. copyright litigation.
 
-比「AI 会写东西」更可怕的，是**当一切都可以被伪造时，真实反而成了奢侈品**。人类创作的价值正在被无声稀释：你的思考、情感、经历与选择，变成了一段与机器输出无法区分的文本。
+AI companies are hoarding human creation. Because they know better than anyone: models can generate endlessly, but human thought, experience, and choice are finite. Old books will be bought up, scanned, and destroyed; the words written by the next generation are drowning in the AI flood — unable even to prove "I wrote this."
 
-真迹要做的，就是给「人类创作」一个密码学意义上的**在场证明**：
+When human creation becomes scarce, it needs to be proven and protected.
 
-- **从落笔第一秒起**：不是事后声明「这是我写的」，而是创作过程实时记录、实时签名；
-- **不依赖平台信誉**：每个签名都可以离线独立验证，数学上可审计；
-- **零内容上传**：正文永远在你手里，链上只记录哈希与行为特征。
+That is exactly what RealTrace does: from the moment you start writing, your creative process is locked into a verifiable, tamper-evident signature chain. Your words always belong to you. Your creation has proof of presence.
 
-> 在 AI 可以模仿一切的时代，人类创作的尊严，值得被捍卫。
+**When human creation becomes scarce, RealTrace is its proof of presence.**
 
 ---
 
-## 我们解决了什么问题
+## Why RealTrace exists
 
-| 问题 | 真迹的方案 |
-|:-----|:-----------|
-| AI 生成内容无法与人类创作区分 | 实时打章：写作过程中自动生成 Ed25519 签名 stamp，记录打字节奏、停顿、删除量等行为特征 |
-| 事后篡改、替换内容无法被发现 | 链式哈希：每个 stamp 引用前一个 stamp 的哈希，任何回顾性修改在数学上可检测 |
-| 内容上传有隐私风险 | 零内容上传：正文只存在本地，链上仅记录内容哈希与行为特征 |
-| 验证依赖服务器，关站即失效 | 完全离线：打章、验章、证书验证全部在本地完成，`.rt` 文件自包含 |
-| 无法溯源「谁签的、哪个版本签的」 | 创世链锚定：子链根哈希提交官方创世链，版本号随链记录，可公开审计 |
+In November 2022, ChatGPT was born. From that day on, everything on the internet became "untrustworthy": news, comments, essays, poetry, code, contracts, lawsuits — no one, not even the author, could tell with the naked eye whether a piece of text came from a human or from a machine.
+
+More frightening than "AI can write things" is this: **when everything can be forged, authenticity becomes a luxury**. The value of human creation is being silently diluted — your thoughts, emotions, experiences and choices become text indistinguishable from machine output.
+
+RealTrace's mission is to give "human creation" a cryptographic **proof of presence**:
+
+- **From the very first second you write**: not an after-the-fact claim of "I wrote this", but real-time recording and signing of the creative process;
+- **No reliance on platform reputation**: every signature can be independently verified offline and mathematically audited;
+- **Zero content upload**: the text always stays in your hands; the chain records only hashes and behavioral traits.
+
+> In an age where AI can imitate everything, the dignity of human creation deserves to be defended.
 
 ---
 
-## 核心原理
+## What problems we solve
 
-**签名链（stamp chain）**——写作过程中的每一次封章，都是签名链上的一个节点：
+| Problem | RealTrace's solution |
+|:--|:--|
+| AI-generated content cannot be distinguished from human creation | Real-time stamping: Ed25519 signature stamps are generated automatically during writing, recording keystroke rhythm, pauses, deletion volume and other behavioral traits |
+| Post-hoc tampering or replacement cannot be detected | Chain hashing: each stamp references the hash of the previous stamp; any retrospective modification is mathematically detectable |
+| Uploading content creates privacy risk | Zero content upload: the text stays local; the chain records only content hashes and behavioral traits |
+| Verification depends on a server; the chain dies when the site goes down | Fully offline: stamping, verification and certificate checks all happen locally; `.rt` files are self-contained |
+| Cannot trace "who signed it, which version was signed" | Genesis-chain anchoring: sub-chain root hashes are submitted to the official genesis chain; versions are recorded with the chain and publicly auditable |
+
+---
+
+## Core principles
+
+**Signature chain (stamp chain)** — every seal during writing is a node on the signature chain:
 
 ```text
 chainHash = SHA-256(sessionId || index || salt || timestamp || contentHash || prevChainHash || nonce)
 signature = Ed25519_sign(chainHash)
 ```
 
-- **因果序不可伪造**：每个 stamp 的哈希都引用前一个 stamp，链的拓扑顺序由 `prevChainHash` 决定，与系统时间无关，无法事后插入或重排；
-- **私钥不可伪造**：Ed25519 签名由本地产出的私钥完成，私钥不出本地；
-- **行为指纹**：每个 stamp 附带打字节奏 / 停顿 / 删除量特征（HMAC 行为链），供可信度分析；
-- **创世链锚定**：子链密钥由官方种子经 HKDF-SHA256 确定性派生，子链根哈希锚定进官方创世链，向上可回溯、向下可溯源（个人免费）。
-- **Merkle 全文绑定**：每次封章同时计算全文 Merkle 根并写入链，支持后续选择性披露任意段落而不暴露全文。
+- **Causal order cannot be forged**: each stamp's hash references the previous stamp; the chain's topological order is determined by `prevChainHash`, independent of system time — it cannot be inserted or reordered afterwards;
+- **Private keys cannot be forged**: Ed25519 signatures are produced by a locally generated private key that never leaves your device;
+- **Behavioral fingerprint**: each stamp carries keystroke rhythm / pause / deletion traits (HMAC behavior chain) for credibility analysis;
+- **Genesis-chain anchoring**: sub-chain keys are deterministically derived from the official seed via HKDF-SHA256; sub-chain root hashes anchor into the official genesis chain — traceable upward and downward (free for individuals).
+- **Full-text Merkle binding**: every seal also computes the full-text Merkle root and writes it into the chain, enabling selective disclosure of any passage without exposing the whole text.
 
-**链文件格式（`.rt`）**：ZIP 容器，内含 `chain.json`（签名链）与 `meta.json`（版本、时间、证书元数据）。链只记录「创作过程证据」，不包含正文。
+**Chain file format (`.rt`)**: a ZIP container holding `chain.json` (signature chain) and `meta.json` (version, time, certificate metadata). The chain records only "creative process evidence", never the content.
 
-详见 [`docs/chain-spec.md`](docs/chain-spec.md) 与 [`docs/rt-file-format.md`](docs/rt-file-format.md)。
+See [`docs/chain-spec.md`](docs/chain-spec.md) and [`docs/rt-file-format.md`](docs/rt-file-format.md).
 
 ---
 
-## 快速开始
+## Quick start
 
-### 1. 本地打开写作工具（无需服务器）
+### 1. Open the writer locally (no server needed)
 
-直接双击 `writer/index.html`，或任意静态服务器托管本仓库根目录：
+Double-click `writer/index.html`, or serve the repo root with any static server:
 
 ```bash
 npx serve .
-# 打开 http://localhost:3000/writer/
+# open http://localhost:3000/writer/
 ```
 
-- 进入写作页先选择「匿名写作」或「导入 .rt 续写」，再进入写作框；输入内容即自动打章；
-- 点击「封章上链」确认封章，跳转离线认证页，可下载 `.txt` 原文与 `.rt` 链文件（纯本地导出，内容不上传）；
-- 打开 `verify/index.html` 拖入 `.rt` 文件，即可全离线验证链的完整性。
+- Choose "Anonymous writing" or "Import .rt to continue" before entering the editor; content is stamped automatically as you type;
+- Click "Seal & Anchor" to confirm: you are redirected to the offline verification page to download the `.txt` original and the `.rt` chain file (purely local export, no upload);
+- Open `verify/index.html` and drag in the `.rt` file to verify chain integrity fully offline.
 
-### 2. 启用官方创世链锚定（可选，个人免费）
+### 2. Enable official genesis-chain anchoring (optional, free for individuals)
 
 ```bash
 copy config.example.js config.js
 ```
 
-编辑 `config.js`：
+Edit `config.js`:
 
 ```js
 window.RT_CONFIG = {
   anchor: {
-    apiBase: "https://官方锚定服务地址",   // 以官方发布为准
-    genesisPublicKey: "官方创世链根公钥",
-    enabled: true                          // 封章时提交链根上链
+    apiBase: "https://official-anchor-service",  // use the official published address
+    genesisPublicKey: "official-genesis-root-public-key",
+    enabled: true                                // submit chain root on sealing
   }
 };
 ```
 
-> `config.js` 已被 `.gitignore` 忽略，包含你自己的端点配置也不会误提交。
-> 个人创作上链**免费**；企业 / 平台合作按授权（商业合作请联系官方）。
+> `config.js` is ignored by `.gitignore`, so your own endpoint configuration will not be committed by accident.
+> Anchoring your personal creations to the chain is **free**; enterprise / platform cooperation is licensed (contact us for commercial collaboration).
 
-### 3. 运行测试
+### 3. Run tests
 
 ```bash
 npm test
@@ -163,129 +163,128 @@ npm test
 
 ---
 
-## 目录结构
+## Directory structure
 
-| 路径 | 说明 |
-|:-----|:-----|
-| `core/` | 纯前端核心（浏览器 IIFE，零构建依赖）：打章 `stamp.js`、密码学 `rt-crypto.js`、离线验证 `rt-verifier.js`、链文件 `rt-export.js`、Merkle 披露 `rt-merkle.js`、时间轴 `rt-timeline.js`、文件下载 `rt-downloader.js` |
-| `writer/` | 写作工具（单页 HTML）：自动打章 + 封章下载 |
-| `verify/` | 离线链验证页：拖入 `.rt` 即可验证 |
-| `anchor/` | 官方创世链锚定客户端（个人免费） |
-| `docs/` | 链规格、rt 文件格式、锚定 API 文档 |
-| `test/` | Node 回归测试（24/24 通过） |
-
----
-
-## 项目是怎么发展起来的
-
-| 时间 | 里程碑 |
-|:-----|:-------|
-| 2022.11 | **起点**：ChatGPT 发布，「AI 生成内容无法被肉眼分辨」成为现实，诞生「人类创作在场证明」构想 |
-| 2026.06 | **首个完整实现落地**：链式打章 → 封章 → 离线验证 → 自包含证书全链路打通；同步完成 11 项发明专利布局，母案提交专利代理机构 |
-| 2026.07 | **模块化重构**：打章核心 `stamp.js` 独立成模块，密码学工具库 `rt-crypto.js` 分层，写作框 / 验证器 / 锚定服务解耦；正式更名 **RealTrace**；官方创世链锚定服务上线 |
-| 2026.08 | **开源 MVP v0.1.0 发布**（AGPL-3.0 + 商业双许可）；企业授权模式进入规划 |
-| 2026.08 | **v0.2.0 发布**：Merkle 选择性披露 + 生成披露证明、六语界面、链 ID 命名规则、创作模式选择、时间轴模块化 |
-
-| 2026.08 | **v0.3.0 发布**：创世链锚定队列（离线排队 + 自动补传 + 签名防冒领），写作页集成六语上链队列面板 |
-| 2026.08 | **v0.4.0 发布**：身份模块（.rtkey 导出/导入、密码加密身份恢复、封章嵌入身份）、链格式 v3 合并语义（同密钥续链 / 跨密钥聚合容器）、跨浏览器验证器 |
+| Path | Description |
+|:--|:--|
+| `core/` | Pure front-end core (browser IIFE, zero build dependencies): stamping `stamp.js`, cryptography `rt-crypto.js`, offline verification `rt-verifier.js`, chain file `rt-export.js`, Merkle disclosure `rt-merkle.js`, timeline `rt-timeline.js`, file download `rt-downloader.js` |
+| `writer/` | Writing tool (single-page HTML): automatic stamping + seal download |
+| `verify/` | Offline chain verification page: drag in a `.rt` file to verify |
+| `anchor/` | Official genesis-chain anchoring client (free for individuals) |
+| `docs/` | Chain spec, rt file format, anchoring API docs |
+| `test/` | Node regression tests (24/24 passing) |
 
 ---
 
-## 本版本包含哪些功能（v0.4.0）
+## How the project grew
 
-本仓库是 **开源完整版**：实现「写作 → 打章 → 封章 → 验证 → 身份续写 → 链合并」完整闭环。本版本已包含：
-
-- **实时打章**：写作过程中自动生成 Ed25519 签名 stamp，记录打字节奏、停顿、删除量等行为特征；
-- **防篡改链**：每个 stamp 引用前一个 stamp 的链哈希，任何回顾性修改在数学上可检测；
-- **零内容上传**：正文只存在本地，链上仅记录内容哈希与行为特征；
-- **离线验证**：`.rt` 链文件可完全离线验证，不依赖任何服务器；
-- **行为指纹**：打字节奏 / 停顿 / 删除量特征（HMAC 行为链），供可信度分析；
-- **创世链锚定（可选，个人免费）**：封章后提交链根哈希到官方创世链，形成公开可审计溯源；
-- **版本可溯源**：`.rt` 包内 `meta.json` 记录 `appVersion`，`chain.json` 记录链格式 `version`，封章上链时携带版本号。
-- **Merkle 选择性披露**：每章绑定全文 Merkle 根，可只披露任意段落而不暴露全文；
-- **生成披露证明**：离线认证页一键生成段落披露证明，附 Merkle 路径可视化，复制 JSON 即可自证；
-- **六语界面**：写作页 / 离线认证页 / 官网支持 简体中文 · English · 日本語 · 한국어 · Deutsch · Français；
-- **链 ID 命名规则**：公钥 + 根哈希双绑定的 23 位链 ID（`web-personal-…`），可验证、不可反推；
-- **创作模式选择**：进入写作前选择「匿名写作」或「导入 .rt 续写」，续写自动延续原链并同步状态栏。
-- **时间轴模块化**：可缩放直方图时间轴剥离为独立共用模块 `core/rt-timeline.js`，写作节奏一目了然。
-
-- **创世链锚定队列**：封章后链元数据先入本地队列，联网自动补传；Ed25519 签名（`chainId|rootHash`）防冒领；
-- **上链队列面板（六语）**：写作页 ⛓ 状态指示 / 一键手动同步 / 自动同步开关，保持零内容上传；
-- **隐私须知更新**：明确说明封章后仅链元数据可能同步至创世链，可在「⛓」面板关闭自动同步。
-
-- **身份模块**：PBKDF2-SHA256（60 万次迭代）+ AES-256-GCM 加密身份密钥；可导出/导入 `.rtkey` 身份密钥文件，导入带身份的 `.rt` 用密码恢复创作者身份，封章自动嵌入加密身份，同一密钥可持续续写原链；
-- **链格式 v3 合并语义**：同密钥续写自动延续原链（`mergeChainsVerified` 重签验证）；跨密钥可聚合为容器（`aggregateChains`），逐子链独立验证；
-- **跨浏览器验证器**：tweetnacl 统一验签，WebCrypto 仅作回退，验证结果各浏览器一致。
-
-> 完整变更记录见 [CHANGELOG.md](CHANGELOG.md)。
-
-所有功能保持向后兼容：旧版本生成的 `.rt` 链文件在后续版本必须可验证、可追溯。
+| Date | Milestone |
+|:--|:--|
+| 2022.11 | **Origin**: ChatGPT launched; "AI-generated content can no longer be told apart by eye" became reality, giving birth to the idea of a "human creation proof of presence" |
+| 2026.06 | **First complete implementation**: chain stamping → sealing → offline verification → self-contained certificate, end to end; 11 invention patents laid out in parallel, parent case filed with the patent agency |
+| 2026.07 | **Modular refactor**: stamping core `stamp.js` extracted as a module, crypto toolkit `rt-crypto.js` layered, writer / verifier / anchor service decoupled; officially renamed **RealTrace**; official genesis-chain anchoring service launched |
+| 2026.08 | **Open-source MVP v0.1.0 released** (AGPL-3.0 + commercial dual license); enterprise licensing model under planning |
+| 2026.08 | **v0.2.0 released**: Merkle selective disclosure + disclosure proof generation, six-language UI, chain ID naming rules, creation-mode selection, modular timeline |
+| 2026.08 | **v0.3.0 released**: genesis anchor queue (offline queueing + auto-retry + signature anti-hijack), six-language anchor queue panel integrated into the writer |
+| 2026.08 | **v0.4.0 released**: identity module (.rtkey export/import, password-encrypted identity recovery, seal-embedded identity), chain format v3 merge semantics (same-key continuation / cross-key aggregate container), cross-browser verifier |
 
 ---
 
-## 与现有方案的区别
+## What's in this release (v0.4.0)
 
-| | 真迹 RealTrace | 普通电子签名 | TSA 时间戳 | 版权登记 |
+This repository is a **complete open-source build**: it implements the full "write → stamp → seal → verify → identity continuation → chain merge" loop. This release includes:
+
+- **Real-time stamping**: Ed25519 signature stamps generated automatically during writing, recording keystroke rhythm, pauses, deletion volume and other behavioral traits;
+- **Tamper-proof chain**: each stamp references the chain hash of the previous stamp; any retrospective modification is mathematically detectable;
+- **Zero content upload**: the text stays local; the chain records only content hashes and behavioral traits;
+- **Offline verification**: `.rt` chain files can be fully verified offline, with no server dependency;
+- **Behavioral fingerprint**: keystroke rhythm / pause / deletion traits (HMAC behavior chain) for credibility analysis;
+- **Genesis-chain anchoring (optional, free for individuals)**: after sealing, the chain root hash is submitted to the official genesis chain, forming publicly auditable provenance;
+- **Version traceability**: `.rt` packages record `appVersion` in `meta.json` and chain format `version` in `chain.json`; the version is carried when anchoring to the chain.
+- **Merkle selective disclosure**: every seal binds a full-text Merkle root, so any passage can be disclosed without revealing the whole text;
+- **Disclosure proof generation**: one-click proof for any passage on the offline verification page, with Merkle path visualization and copyable JSON;
+- **Six-language UI**: writer / verifier / website in 简体中文 · English · 日本語 · 한국어 · Deutsch · Français;
+- **Chain ID naming rules**: 23-character chain ID (`web-personal-…`) binding public key + root hash — verifiable, not reversible;
+- **Creation-mode selection**: choose "Anonymous writing" or "Import .rt to continue" before writing; continuing automatically extends the original chain.
+- **Modular timeline**: the scalable histogram timeline is extracted into the shared module `core/rt-timeline.js`, making the writing rhythm visible at a glance.
+
+- **Genesis anchor queue**: after sealing, chain metadata is queued locally first and auto-synced when back online; an Ed25519 signature (`chainId|rootHash`) prevents claim hijacking;
+- **Anchor queue panel (six languages)**: ⛓ status indicator / one-click manual sync / auto-sync toggle in the writer — zero-content upload maintained;
+- **Privacy notice update**: clarifies that after sealing, only chain metadata may sync to the genesis chain, and that auto-sync can be disabled in the ⛓ panel.
+
+- **Identity module**: PBKDF2-SHA256 (600K iterations) + AES-256-GCM encrypted identity key; export / import `.rtkey` identity key files; importing an identity-bearing `.rt` restores the creator via password; sealing embeds the encrypted identity so the same key can continue the original chain;
+- **Chain format v3 — merge semantics**: same-key continuation automatically extends the original chain (`mergeChainsVerified` re-signs and verifies); cross-key chains can be aggregated into a container (`aggregateChains`), verified sub-chain by sub-chain;
+- **Cross-browser verifier**: unified tweetnacl signature verification with WebCrypto as fallback only — consistent results across browsers.
+
+> Full changelog: [CHANGELOG.md](CHANGELOG.md).
+
+All features remain backward compatible: `.rt` chain files generated by older versions must remain verifiable and traceable in later versions.
+
+---
+
+## How we differ from existing solutions
+
+| | RealTrace | Ordinary e-signature | TSA timestamp | Copyright registration |
 |:--|:--|:--|:--|:--|
-| 证明「内容是人实时写的」 | ✅ 过程级证据链 | ❌ 只证明签名者身份 | ❌ 只证明时间 | ❌ 事后登记 |
-| 防止事后篡改 | ✅ 链式哈希 + 签名 | ⚠️ 仅签名对象 | ⚠️ 仅哈希对象 | ❌ |
-| 覆盖创作全过程 | ✅ 从落笔到封章 | ❌ | ❌ | ❌ |
-| 离线可验证 | ✅ 自包含 `.rt` | ⚠️ 依赖公钥体系 | ⚠️ 依赖在线服务 | ❌ 依赖登记机构 |
-| 隐私（内容不上传） | ✅ 零内容上传 | — | — | ❌ 需提交内容 |
+| Proves "content was written by a human in real time" | ✅ process-level evidence chain | ❌ only proves signer identity | ❌ only proves time | ❌ after-the-fact registration |
+| Prevents post-hoc tampering | ✅ chain hashing + signature | ⚠️ signature object only | ⚠️ hash object only | ❌ |
+| Covers the whole creative process | ✅ from first keystroke to seal | ❌ | ❌ | ❌ |
+| Offline verifiable | ✅ self-contained `.rt` | ⚠️ depends on PKI | ⚠️ depends on online service | ❌ depends on registration body |
+| Privacy (no content upload) | ✅ zero content upload | — | — | ❌ content must be submitted |
 
 ---
 
-## 使用场景
+## Use cases
 
-- **创作者投稿**：作品被质疑「这是不是 AI 写的」时，一份 `.rt` 在场证明就能说明创作过程——字数、耗时、创作节奏，人人可核对；
-- **版权维权**：举证不再是口头声明。链上的行为指纹与签名链，为原创过程提供可审计的证据；
-- **出版方 / 内容社区**：核验投稿是否为真人实时创作，而不是事后粘贴或机器批量生成；
-- **学术场景**：论文、课题、技术文档的原创过程佐证，让「我写的」有据可查。
+- **Creators submitting work**: when your work is questioned with "did AI write this?", a `.rt` proof of presence explains the creative process — word count, time spent, creative rhythm, verifiable by anyone;
+- **Copyright defense**: evidence is no longer a verbal claim. The behavioral fingerprint and signature chain on the chain provide auditable evidence of the original creative process;
+- **Publishers / content communities**: verify whether a submission was genuinely created in real time by a human, rather than pasted in afterwards or batch-generated by machines;
+- **Academic scenarios**: original-process evidence for papers, projects and technical documents, so "I wrote this" has something to stand on.
 
-> 创作者不该赤手空拳地面对质疑。
-
----
-
-## 隐私与安全
-
-- 默认**零内容上传**：写作内容只存在于本地，链上只记录内容哈希与行为特征；
-- `.rt` 链文件完全由你掌控，可本地保管或自行加密备份；
-- 官方锚定仅提交链根哈希与签名元数据，不提交正文；
-- 所有验证逻辑开源，可自行审计；
-- 发现安全漏洞请私信维护者，修复前请勿公开披露。
+> Creators shouldn't have to face suspicion bare-handed.
 
 ---
 
+## Privacy & security
+
+- **Zero content upload** by default: your writing stays local; the chain records only content hashes and behavioral traits;
+- `.rt` chain files are fully under your control — store them locally or back them up with your own encryption;
+- Official anchoring submits only the chain root hash and signature metadata, never the content;
+- All verification logic is open source and auditable;
+- If you find a security vulnerability, message the maintainers privately; do not disclose publicly before a fix is ready.
+
 ---
 
-## 赞助 · Sponsor
+---
 
-喜欢这个项目？请我喝杯咖啡 ☕：
+## Sponsor · Buy me a coffee
+
+Enjoy the project? Buy me a coffee ☕:
 
 - [GitHub Sponsors](https://github.com/sponsors/jamesw0n9)
 - [Ko-fi](https://ko-fi.com/realtrace)
-- 国内赞助：支付宝 / 微信扫码（仅个人小额打赏，非商业授权）
+- China: Alipay / WeChat Pay QR codes (personal small tips only, not a commercial license)
 
-| 支付宝 Alipay | 微信 WeChat Pay |
+| Alipay | WeChat Pay |
 |:---:|:---:|
-| <img src="site/sponsor/alipay.png" width="130" alt="支付宝收款码"> | <img src="site/sponsor/wechat.png" width="130" alt="微信收款码"> |
+| <img src="site/sponsor/alipay.png" width="130" alt="Alipay QR"> | <img src="site/sponsor/wechat.png" width="130" alt="WeChat Pay QR"> |
 
-> 赞助只是表达支持，**不是商业授权**：个人使用始终免费；企业 / 平台集成仍按 [`LICENSE.commercial`](LICENSE.commercial) 另行授权。
-
----
-
-## 开源与商业
-
-**AGPL-3.0 + 商业双许可**（开源部分以 [`LICENSE`](LICENSE) 的 AGPL-3.0 全文为准）：
-
-- **个人用户**：自由使用、修改、分发；自建 / 自签创作链完全免费，可离线自证；锚定官方创世链个人免费；
-- **非商业组织 / 小圈子**（公办 / 非营利学校、作家协会、行业协会等，以非营利登记 / 社团法人证明为准）：成员内部自用免费；不得对外收费、不得作为公共平台运营、不得转售或集成后分发；
-- **企业 / 平台**：企业合作按授权，详见 [`LICENSE.commercial`](LICENSE.commercial)。
-
-> 个人使用免费；企业 / 平台商业集成须另行授权。欢迎提交 Issue 与 Pull Request，优先处理链格式兼容性、验证正确性、隐私安全问题。
+> Sponsorship is just a token of support — **it is not a commercial license**. Personal use stays free; enterprise / platform integration is licensed separately via [`LICENSE.commercial`](LICENSE.commercial).
 
 ---
 
-**你的创作，你的在场证明。**
+## Open source & commercial
 
-在 AI 可以模仿一切的时代，人类创作的尊严，值得被捍卫。
+**AGPL-3.0 + commercial dual license** (the open-source part is governed by the full AGPL-3.0 text in [`LICENSE`](LICENSE)):
+
+- **Individuals**: free to use, modify and distribute; self-built / self-signed creation chains are completely free and can be self-verified offline; anchoring to the official genesis chain is free for individuals;
+- **Non-commercial organizations / small circles** (public or non-profit schools, writers' / industry associations, etc., verified by non-profit registration / legal-entity certificate): free for internal member use only — no external paid services, no public platform operation, no resale or redistribution after integration;
+- **Enterprises / platforms**: cooperation is licensed — see [`LICENSE.commercial`](LICENSE.commercial).
+
+> Free for personal use; enterprise / platform commercial integration requires a separate license. Issues and Pull Requests are welcome — chain-format compatibility, verification correctness and privacy/security issues get priority.
+
+---
+
+**Your creation. Your proof of presence.**
+
+In an age where AI can imitate everything, the dignity of human creation deserves to be defended.
