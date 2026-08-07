@@ -24,7 +24,7 @@ test('构建 .rt ZIP 包（含 chain.json + meta.json）', async () => {
   assert.ok(zip.file('meta.json'), 'zip 内含 meta.json');
 
   const chainJson = JSON.parse(await zip.file('chain.json').async('string'));
-  assert.equal(chainJson.version, '2.1');
+  assert.equal(chainJson.version, '3.0');
   assert.equal(chainJson.stamps.length, 3);
   // 链 ID 命名规则：来源-归属-cid（cid 可验证，BZ-007 第八章）
   const chainIdParts = chainJson.chainId.split('-');
@@ -34,7 +34,7 @@ test('构建 .rt ZIP 包（含 chain.json + meta.json）', async () => {
   const expectedCid = await globalThis.RtExport.deriveCid(globalThis.StampChain.b2h(keyPair.publicKey), chainJson.hashChain.current);
   assert.equal(chainIdParts[2], expectedCid);
   assert.ok(chainJson.hashChain && chainJson.hashChain.current, 'hashChain.current 存在');
-  // V2.1: .rt 链文件携带完整可验证字段（chain-spec §1），离线验证器可直接重算验证
+  // V3.0: .rt 链文件携带完整可验证字段（chain-spec §1），离线验证器可直接重算验证
   const v2stamp = chainJson.stamps[0];
   assert.equal(v2stamp.index, 0, '创世章 index=0');
   assert.equal(v2stamp.prevChainHash, '', '创世章 prevChainHash 为空串');
@@ -62,8 +62,42 @@ test('导出辅助函数（时长/速度/加密标识/内容提取）', async ()
   assert.equal(globalThis.RtExport.hasEncryptedKey({ skEncrypted: 'abc' }), true);
   assert.equal(globalThis.RtExport.hasEncryptedKey({ pk: 'hex', skEncrypted: null }), false);
 
-  // V2.0.0 不含正文
+  // V3.0.0 不含正文
   assert.equal(globalThis.RtExport.extractContent({ rtVersion: '2.0' }), '');
   // 旧格式兼容
   assert.equal(globalThis.RtExport.extractContent({ rtVersion: '1.0', contentRaw: '旧内容' }), '旧内容');
+});
+
+
+test('buildRtPackageWithKey 身份往返：导出→chain.json→恢复私钥', async () => {
+  loadBrowserScript('core/key-vault.js');
+  loadBrowserScript('core/rt-export.js');
+  const kp = globalThis.nacl.sign.keyPair();
+  const { chain } = await buildTestChain('file-identity-001', 3);
+  const blob = await globalThis.RtExport.buildRtPackageWithKey({
+    stamps: chain.stamps,
+    sessionId: 'file-identity-001',
+    publicKeyHex: globalThis.StampChain.b2h(kp.publicKey),
+    kp: kp
+  }, 'pure-chain', null, 'identity-pass-123');
+  assert.ok(blob, '应生成含身份 Blob');
+  const buf = Buffer.from(await blob.arrayBuffer());
+  const zip = await globalThis.JSZip.loadAsync(buf);
+  const chainJson = JSON.parse(await zip.file('chain.json').async('string'));
+  assert.ok(chainJson.skEncrypted, 'chain.json 含加密身份');
+  assert.ok(chainJson.kdf && chainJson.kdf.salt && chainJson.kdf.iterations, 'kdf 元数据完整');
+  assert.ok(chainJson.cipher && chainJson.cipher.iv, 'cipher 元数据完整');
+  // 重建 v2 payload → 解密 → 与原私钥一致
+  const payload = {
+    v: 2,
+    kdf: chainJson.kdf.algorithm || 'PBKDF2-SHA256',
+    iter: chainJson.kdf.iterations || 600000,
+    saltHex: chainJson.kdf.salt,
+    ivHex: chainJson.cipher.iv,
+    dataHex: chainJson.skEncrypted
+  };
+  const secretHex = await globalThis.RtKeyVault.importEncryptedKey(payload, 'identity-pass-123');
+  assert.equal(secretHex, globalThis.StampChain.b2h(kp.secretKey), '恢复的私钥与原私钥一致');
+  // hasEncryptedKey 识别 v2 格式
+  assert.equal(globalThis.RtExport.hasEncryptedKey({ encryptedPrivateKey: payload }), true);
 });

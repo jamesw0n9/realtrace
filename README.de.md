@@ -13,7 +13,7 @@
 > Ed25519-Signaturkette · Echtzeit-Stempeln · Keine Inhalts-Uploads · Offline-Verifizierung · Offizielle Genesis-Ketten-Ankerung (für Einzelpersonen kostenlos)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > Wenn alles gefälscht werden kann, wird Authentizität zum Luxusgut. **Detektoren raten. RealTrace beweist.**
@@ -164,7 +164,7 @@ npm test
 | `verify/` | Offline-Verifizierungsseite: `.rt`-Datei hineinziehen und prüfen |
 | `anchor/` | Offizieller Genesis-Ketten-Ankerungs-Client (für Einzelpersonen kostenlos) |
 | `docs/` | Ketten-Spezifikation, rt-Dateiformat, Anker-API-Dokumentation |
-| `test/` | Node-Regressionstests (12/12 bestanden) |
+| `test/` | Node-Regressionstests (24/24 bestanden) |
 
 ---
 
@@ -178,10 +178,11 @@ npm test
 | 2026.08 | **Open-Source-MVP v0.1.0 veröffentlicht** (AGPL-3.0 + kommerzielle Dual-Lizenz); Unternehmenslizenzmodell in Planung |
 | 2026.08 | **v0.2.0 veröffentlicht**: Merkle-selektive Offenlegung + Offenlegungsnachweis-Generierung, sechssprachige Oberfläche, Chain-ID-Namensregeln, Wahl des Schreibmodus, modulares Timeline |
 | 2026.08 | **v0.3.0 veröffentlicht**: Genesis-Anker-Warteschlange (Offline-Warteschlange + automatische Wiederholung + Signatur gegen Fälschung), sechssprachiges Anker-Panel in der Writer-Seite |
+| 2026.08 | **v0.4.0 veröffentlicht**: Identitätsmodul (.rtkey-Export/-Import, passwortverschlüsselte Identitätswiederherstellung, beim Siegeln eingebettete Identität), Chain-Format v3 mit Merge-Semantik (Fortsetzung mit gleichem Schlüssel / Aggregat-Container über Schlüssel hinweg), browserübergreifender Verifier |
 
 ---
 
-## Was diese Version enthält (v0.3.0)
+## Was diese Version enthält (v0.4.0)
 
 Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollständigen Kreislauf „Schreiben → Stempeln → Besiegeln → Verifizieren" mit möglichst wenig Code. Diese Version enthält:
 
@@ -202,6 +203,10 @@ Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollstä
 - **Genesis-Anker-Warteschlange**: Nach dem Versiegeln werden Ketten-Metadaten zuerst lokal in die Warteschlange geschrieben und bei Netzwiederkehr automatisch nachgesendet. Ed25519-Signatur (`chainId|rootHash`) verhindert Fälschung;
 - **Anker-Panel (sechssprachig)**: ⛓ Statusanzeige / Ein-Klick-Manual-Sync / Auto-Sync-Umschalter in der Writer-Seite – Zero-Content-Upload bleibt gewahrt;
 - **Datenschutzhinweis aktualisiert**: Klarstellung, dass nach dem Versiegeln nur Ketten-Metadaten mit der Genesis-Kette synchronisiert werden können und dass Auto-Sync im „⛓“-Panel deaktiviert werden kann.
+
+- **Identitätsmodul**: PBKDF2-SHA256 (600.000 Iterationen) + AES-256-GCM verschlüsselter Identitätsschlüssel. `.rtkey`-Dateien können exportiert/importiert werden; beim Import einer `.rt` mit Identität wird die Urheberidentität per Passwort wiederhergestellt; beim Siegeln wird der verschlüsselte Identitätsschlüssel eingebettet, sodass dieselbe Kette mit demselben Schlüssel fortgesetzt werden kann;
+- **Chain-Format v3 – Merge-Semantik**: Fortsetzen mit demselben Schlüssel verlängert automatisch die ursprüngliche Kette (`mergeChainsVerified` signiert neu und verifiziert); Ketten verschiedener Schlüssel lassen sich zu einem Aggregat-Container (`aggregateChains`) bündeln und je Teilkette unabhängig prüfen;
+- **Browserübergreifender Verifier**: einheitliche Signaturprüfung über tweetnacl; WebCrypto nur als Fallback – konsistente Ergebnisse in allen Browsern.
 
 > Vollständige Änderungshistorie: [CHANGELOG.md](CHANGELOG.md).
 

@@ -13,7 +13,7 @@
 > Ed25519 签名链 · 实时打章 · 零内容上传 · 离线验证 · 官方创世链锚定（个人免费）
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > 当一切都可以被伪造，真实反而成了奢侈品。**检测器在猜，真迹在证明。**
@@ -164,7 +164,7 @@ npm test
 | `verify/` | 离线链验证页：拖入 `.rt` 即可验证 |
 | `anchor/` | 官方创世链锚定客户端（个人免费） |
 | `docs/` | 链规格、rt 文件格式、锚定 API 文档 |
-| `test/` | Node 回归测试（12/12 通过） |
+| `test/` | Node 回归测试（24/24 通过） |
 
 ---
 
@@ -178,10 +178,11 @@ npm test
 | 2026.08 | **开源 MVP v0.1.0 发布**（AGPL-3.0 + 商业双许可）；企业授权模式进入规划 |
 | 2026.08 | **v0.2.0 发布**：Merkle 选择性披露 + 生成披露证明、六语界面、链 ID 命名规则、创作模式选择、时间轴模块化 |
 | 2026.08 | **v0.3.0 发布**：创世链锚定队列（离线排队 + 自动补传 + 签名防冒领），写作页集成六语上链队列面板 |
+| 2026.08 | **v0.4.0 发布**：身份模块（.rtkey 导出/导入、密码加密身份恢复、封章嵌入身份）、链格式 v3 合并语义（同密钥续链 / 跨密钥聚合容器）、跨浏览器验证器 |
 
 ---
 
-## 本版本包含哪些功能（v0.3.0）
+## 本版本包含哪些功能（v0.4.0）
 
 本仓库是 **MVP 最小版**：以最少的代码实现「写作 → 打章 → 封章 → 验证」完整闭环。本版本已包含：
 
@@ -202,6 +203,10 @@ npm test
 - **创世链锚定队列**：封章后链元数据先入本地队列，联网自动补传；Ed25519 签名（`chainId|rootHash`）防冒领；
 - **上链队列面板（六语）**：写作页 ⛓ 状态指示 / 一键手动同步 / 自动同步开关，保持零内容上传；
 - **隐私须知更新**：明确说明封章后仅链元数据可能同步至创世链，可在「⛓」面板关闭自动同步。
+
+- **身份模块**：PBKDF2-SHA256（60 万次迭代）+ AES-256-GCM 加密身份密钥；可导出/导入 `.rtkey` 身份密钥文件，导入带身份的 `.rt` 用密码恢复创作者身份，封章自动嵌入加密身份，同一密钥可持续续写原链；
+- **链格式 v3 合并语义**：同密钥续写自动延续原链（`mergeChainsVerified` 重签验证）；跨密钥可聚合为容器（`aggregateChains`），逐子链独立验证；
+- **跨浏览器验证器**：tweetnacl 统一验签，WebCrypto 仅作回退，验证结果各浏览器一致。
 
 > 完整变更记录见 [CHANGELOG.md](CHANGELOG.md)。
 

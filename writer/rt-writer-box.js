@@ -164,8 +164,19 @@ window.RtWriterBox = (function() {
     area.addEventListener('drop', function(e) { e.preventDefault(); showToast(_t('noDragDrop'), 'error'); });
     btn.addEventListener('click', sealNow);
     updateStats();
+    // 身份恢复：由宿主页面在密码解密后调用，续写继续用原私钥（链连续性）
+    function setIdentity(secretKeyHex) {
+      if (!window.nacl || !window.nacl.sign || typeof secretKeyHex !== 'string' || !/^[0-9a-f]{128}$/i.test(secretKeyHex)) {
+        throw new Error('invalid identity secret key');
+      }
+      var kp = nacl.sign.keyPair.fromSecretKey(StampChain.h2b(secretKeyHex));
+      state.kp = kp;
+      state.publicKey = StampChain.b2h(kp.publicKey);
+      return { publicKeyHex: state.publicKey };
+    }
     async function importRt(pkg) {
       if (!pkg || !pkg.stamps || pkg.stamps.length === 0) {
+        if (pkg && pkg.format === 'aggregate') throw new Error('aggregate chain cannot be extended directly');
         throw new Error('invalid chain file');
       }
       var stamps = pkg.stamps.slice();
@@ -200,7 +211,7 @@ window.RtWriterBox = (function() {
       btn.textContent = _t('sealBtn');
       updateStats();
     }
-    return { seal: sealNow, importRt: importRt, getState: function() { return state; }, setLang: setLang, destroy: function() { el.innerHTML = ''; } };
+    return { seal: sealNow, importRt: importRt, setIdentity: setIdentity, getState: function() { return state; }, setLang: setLang, destroy: function() { el.innerHTML = ''; } };
   }
 
 C.Core = {
@@ -378,3 +389,4 @@ return {
 };
 
 })();
+

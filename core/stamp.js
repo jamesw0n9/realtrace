@@ -1,5 +1,5 @@
 // ========================================
-// rt · Stamp 链引擎（核心模块）V2.2.0
+// rt · Stamp 链引擎（核心模块）V3.0.0
 // 纯逻辑层，零 DOM 依赖
 // 通过 RtCrypto 提供者系统实现密码学操作
 // chainHash = SHA-256(sessionId||index||salt||timestamp||contentHash||prevChainHash||nonce) (F2 标准)
@@ -10,7 +10,7 @@
 window.StampChain = (() => {
   'use strict';
 
-  var VERSION = '2.2.0';
+  var VERSION = '3.0.0';
 
   // ── 内部工具 ──────────────────────────────────────
   var b2h = (typeof window !== 'undefined' && window.b2h) || function(arr) {
@@ -200,6 +200,10 @@ window.StampChain = (() => {
   // 与 rt-verifier / 服务端 verifyStandardizedChain 一致
   async function verifyChain(stamps, publicKey) {
     var errors = [];
+    // v3 聚合链容器请使用 RtVerifier.verifyPackage 逐子链验证
+    if (stamps && stamps.format === 'aggregate' && Array.isArray(stamps.subChains)) {
+      return { valid: false, errors: ['Aggregate container: use RtVerifier.verifyPackage'], stampCount: 0 };
+    }
     if (!stamps || stamps.length === 0) {
       return { valid: false, errors: ['No stamps'], stampCount: 0 };
     }
@@ -253,9 +257,13 @@ window.StampChain = (() => {
     return { valid: errors.length === 0, errors: errors, stampCount: stamps.length };
   }
 
-  // ── 合并多条链 ──────────────────────────────────
+  // ── 合并多条链（v3） ─────────────────────────────
+  // mergeChains: 仅按时间排序的展示视图，不重写 index/seq/chainHash/签名，
+  //              不具备密码学连续性（displayOnly）。可验证的合并请用：
+  //              - mergeChainsVerified(chains, keyPair)  同私钥连续合并（重签，可验证）
+  //              - aggregateChains(chains)               跨私钥/多创作者聚合容器
   function mergeChains(chains) {
-    if (!chains || chains.length === 0) return { stamps: [] };
+    if (!chains || chains.length === 0) return { format: 'display', stamps: [], sessionId: 'merged', _mergeInfo: { displayOnly: true } };
     var all = [];
     chains.forEach(function(c) {
       if (c && c.stamps && Array.isArray(c.stamps)) {
@@ -267,8 +275,117 @@ window.StampChain = (() => {
       var tb = b.ts || (b.timestamp ? new Date(b.timestamp).getTime() : 0);
       return ta - tb;
     });
-    all.forEach(function(s, i) { s.seq = i + 1; s.index = i; });
-    return { stamps: all, sessionId: chains[0] && chains[0].sessionId || 'merged' };
+    return {
+      format: 'display',
+      stamps: all,
+      sessionId: (chains[0] && chains[0].sessionId) || 'merged',
+      _mergeInfo: { displayOnly: true, sorted: true, byTimestamp: true }
+    };
+  }
+
+  // 同私钥连续合并：按时间重排后重算 chainHash 并重签，产出可验证的单链。
+  // 每章保留 originalChainHash/originalSignature 作为"创作时刻"证据。
+  async function mergeChainsVerified(chains, keyPair) {
+    if (!chains || chains.length < 2) throw new Error('mergeChainsVerified requires at least 2 chains');
+    var pubHex = await exportPubHex(keyPair.publicKey);
+    for (var ci = 0; ci < chains.length; ci++) {
+      var cpk = chains[ci].publicKey || (chains[ci].stamps && chains[ci].stamps[0] && chains[ci].stamps[0].publicKey) || '';
+      if (cpk && cpk !== pubHex) throw new Error('mergeChainsVerified requires the same identity (public key mismatch)');
+    }
+    var all = [];
+    chains.forEach(function(c) {
+      if (c && c.stamps) {
+        all = all.concat(c.stamps.map(function(st) { return { stamp: st, srcSession: c.sessionId }; }));
+      }
+    });
+    all.sort(function(a, b) {
+      var ta = a.stamp.ts || (a.stamp.timestamp ? new Date(a.stamp.timestamp).getTime() : 0);
+      var tb = b.stamp.ts || (b.stamp.timestamp ? new Date(b.stamp.timestamp).getTime() : 0);
+      return ta - tb;
+    });
+    var mergedSessionId = 'merged-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+    var stamps = [];
+    var prevChainHash = '';
+    for (var i = 0; i < all.length; i++) {
+      var src = all[i].stamp;
+      var salt = src.salt || '';
+      var ts = src.timestamp || '';
+      var contentHash = src.contentHash || '';
+      var nonce = src.nonce || '';
+      var signInput = mergedSessionId + String(i) + salt + ts + contentHash + prevChainHash + nonce;
+      var chainHash = await sha256(signInput);
+      var signature = '';
+      var sig = '';
+      if (keyPair) {
+        signature = await ed25519Sign(h2b(chainHash), keyPair.secretKey);
+        sig = await ed25519Sign(chainHash, keyPair.secretKey);
+      }
+      stamps.push({
+        sessionId: mergedSessionId,
+        index: i,
+        seq: i + 1,
+        timestamp: ts,
+        nonce: nonce,
+        salt: salt,
+        contentHash: contentHash,
+        prevChainHash: prevChainHash,
+        chainHash: chainHash,
+        hash: chainHash,
+        signature: signature,
+        sig: sig,
+        publicKey: pubHex,
+        ts: src.ts || (ts ? new Date(ts).getTime() : Date.now()),
+        duration: src.duration || 0,
+        wordDelta: src.wordDelta || 0,
+        totalWords: src.totalWords || 0,
+        deleteDelta: src.deleteDelta || 0,
+        binding: src.binding || false,
+        behaviorHash: src.behaviorHash || '',
+        originalChainHash: src.chainHash || src.hash || '',
+        originalSignature: src.signature || src.sig || '',
+        originalIndex: src.index,
+        originalSessionId: src.sessionId
+      });
+      prevChainHash = chainHash;
+    }
+    return {
+      format: 'merged-continuous',
+      sessionId: mergedSessionId,
+      publicKey: pubHex,
+      stamps: stamps,
+      rootHash: prevChainHash,
+      _mergeInfo: { type: 'continuous', chainCount: chains.length, sorted: true, byTimestamp: true, resealed: true }
+    };
+  }
+
+  // 跨私钥/多创作者聚合：不重排不重签，容器引用各子链（各自保持连续性）。
+  // 聚合根哈希 = SHA-256(各子链 rootHash 以 | 拼接)，供服务器锚定背书。
+  async function aggregateChains(chains) {
+    if (!chains || chains.length === 0) throw new Error('aggregateChains requires at least 1 chain');
+    var subChains = chains.map(function(c) {
+      var stamps = (c.stamps || []).map(function(st) { return JSON.parse(JSON.stringify(st)); });
+      var last = stamps[stamps.length - 1] || null;
+      return {
+        sessionId: c.sessionId || (last && last.sessionId) || '',
+        publicKey: c.publicKey || (last && last.publicKey) || '',
+        stampCount: stamps.length,
+        rootHash: last ? (last.chainHash || last.hash || '') : '',
+        sealedAt: c.sealedAt || (last && last.timestamp) || '',
+        firstTs: stamps[0] ? (stamps[0].ts || 0) : 0,
+        lastTs: last ? (last.ts || 0) : 0,
+        stamps: stamps
+      };
+    });
+    var aggSessionId = 'agg-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+    var rootInput = subChains.map(function(sc) { return sc.rootHash || ''; }).join('|');
+    var rootHash = await sha256(rootInput);
+    return {
+      format: 'aggregate',
+      sessionId: aggSessionId,
+      rootHash: rootHash,
+      subChains: subChains,
+      _mergeInfo: { type: 'aggregate', chainCount: chains.length }
+    };
   }
 
   // ── 导出为元数据 ──────────────────────────
@@ -430,6 +547,8 @@ window.StampChain = (() => {
     append: append,
     verifyChain: verifyChain,
     mergeChains: mergeChains,
+    mergeChainsVerified: mergeChainsVerified,
+    aggregateChains: aggregateChains,
     exportMeta: exportMeta,
     importMeta: importMeta,
     computeContentHash: computeContentHash,

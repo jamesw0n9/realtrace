@@ -1,7 +1,7 @@
 // ========================================
-// RealTrace · .rt 文件导出器 (V2.1)
+// RealTrace · .rt 文件导出器 (V3.0)
 // 格式: ZIP 容器内含 chain.json
-// chain.json 遵循 V2.1 规范（完整可验证字段）
+// chain.json 遵循 V3.0 规范（完整可验证字段；v3 支持连续合并链/聚合链容器）
 // .rt 不包含稿件内容，内容独立 .txt 下载
 // ========================================
 
@@ -63,7 +63,7 @@ window.RtExport = (() => {
         hash: s.hash || s.chainHash || '',
         sig: s.sig || s.signature || ''
       };
-      ['sessionId', 'salt', 'nonce', 'timestamp', 'contentHash', 'prevChainHash', 'publicKey', 'signature', 'chainHash', 'behaviorHash', 'chainAnchor', 'binding'].forEach(function(k) {
+      ['sessionId', 'salt', 'nonce', 'timestamp', 'contentHash', 'prevChainHash', 'publicKey', 'signature', 'chainHash', 'behaviorHash', 'chainAnchor', 'binding', 'originalChainHash', 'originalSignature', 'originalIndex', 'originalSessionId'].forEach(function(k) {
         if (s[k] !== undefined) o[k] = s[k];
       });
       return o;
@@ -71,13 +71,40 @@ window.RtExport = (() => {
   }
   // ─── 构建 chain.json ────────────────────
   function buildChainJson(chainData) {
+    // v3 聚合链容器（跨私钥/多创作者）
+    if (chainData.format === 'aggregate' && Array.isArray(chainData.subChains)) {
+      var subChains = chainData.subChains.map(function(sc) {
+        return {
+          sessionId: sc.sessionId || '',
+          publicKey: sc.publicKey || '',
+          stampCount: sc.stampCount || (sc.stamps || []).length,
+          rootHash: sc.rootHash || '',
+          sealedAt: sc.sealedAt || '',
+          firstTs: sc.firstTs || 0,
+          lastTs: sc.lastTs || 0,
+          stamps: normalizeStamps(sc.stamps || [])
+        };
+      });
+      return {
+        version: '3.0',
+        format: 'aggregate',
+        chainId: chainData.chainId || chainData.sessionId || ('RT-' + Date.now().toString(36).toUpperCase()),
+        status: chainData.status || 'locked',
+        pk: chainData.publicKey || chainData.pk || '',
+        skEncrypted: null,
+        rootHash: chainData.rootHash || '',
+        subChains: subChains,
+        ts: chainData.createdAt || Date.now(),
+        lockedAt: chainData.lockedAt || (chainData.status === 'locked' ? Date.now() : null)
+      };
+    }
     var stamps = chainData.stamps || [];
     var v2Stamps = normalizeStamps(stamps);
     var lastStamp = v2Stamps.length > 0 ? v2Stamps[v2Stamps.length - 1] : null;
     var firstStamp = v2Stamps.length > 0 ? v2Stamps[0] : null;
 
     var chainJson = {
-      version: "2.1",
+      version: "3.0",
       chainId: chainData.chainId || chainData.sessionId || ('RT-' + Date.now().toString(36).toUpperCase()),
       status: chainData.status || 'locked',
       pk: chainData.publicKey || chainData.pk || '',
@@ -100,12 +127,25 @@ window.RtExport = (() => {
 
     // 嵌入加密私钥（用于身份恢复续写）
     var ek = chainData.encryptedPrivateKey;
-    if (ek && ek.encryptedKeyHex) {
+    if (ek && ek.dataHex) {
+      // v2 自包含身份 payload（PBKDF2 600K + AES-256-GCM）
+      chainJson.skEncrypted = ek.dataHex;
+      chainJson.kdf = {
+        algorithm: 'PBKDF2-SHA256',
+        salt: ek.saltHex || '',
+        iterations: ek.iter || 600000
+      };
+      chainJson.cipher = {
+        algorithm: 'AES-256-GCM',
+        iv: ek.ivHex || ''
+      };
+    } else if (ek && ek.encryptedKeyHex) {
+      // 旧版 pkcs8 格式（仅兼容读取）
       chainJson.skEncrypted = ek.encryptedKeyHex;
       chainJson.kdf = {
         algorithm: 'PBKDF2-SHA256',
         salt: ek.saltHex || ek.salt || '',
-        iterations: 100000
+        iterations: 600000
       };
       chainJson.cipher = {
         algorithm: 'AES-256-GCM',
@@ -123,17 +163,22 @@ window.RtExport = (() => {
   // contentRaw: 内容文本（仅限 with-content 模式，已废弃）
   // encryptedKey: 可选加密私钥
   async function buildRtPackage(sealResult, mode, contentRaw, encryptedKey) {
-    if (!sealResult || !sealResult.stamps || sealResult.stamps.length === 0) {
+    if (!sealResult) return null;
+    var isAggregate = sealResult.format === 'aggregate' && Array.isArray(sealResult.subChains);
+    if (!isAggregate && (!sealResult.stamps || sealResult.stamps.length === 0)) {
       return null;
     }
 
-    var v2Stamps = normalizeStamps(sealResult.stamps);
+    var v2Stamps = isAggregate ? [] : normalizeStamps(sealResult.stamps);
     var lastStamp = v2Stamps.length > 0 ? v2Stamps[v2Stamps.length - 1] : null;
     var pubKeyHex = sealResult.publicKeyHex || sealResult.publicKey || sealResult.pk || '';
     var chainId = sealResult.chainId || await deriveChainId(pubKeyHex, lastStamp ? lastStamp.hash : '', sealResult.source, sealResult.owner);
 
     var chainData = {
-      stamps: sealResult.stamps,
+      stamps: isAggregate ? [] : (sealResult.stamps || []),
+      format: isAggregate ? 'aggregate' : undefined,
+      subChains: isAggregate ? sealResult.subChains : undefined,
+      rootHash: isAggregate ? (sealResult.rootHash || '') : undefined,
       sessionId: sealResult.sessionId,
       chainId: chainId,
       publicKey: pubKeyHex,
@@ -153,7 +198,7 @@ window.RtExport = (() => {
       author: sealResult.author || '',
       createdAt: chainJson.ts,
       platform: 'rt-writer',
-      appVersion: '2.0.0'
+      appVersion: '3.0.0'
     };
 
     // 创建 ZIP
@@ -215,7 +260,7 @@ window.RtExport = (() => {
         reader.onload = function(e) {
           try {
             var pkg = JSON.parse(e.target.result);
-            if (pkg && pkg.stamps && pkg.sessionId) {
+            if (pkg && ((pkg.stamps && pkg.sessionId) || (pkg.format === 'aggregate' && Array.isArray(pkg.subChains)))) {
               resolve(pkg);
               return;
             }
@@ -254,6 +299,23 @@ window.RtExport = (() => {
               try { certHtml = await certFile.async('string'); } catch(e) {}
             }
 
+            // v3 聚合链容器
+            if (chainJson.format === 'aggregate' && Array.isArray(chainJson.subChains)) {
+              resolve({
+                rtVersion: chainJson.version,
+                format: 'aggregate',
+                sessionId: chainJson.chainId || chainJson.sessionId || 'agg',
+                chainId: chainJson.chainId || '',
+                rootHash: chainJson.rootHash || '',
+                subChains: chainJson.subChains,
+                status: chainJson.status,
+                meta: metaJson,
+                certHtml: certHtml,
+                contentLength: 0
+              });
+              return;
+            }
+
             // 构造兼容数据对象
             var pkg = {
               rtVersion: chainJson.version,
@@ -263,12 +325,19 @@ window.RtExport = (() => {
               stamps: chainJson.stamps,
               totalStamps: chainJson.stamps.length,
               sealedAt: new Date(chainJson.lockedAt || chainJson.ts).toISOString(),
-              encryptedPrivateKey: chainJson.skEncrypted ? {
+              encryptedPrivateKey: chainJson.skEncrypted ? (chainJson.kdf && chainJson.kdf.salt && chainJson.cipher && chainJson.cipher.iv ? {
+                v: 2,
+                kdf: chainJson.kdf.algorithm || 'PBKDF2-SHA256',
+                iter: chainJson.kdf.iterations || 600000,
+                saltHex: chainJson.kdf.salt,
+                ivHex: chainJson.cipher.iv,
+                dataHex: chainJson.skEncrypted
+              } : {
                 encryptedKeyHex: chainJson.skEncrypted,
                 saltHex: chainJson.kdf ? chainJson.kdf.salt : '',
                 ivHex: chainJson.cipher ? chainJson.cipher.iv : '',
                 tag: chainJson.cipher ? chainJson.cipher.tag : ''
-              } : null,
+              }) : null,
               meta: metaJson,
               certHtml: certHtml,
               chainId: chainJson.chainId,
@@ -331,10 +400,8 @@ window.RtExport = (() => {
       return buildRtPackage(sealResult, mode, rawContent);
     }
     try {
-      var encryptedKey = await RtKeyVault.exportEncryptedKey(
-        sealResult.kp.privateKey || sealResult.kp,
-        password
-      );
+      var rawSecret = sealResult.kp.secretKey || sealResult.kp.privateKey || sealResult.kp;
+      var encryptedKey = await RtKeyVault.exportEncryptedKey(rawSecret, password);
       return buildRtPackage(sealResult, mode, rawContent, encryptedKey);
     } catch(e) {
       console.warn('[rt-export] 密钥加密失败，导出不含身份:', e.message);
@@ -349,8 +416,8 @@ window.RtExport = (() => {
     if (pkg.skEncrypted) return true;
     // V2.0.0 chain.json 格式：检查 pk 非空（无 skEncrypted 表示匿名）
     if (pkg.pk && pkg.pk.length > 0 && pkg.skEncrypted === null) return false;
-    // 旧格式兼容
-    return !!(pkg.encryptedPrivateKey && pkg.encryptedPrivateKey.encryptedKeyHex);
+    // 旧格式兼容（v2 dataHex / 旧版 encryptedKeyHex）
+    return !!(pkg.encryptedPrivateKey && (pkg.encryptedPrivateKey.dataHex || pkg.encryptedPrivateKey.encryptedKeyHex));
   }
 
   // ── 从 .rt 链生成轻量续写头 ────────────

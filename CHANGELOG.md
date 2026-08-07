@@ -1,5 +1,25 @@
 # Changelog / 变更记录
 
+## [v0.4.0] - 2026-08-08
+
+### Added
+- **Identity module** (`core/key-vault.js`): PBKDF2-SHA256 (600K iterations) + AES-256-GCM encrypted identity key storage; derived keys never touch sessionStorage.
+- **`.rtkey` identity key file**: export / import a password-protected identity key file; importing an identity-bearing `.rt` restores the creator identity via password.
+- **Seal embeds encrypted identity**: when a password is set, sealing embeds the encrypted identity key into the `.rt` package, enabling chain continuation with the same key.
+- **Chain format v3 — merge semantics**: display-only merge (`mergeChains`), same-key continuous merge with re-signing (`mergeChainsVerified`), and cross-key aggregate container (`aggregateChains` — a ZIP of sub-chains).
+- **Aggregate container verification**: `verifyPackage` validates each sub-chain in an aggregate container; the offline verification page shows per-sub-chain details.
+- **Cross-browser verifier**: signature verification now runs on tweetnacl in `rt-verifier.js`, with WebCrypto as fallback only.
+- **Bug fix**: key-vault previously accepted only 64-char hex private keys, while tweetnacl secret keys are 128-char hex — now fully supported.
+
+### 新增
+- **身份模块**（`core/key-vault.js`）：PBKDF2-SHA256（60 万次迭代）+ AES-256-GCM 加密身份密钥存储，派生密钥不落 sessionStorage。
+- **`.rtkey` 身份密钥文件**：可导出 / 导入密码加密的身份密钥文件；导入带身份的 `.rt` 文件时用密码恢复创作者身份。
+- **封章嵌入加密身份**：设置密码后，封章会把加密身份密钥嵌入 `.rt` 包，实现同一密钥的链续写。
+- **链格式 v3——合并语义**：纯展示合并（`mergeChains`）、同密钥重签连续合并（`mergeChainsVerified`）、跨密钥聚合容器（`aggregateChains`——子链 ZIP 容器）。
+- **聚合容器验证**：`verifyPackage` 逐子链验证聚合容器；离线认证页展示每个子链的详情。
+- **跨浏览器验证器**：`rt-verifier.js` 改用 tweetnacl 验签，WebCrypto 仅作回退，各浏览器结果一致。
+- **Bug 修复**：key-vault 原先只接受 64 字符 hex 私钥，而 tweetnacl 私钥为 128 字符 hex——现已完整支持。
+
 ## [v0.3.0] - 2026-08-06
 
 ### Added

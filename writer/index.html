@@ -74,6 +74,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
     <span class="mode-chain" id="modeChainId" style="display:none"></span>
     <span id="writerStats" style="font-size:13px;color:#94A3B8;"></span><span class="mode-spacer"></span>
     <button class="mode-btn" id="anchorStatus" onclick="showAnchorPanel()" style="display:none">⛓ 待同步 0</button>
+    <button class="mode-btn" id="identityBtn" onclick="manageIdentity()" style="display:none">🔑 身份</button>
   </div>
 
   <div id="writerBoxContainer" style="display:none"></div>
@@ -119,7 +120,7 @@ var I18N = {
     sealConfirmDesc:'封章后将生成加密签名链，内容将被记录且无法修改。<br><br>⚠️ 请确认：<br>• 创作内容为本人原创<br>• 已检查无敏感信息<br>• 确认封章上链',
     cancel:'取消', confirmSeal:'确认封章',
     sealDoneDownload:'封章成功，已前往离线认证页，可下载 .txt 原文与 .rt 链文件',
-    pageTitle:'真迹 · 创作封章认证', _langName:'中文'
+    identityTitle:'身份管理', identityDesc:'在 rt 模式下导出/导入密码加密的身份密钥（.rtkey）。导入后可延续原创作链。', identityExport:'导出身份 (.rtkey)', identityImport:'导入身份 (.rtkey)', pwdTitle:'输入身份密码', pwdDesc:'该文件包含加密身份密钥，输入密码以恢复续写权限。', pwdPlaceholder:'身份密码', pwdWrong:'密码错误或文件损坏', pwdTooShort:'密码至少 6 位', identityExported:'身份已导出', identityImported:'身份已导入', identitySkipped:'已跳过身份恢复：后续封章将使用匿名密钥', noIdentity:'当前无可用身份', sealPwdTitle:'加密身份（推荐）', sealPwdDesc:'输入密码将身份密钥加密写入 .rt 文件，下次导入即可继续同一创作链；留空则本次封章不含身份。', sealPwdPlaceholder:'设置身份密码（至少 6 位）', pageTitle:'真迹 · 创作封章认证', _langName:'中文'
   },
   en: {
     osTag:'RealTrace Open Source', modeAnon:'✏️ Anonymous writing', modeRt:'📂 .rt continuation', chainId:'Chain ID', modeSelectTitle:'Choose writing mode', modeAnonBtn:'✏️ Anonymous writing', modeImportBtn:'📂 Continue with .rt',
@@ -136,7 +137,7 @@ var I18N = {
     sealConfirmDesc:'Sealing generates an encrypted signature chain; the content is recorded and cannot be modified.<br><br>⚠️ Please confirm:<br>• The content is your original work<br>• No sensitive information is included<br>• You agree to seal and anchor',
     cancel:'Cancel', confirmSeal:'Confirm',
     sealDoneDownload:'Sealed — download .txt and .rt on the offline verify page',
-    pageTitle:'RealTrace · Creation Seal', _langName:'English'
+    identityTitle:'Identity', identityDesc:'Export/import your password-encrypted identity key (.rtkey) in rt mode. Importing restores your original chain key.', identityExport:'Export identity (.rtkey)', identityImport:'Import identity (.rtkey)', pwdTitle:'Identity password', pwdDesc:'This file contains an encrypted identity key. Enter the password to restore continuation rights.', pwdPlaceholder:'Identity password', pwdWrong:'Wrong password or corrupted file', pwdTooShort:'Password must be at least 6 characters', identityExported:'Identity exported', identityImported:'Identity imported', identitySkipped:'Identity restore skipped: this seal will use an anonymous key', noIdentity:'No identity available', sealPwdTitle:'Encrypt identity (recommended)', sealPwdDesc:'Enter a password to write the identity key into the .rt file so you can continue the same chain later; leave empty for an anonymous seal.', sealPwdPlaceholder:'Set identity password (min 6 chars)', pageTitle:'RealTrace · Creation Seal', _langName:'English'
   },
   ja: {
     osTag:'RealTrace オープンソース版', modeAnon:'✏️ 匿名で執筆', modeRt:'📂 .rt で続きを書く', chainId:'チェーン ID', modeSelectTitle:'創作方法を選択', modeAnonBtn:'✏️ 匿名で執筆', modeImportBtn:'📂 .rt で続きを書く',
@@ -153,7 +154,7 @@ var I18N = {
     sealConfirmDesc:'封章後は暗号署名チェーンが生成され、内容が記録され変更できなくなります。<br><br>⚠️ ご確認ください：<br>• 内容は本人のオリジナル作品です<br>• 機密情報が含まれていないことを確認しました<br>• 封章してチェーンに記録することに同意します',
     cancel:'キャンセル', confirmSeal:'封章を確定',
     sealDoneDownload:'封章完了。オフライン検証ページで .txt と .rt をダウンロードできます',
-    pageTitle:'真迹 · 創作封章認証', _langName:'日本語'
+    identityTitle:'アイデンティティ管理', identityDesc:'rt モードでパスワード暗号化されたアイデンティティ鍵（.rtkey）をエクスポート/インポートします。', identityExport:'アイデンティティを書き出す (.rtkey)', identityImport:'アイデンティティを読み込む (.rtkey)', pwdTitle:'アイデンティティパスワード', pwdDesc:'このファイルには暗号化されたアイデンティティ鍵が含まれています。', pwdPlaceholder:'アイデンティティパスワード', pwdWrong:'パスワードが違うか、ファイルが破損しています', pwdTooShort:'パスワードは6文字以上必要です', identityExported:'アイデンティティを書き出しました', identityImported:'アイデンティティを読み込みました', identitySkipped:'アイデンティティ復元をスキップしました', noIdentity:'利用可能なアイデンティティがありません', sealPwdTitle:'アイデンティティを暗号化（推奨）', sealPwdDesc:'パスワードを入力してアイデンティティ鍵を .rt に暗号化して書き込みます。', sealPwdPlaceholder:'アイデンティティパスワードを設定（6文字以上）', pageTitle:'真迹 · 創作封章認証', _langName:'日本語'
   },
   ko: {
     osTag:'RealTrace 오픈소스', modeAnon:'✏️ 익명 작성', modeRt:'📂 .rt 이어쓰기', chainId:'체인 ID', modeSelectTitle:'작성 방식 선택', modeAnonBtn:'✏️ 익명 작성', modeImportBtn:'📂 .rt 이어쓰기',
@@ -170,7 +171,7 @@ var I18N = {
     sealConfirmDesc:'봉인하면 암호화 서명 체인이 생성되며 내용이 기록되어 수정할 수 없습니다.<br><br>⚠️ 확인하세요:<br>• 창작 내용은 본인의 원작입니다<br>• 민감한 정보가 없음을 확인했습니다<br>• 봉인 및 체인 기록에 동의합니다',
     cancel:'취소', confirmSeal:'확인',
     sealDoneDownload:'봉인 완료 — 오프라인 검증 페이지에서 .txt 및 .rt를 다운로드하세요',
-    pageTitle:'RealTrace · 창작 봉인', _langName:'한국어'
+    identityTitle:'신원 관리', identityDesc:'rt 모드에서 비밀번호로 암호화된 신원 키(.rtkey)를 내보내거나 가져옵니다.', identityExport:'신원 내보내기 (.rtkey)', identityImport:'신원 가져오기 (.rtkey)', pwdTitle:'신원 비밀번호', pwdDesc:'이 파일에는 암호화된 신원 키가 포함되어 있습니다.', pwdPlaceholder:'신원 비밀번호', pwdWrong:'비밀번호가 틀리거나 파일이 손상되었습니다', pwdTooShort:'비밀번호는 6자 이상이어야 합니다', identityExported:'신원이 내보내졌습니다', identityImported:'신원이 가져와졌습니다', identitySkipped:'신원 복원을 건너뛰었습니다', noIdentity:'사용 가능한 신원이 없습니다', sealPwdTitle:'신원 암호화 (권장)', sealPwdDesc:'비밀번호를 입력하여 신원 키를 .rt 파일에 암호화하여 기록합니다.', sealPwdPlaceholder:'신원 비밀번호 설정 (6자 이상)', pageTitle:'RealTrace · 창작 봉인', _langName:'한국어'
   },
   fr: {
     osTag:'RealTrace Open Source', modeAnon:'✏️ Écriture anonyme', modeRt:'📂 Continuer avec .rt', chainId:'ID de chaîne', modeSelectTitle:'Choisissez le mode de création', modeAnonBtn:'✏️ Écriture anonyme', modeImportBtn:'📂 Continuer avec .rt',
@@ -187,7 +188,7 @@ var I18N = {
     sealConfirmDesc:'Le scellement génère une chaîne de signatures chiffrées ; le contenu est enregistré et ne peut plus être modifié.<br><br>⚠️ Veuillez confirmer :<br>• Le contenu est votre création originale<br>• Aucune information sensible incluse<br>• Vous acceptez de sceller et d\'ancrer',
     cancel:'Annuler', confirmSeal:'Confirmer',
     sealDoneDownload:'Scellé — téléchargez .txt et .rt sur la page de vérification hors ligne',
-    pageTitle:'RealTrace · Scellement de création', _langName:'Français'
+    identityTitle:'Identité', identityDesc:'Exportez/importez votre clé d\'identité chiffrée par mot de passe (.rtkey) en mode rt.', identityExport:'Exporter l\'identité (.rtkey)', identityImport:'Importer l\'identité (.rtkey)', pwdTitle:'Mot de passe d\'identité', pwdDesc:'Ce fichier contient une clé d\'identité chiffrée.', pwdPlaceholder:'Mot de passe d\'identité', pwdWrong:'Mot de passe incorrect ou fichier corrompu', pwdTooShort:'Le mot de passe doit contenir au moins 6 caractères', identityExported:'Identité exportée', identityImported:'Identité importée', identitySkipped:'Restauration d\'identité ignorée', noIdentity:'Aucune identité disponible', sealPwdTitle:'Chiffrer l\'identité (recommandé)', sealPwdDesc:'Saisissez un mot de passe pour écrire la clé d\'identité chiffrée dans le .rt.', sealPwdPlaceholder:'Définir le mot de passe (min 6 caractères)', pageTitle:'RealTrace · Scellement de création', _langName:'Français'
   },
   de: {
     osTag:'RealTrace Open Source', modeAnon:'✏️ Anonym schreiben', modeRt:'📂 .rt fortsetzen', chainId:'Ketten-ID', modeSelectTitle:'Schreibmodus wählen', modeAnonBtn:'✏️ Anonym schreiben', modeImportBtn:'📂 Mit .rt fortsetzen',
@@ -204,7 +205,7 @@ var I18N = {
     sealConfirmDesc:'Durch die Versiegelung wird eine verschlüsselte Signaturkette erzeugt; der Inhalt wird aufgezeichnet und kann nicht mehr geändert werden.<br><br>⚠️ Bitte bestätigen Sie:<br>• Der Inhalt ist Ihr eigenes Originalwerk<br>• Keine sensiblen Informationen enthalten<br>• Sie stimmen der Versiegelung und Verankerung zu',
     cancel:'Abbrechen', confirmSeal:'Bestätigen',
     sealDoneDownload:'Versiegelt — .txt und .rt auf der Offline-Verifizierungsseite herunterladen',
-    pageTitle:'RealTrace · Schöpfungssiegel', _langName:'Deutsch'
+    identityTitle:'Identität', identityDesc:'Exportieren/Importieren Sie Ihren passwortverschlüsselten Identitätsschlüssel (.rtkey) im rt-Modus.', identityExport:'Identität exportieren (.rtkey)', identityImport:'Identität importieren (.rtkey)', pwdTitle:'Identitätspasswort', pwdDesc:'Diese Datei enthält einen verschlüsselten Identitätsschlüssel.', pwdPlaceholder:'Identitätspasswort', pwdWrong:'Falsches Passwort oder beschädigte Datei', pwdTooShort:'Das Passwort muss mindestens 6 Zeichen haben', identityExported:'Identität exportiert', identityImported:'Identität importiert', identitySkipped:'Identitätswiederherstellung übersprungen', noIdentity:'Keine Identität verfügbar', sealPwdTitle:'Identität verschlüsseln (empfohlen)', sealPwdDesc:'Geben Sie ein Passwort ein, um den Identitätsschlüssel verschlüsselt in die .rt-Datei zu schreiben.', sealPwdPlaceholder:'Passwort festlegen (min. 6 Zeichen)', pageTitle:'RealTrace · Schöpfungssiegel', _langName:'Deutsch'
   }
 };
 
@@ -243,7 +244,7 @@ function applyLang(lang) {
     b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); menu.classList.remove('open'); });
   });
 })();
-var _rtIdentity = { mode:'anonymous', kp:null, publicKeyHex:'', sessionId:'', chainId:'' };
+var _rtIdentity = { mode:'anonymous', kp:null, publicKeyHex:'', sessionId:'', chainId:'', secretKeyHex:'' };
 var _currentMode = 'anon';
 var _currentChainId = '';
 var _rtWriterBox = null;
@@ -317,10 +318,28 @@ async function enterWriterBox(pkg) {
           if (choice === 'confirm') { origSeal.call(_rtWriterBox); }
         });
       };
+      // 按钮改走包装后的 seal（带确认弹窗），否则确认逻辑不生效
+      var wbSealBtn = document.getElementById('sealBtn');
+      if (wbSealBtn) wbSealBtn.onclick = function() { _rtWriterBox.seal(); };
     }
     if (pkg) {
       var info = await _rtWriterBox.importRt(pkg);
-      _rtIdentity = { mode: 'rt', kp: null, publicKeyHex: info.publicKey || '', sessionId: info.sessionId, chainId: info.chainId };
+      _rtIdentity = { mode: 'rt', kp: null, publicKeyHex: info.publicKey || '', sessionId: info.sessionId, chainId: info.chainId, secretKeyHex: '' };
+      // H-2 身份恢复：.rt 含加密身份时，密码解密后恢复原私钥续写（链连续性）
+      if (RtExport.hasEncryptedKey(pkg) && pkg.encryptedPrivateKey) {
+        var idPwd = await promptPassword(t('pwdTitle'), t('pwdDesc'), t('pwdPlaceholder'));
+        if (idPwd) {
+          try {
+            var secretHex = await RtKeyVault.importEncryptedKey(pkg.encryptedPrivateKey, idPwd);
+            _rtWriterBox.setIdentity(secretHex);
+            _rtIdentity.secretKeyHex = secretHex;
+            _rtIdentity.publicKeyHex = info.publicKey || '';
+            showNotification(t('identityImported'), 'success');
+          } catch(err) { showNotification(t('pwdWrong'), 'error'); }
+        } else {
+          showNotification(t('identitySkipped'), 'info');
+        }
+      }
       setModeDisplay('rt', info.chainId);
       showNotification(t('importChainNote', { n: info.stamps }), 'success');
     } else {
@@ -354,8 +373,85 @@ function setModeDisplay(mode, chainId) {
       chainEl.style.display = 'none';
     }
   }
+  updateIdentityBtn();
 }
 
+function promptPassword(title, desc, placeholder) {
+  return new Promise(function(resolve) {
+    var overlay = document.getElementById('modalOverlay');
+    document.getElementById('modalIcon').textContent = '🔐';
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDesc').textContent = desc;
+    var detail = document.getElementById('modalDetail');
+    detail.style.display = 'block';
+    detail.innerHTML = '<input type="password" id="rtPwdInput" placeholder="' + (placeholder || '') + '" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#F1F5F9;font-size:14px;font-family:inherit;" autocomplete="off">';
+    var actionsEl = document.getElementById('modalActions'); actionsEl.innerHTML = '';
+    var ok = document.createElement('button'); ok.className = 'btn-primary'; ok.textContent = t('confirmSeal');
+    ok.onclick = function() { var v = document.getElementById('rtPwdInput').value; overlay.classList.remove('active'); resolve(v); };
+    var cancel = document.createElement('button'); cancel.className = 'btn-secondary'; cancel.textContent = t('cancel');
+    cancel.onclick = function() { overlay.classList.remove('active'); resolve(null); };
+    actionsEl.appendChild(ok); actionsEl.appendChild(cancel);
+    overlay.classList.add('active');
+    setTimeout(function() { var inp = document.getElementById('rtPwdInput'); if (inp) inp.focus(); }, 50);
+  });
+}
+function updateIdentityBtn() {
+  var el = document.getElementById('identityBtn');
+  if (!el) return;
+  el.style.display = (_rtIdentity.mode === 'rt' && _rtIdentity.secretKeyHex) ? 'inline-block' : 'none';
+}
+function manageIdentity() {
+  showModal({
+    icon: '🔑',
+    title: t('identityTitle'),
+    desc: t('identityDesc'),
+    actions: [
+      { label: t('identityExport'), class: 'btn-primary', value: 'export' },
+      { label: t('identityImport'), class: 'btn-secondary', value: 'import' },
+      { label: t('cancel'), class: 'btn-secondary', value: 'close' }
+    ]
+  }).then(function(choice) {
+    if (choice === 'export') exportIdentityFile();
+    else if (choice === 'import') importIdentityFile();
+  });
+}
+async function exportIdentityFile() {
+  if (_rtIdentity.mode !== 'rt' || !_rtIdentity.secretKeyHex) { showNotification(t('noIdentity'), 'info'); return; }
+  var pwd = await promptPassword(t('pwdTitle'), t('pwdDesc'), t('pwdPlaceholder'));
+  if (!pwd) return;
+  try {
+    var payload = await RtKeyVault.exportEncryptedKey(_rtIdentity.secretKeyHex, pwd);
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = 'rt-identity.rtkey'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
+    showNotification(t('identityExported'), 'success');
+  } catch(e) { showNotification(t('pwdTooShort') + ': ' + e.message, 'error'); }
+}
+function importIdentityFile() {
+  var input = document.createElement('input');
+  input.type = 'file'; input.accept = '.rtkey,.json';
+  input.onchange = async function(e) {
+    var f = e.target.files[0];
+    if (!f) return;
+    try {
+      var payload = JSON.parse(await f.text());
+      var pwd = await promptPassword(t('pwdTitle'), t('pwdDesc'), t('pwdPlaceholder'));
+      if (!pwd) return;
+      var secretHex = await RtKeyVault.importEncryptedKey(payload, pwd);
+      if (!_rtWriterBox || typeof _rtWriterBox.setIdentity !== 'function') throw new Error('writer not ready');
+      _rtWriterBox.setIdentity(secretHex);
+      _rtIdentity.secretKeyHex = secretHex;
+      _rtIdentity.mode = 'rt';
+      var rec = await RtKeyVault.recoverKeyPairFromPayload(payload, pwd);
+      if (rec && rec.publicKeyHex) _rtIdentity.publicKeyHex = rec.publicKeyHex;
+      updateIdentityBtn();
+      showNotification(t('identityImported'), 'success');
+    } catch(err) { showNotification(t('pwdWrong') + ': ' + err.message, 'error'); }
+    this.value = '';
+  };
+  input.click();
+}
 function showModal(opts) {
   return new Promise(function(resolve) {
     var overlay = document.getElementById('modalOverlay');
@@ -427,7 +523,7 @@ async function anchorToGenesis(chainId, rootHash, pubKey, sessionId, stampCount,
       publicKey: pubKey || '',
       sessionId: sessionId,
       stampCount: stampCount,
-      rtVersion: '2.0',
+      rtVersion: '3.0',
       sealedAt: new Date().toISOString(),
       signature: signature
     });
@@ -455,7 +551,16 @@ async function doFinalSeal(result) {
     kp = (gs && gs.kp) || (st && st.kp) || null;
   } catch(e) { kp = null; }
   try {
-    // V2.0.0: .rt 文件是 ZIP 容器（仅链数据），内容独立 .txt 下载
+    // H-2 身份嵌入：rt 模式且已恢复私钥 → 密码加密写入 .rt（下次导入可续写同一链）
+    var encryptedKey = null;
+    if (_rtIdentity.mode === 'rt' && _rtIdentity.secretKeyHex) {
+      var sealPwd = await promptPassword(t('sealPwdTitle'), t('sealPwdDesc'), t('sealPwdPlaceholder'));
+      if (sealPwd) {
+        try { encryptedKey = await RtKeyVault.exportEncryptedKey(_rtIdentity.secretKeyHex, sealPwd); }
+        catch(e) { showNotification(t('pwdTooShort'), 'error'); }
+      }
+    }
+    // V3.0.0: .rt 文件是 ZIP 容器（仅链数据），内容独立 .txt 下载
     var sealData = {
       stamps: stamps,
       sessionId: sessionId,
@@ -464,7 +569,8 @@ async function doFinalSeal(result) {
       owner: 'personal',
       sealedAt: new Date().toISOString(),
       status: 'locked',
-      lockedAt: Date.now()
+      lockedAt: Date.now(),
+      encryptedPrivateKey: encryptedKey || null
     };
     var lastSt = stamps.length > 0 ? stamps[stamps.length - 1] : null;
     var rootH = (lastSt && (lastSt.hash || lastSt.chainHash)) || result.rootHash || '';
@@ -472,7 +578,7 @@ async function doFinalSeal(result) {
     anchorToGenesis(chainId, rootH, pubKey, sessionId, stamps.length, kp);
 
     try {
-      var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '2.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH, merkleRoot: result.merkleRoot || '', merkleMeta: result.merkleMeta || null, bindMode: result.bindMode || '' };
+      var certStore = { chainId: chainId, sessionId: sessionId, stamps: stamps, content: content, publicKey: pubKey, rtVersion: '3.0', sealedAt: sealData.sealedAt || '', certificateId: result.certificateId || '', rootHash: rootH, merkleRoot: result.merkleRoot || '', merkleMeta: result.merkleMeta || null, bindMode: result.bindMode || '', encryptedPrivateKey: encryptedKey || null };
       sessionStorage.setItem('rt_cert_data', JSON.stringify(certStore));
       sessionStorage.setItem('rt_cert_id', result.certificateId || '');
     } catch(e) {}

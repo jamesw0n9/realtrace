@@ -1,10 +1,10 @@
 {
   "name": "realtrace",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "RealTrace - Ed25519 signature chain for human creation authentication. Stamp your real-time writing process, verify offline, anchor to the official genesis chain (free for individuals).",
   "type": "module",
   "scripts": {
-    "test": "node --test test/chain.test.mjs test/verifier.test.mjs test/rt-file.test.mjs"
+    "test": "node --test test/chain.test.mjs test/verifier.test.mjs test/rt-file.test.mjs test/key-vault.test.mjs"
   },
   "keywords": [
     "ed25519",

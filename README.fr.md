@@ -13,7 +13,7 @@
 > Chaîne de signatures Ed25519 · Estampillage en temps réel · Aucun upload de contenu · Vérification hors ligne · Ancrage à la chaîne de genèse officielle (gratuit pour les particuliers)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > Quand tout peut être falsifié, l'authenticité devient un luxe. **Les détecteurs devinent. RealTrace prouve.**
@@ -164,7 +164,7 @@ npm test
 | `verify/` | Page de vérification hors ligne : glissez un `.rt` pour vérifier |
 | `anchor/` | Client d'ancrage à la chaîne de genèse officielle (gratuit pour les particuliers) |
 | `docs/` | Spécification de chaîne, format du fichier rt, documentation API d'ancrage |
-| `test/` | Tests de régression Node (12/12 réussis) |
+| `test/` | Tests de régression Node (24/24 réussis) |
 
 ---
 
@@ -178,10 +178,11 @@ npm test
 | 2026.08 | **MVP open source v0.1.0 publié** (double licence AGPL-3.0 + commerciale) ; modèle de licence entreprise en planification |
 | 2026.08 | **v0.2.0 publié** : divulgation sélective Merkle + génération de preuve de divulgation, interface en six langues, règles de nommage des ID de chaîne, choix du mode de création, chronologie modulaire |
 | 2026.08 | **v0.3.0 publié** : file d'ancrage de la chaîne genèse (file d'attente hors ligne + nouvelle tentative automatique + signature anti-usurpation), panneau de file d'ancrage en six langues intégré à l'éditeur |
+| 2026.08 | **v0.4.0 publié** : module d'identité (export/import de .rtkey, récupération d'identité chiffrée par mot de passe, identité intégrée au scellement), sémantique de fusion v3 du format de chaîne (continuation à clé identique / conteneur d'agrégation multi-clés), vérificateur multi-navigateurs |
 
 ---
 
-## Ce que contient cette version (v0.3.0)
+## Ce que contient cette version (v0.4.0)
 
 Ce dépôt est une **construction MVP minimale** : il implémente la boucle complète « écrire → estampiller → sceller → vérifier » avec le moins de code possible. Cette version inclut :
 
@@ -202,6 +203,10 @@ Ce dépôt est une **construction MVP minimale** : il implémente la boucle comp
 - **File d''ancrage de la chaîne genèse** : après le scellement, les métadonnées de chaîne sont d''abord mises en file locale, puis synchronisées automatiquement au retour du réseau. Signature Ed25519 (`chainId|rootHash`) anti-usurpation ;
 - **Panneau de file d''ancrage (six langues)** : indicateur d''état ⛓ / synchronisation manuelle en un clic / bascule auto-sync dans l''éditeur — aucun contenu téléversé ;
 - **Avis de confidentialité mis à jour** : précise que seules les métadonnées de chaîne peuvent être synchronisées vers la chaîne genèse après le scellement, et que l''auto-sync peut être désactivée dans le panneau « ⛓ ».
+
+- **Module d'identité** : clé d'identité chiffrée PBKDF2-SHA256 (600 000 itérations) + AES-256-GCM. Export/import de fichiers `.rtkey` ; l'import d'une `.rt` contenant une identité restaure l'auteur via mot de passe ; le scellement intègre la clé d'identité chiffrée pour poursuivre la même chaîne avec la même clé ;
+- **Format de chaîne v3 — sémantique de fusion** : la continuation avec la même clé étend automatiquement la chaîne d'origine (`mergeChainsVerified` re-signe et vérifie) ; des chaînes de clés différentes peuvent être regroupées dans un conteneur d'agrégation (`aggregateChains`), vérifié sous-chaîne par sous-chaîne ;
+- **Vérificateur multi-navigateurs** : vérification de signature unifiée via tweetnacl, WebCrypto en simple repli — résultats cohérents sur tous les navigateurs.
 
 > Journal des modifications complet : [CHANGELOG.md](CHANGELOG.md).
 

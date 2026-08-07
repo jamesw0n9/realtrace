@@ -1,6 +1,6 @@
 # RealTrace · 链规格（Chain Spec）
 
-> 版本：V2.0.0（F2 标准化）
+> 版本：V3.0.0（F2 标准化 · 合并/聚合语义）
 > 本文描述 stamp 链的密码学构造，前端、离线验证器、服务端三者行为必须一致。
 
 ## 1. 打章（Stamp）
@@ -28,7 +28,7 @@
   "behaviorHash": "见下"
 }
 
-> .rt 文件（chain.json）的 `stamps` 数组保存上述完整字段（V2.1 起），离线验证器可直接重算验证；旧版精简文件（仅 seq/ts/hash/sig）无法离线重算，需重新封章。
+> .rt 文件（chain.json）的 `stamps` 数组保存上述完整字段（V3.0 起），离线验证器可直接重算验证；旧版精简文件（仅 seq/ts/hash/sig）无法离线重算，需重新封章。
 ```
 
 ## 2. 链哈希（chainHash）
@@ -94,8 +94,10 @@ GENESIS_MASTER_SEED (仅官方服务端)
    官方创世链 ◀──锚定── 子链根哈希 (certificateId)
 ```
 
-## 7. 分叉与合并
+## 7. 分叉与合并（v3）
 
 - 同一私钥派生出的所有子链可合并；不同私钥的链仅在得到授权时可在服务端合并；
-- 客户端 `StampChain.mergeChains`：按时间轴排序并重编 `index/seq`（用于展示与统计）；
-- 合并后如需形成新的密码学连续链（重算 prevChainHash 串联），需重新封章锚定，由服务端完成。
+- `StampChain.mergeChains`（展示视图）：仅按时间戳排序，**不重写 index/seq/chainHash/签名**，输出 `format:'display'` 且 `_mergeInfo.displayOnly:true`——不具备密码学连续性，仅用于展示与统计；
+- `StampChain.mergeChainsVerified(chains, keyPair)`（同私钥连续合并）：按时间重排后重算 chainHash 并重签，产出可验证的 `format:'merged-continuous'` 单链；每章保留 `originalChainHash/originalSignature/originalIndex/originalSessionId` 作为创作时刻证据；
+- `StampChain.aggregateChains(chains)`（跨私钥/多创作者聚合）：不重排不重签，产出 `format:'aggregate'` 容器，各子链保持各自密码学连续性，聚合根哈希 = SHA-256(各子链 rootHash 以 | 拼接)，供服务器锚定背书；验证走 `RtVerifier.verifyPackage`；
+- 合并后如需形成新的密码学连续链，优先使用 `mergeChainsVerified`（持有私钥）或 `aggregateChains`（跨私钥），由服务端做最终锚定。

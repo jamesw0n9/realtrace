@@ -13,7 +13,7 @@
 > Ed25519 서명 체인 · 실시간 스탬프 · 콘텐츠 미업로드 · 오프라인 검증 · 공식 창세 체인 앵커링(개인 무료)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.3.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 > 모든 것이 위조될 수 있는 세상에서, "진짜"는 사치품이 된다. **탐지기는 추측한다. RealTrace는 증명한다.**
@@ -164,7 +164,7 @@ npm test
 | `verify/` | 오프라인 검증 페이지: `.rt`를 드래그하여 검증 |
 | `anchor/` | 공식 창세 체인 앵커링 클라이언트(개인 무료) |
 | `docs/` | 체인 스펙, rt 파일 형식, 앵커 API 문서 |
-| `test/` | Node 회귀 테스트(12/12 통과) |
+| `test/` | Node 회귀 테스트(24/24 통과) |
 
 ---
 
@@ -178,10 +178,11 @@ npm test
 | 2026.08 | **오픈소스 MVP v0.1.0 공개**(AGPL-3.0 + 상업 듀얼 라이선스). 기업 라이선스 모델 기획 중 |
 | 2026.08 | **v0.2.0 출시**: Merkle 선택적 공개 + 공개 증명 생성, 6개 언어 UI, 체인 ID 명명 규칙, 작성 모드 선택, 타임라인 모듈화 |
 | 2026.08 | **v0.3.0 출시**: 창세 체인 앵커 큐(오프라인 큐 + 자동 재전송 + 서명 위조 방지), 작문 페이지에 6개 언어 앵커 큐 패널 통합 |
+| 2026.08 | **v0.4.0 출시**: 신원 모듈(.rtkey 내보내기/가져오기, 암호 암호화 신원 복구, 봉인 시 신원 내장), 체인 포맷 v3 병합 의미론(동일 키 연속 / 교차 키 집계 컨테이너), 크로스 브라우저 검증기 |
 
 ---
 
-## 이 버전의 기능(v0.3.0)
+## 이 버전의 기능(v0.4.0)
 
 이 리포지토리는 **MVP 최소 버전**: 최소한의 코드로 "작성 → 스탬프 → 봉인 → 검증" 완전 루프를 구현한다. 이 버전에는 다음이 포함된다:
 
@@ -202,6 +203,10 @@ npm test
 - **창세 체인 앵커 큐**: 봉인 후 체인 메타데이터를 먼저 로컬 큐에 저장하고, 네트워크 복구 시 자동 재전송. Ed25519 서명(`chainId|rootHash`)으로 위조 방지;
 - **앵커 큐 패널(6개 언어)**: 작문 페이지에 ⛓ 상태 표시 / 원클릭 수동 동기화 / 자동 동기화 토글. 콘텐츠 미업로드 유지;
 - **개인정보 안내 업데이트**: 봉인 후 체인 메타데이터만 창세 체인에 동기화될 수 있으며, 「⛓」 패널에서 자동 동기화를 끌 수 있음을 명시.
+
+- **신원 모듈**: PBKDF2-SHA256(60만 회) + AES-256-GCM 암호화 신원 키. `.rtkey` 파일 내보내기/가져오기 지원. 신원이 포함된 `.rt`를 가져오면 암호로 작성자 신원을 복구. 봉인 시 암호화된 신원 키를 내장해 같은 키로 원래 체인을 이어 쓸 수 있음;
+- **체인 포맷 v3 — 병합 의미론**: 동일 키 이어쓰기는 원래 체인을 자동 연장(`mergeChainsVerified` 재서명 검증). 서로 다른 키는 집계 컨테이너(`aggregateChains`)로 묶어 하위 체인별로 독립 검증;
+- **크로스 브라우저 검증기**: tweetnacl 기반 통일 서명 검증. WebCrypto는 폴백으로만 사용해 브라우저 간 결과 일치.
 
 > 전체 변경 기록: [CHANGELOG.md](CHANGELOG.md).
 

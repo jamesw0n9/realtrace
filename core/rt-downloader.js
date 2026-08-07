@@ -126,6 +126,7 @@ window.RtDownloader = (() => {
       sealedAt: data.sealedAt || '',
       merkleRoot: data.merkleRoot || '',
       bindMode: data.bindMode || '',
+      encryptedPrivateKey: data.encryptedPrivateKey || null,
       status: 'locked',
       lockedAt: data.lockedAt || (data.sealedAt ? new Date(data.sealedAt).getTime() : Date.now()),
       createdAt: data.sealedAt || data.ts || null
