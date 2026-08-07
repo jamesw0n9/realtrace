@@ -16,6 +16,11 @@
 [![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
+<p align="center">
+  <video src="docs/demo/realtrace-demo-25s-zh.mp4" autoplay loop muted playsinline controls style="max-width:720px;width:100%;border-radius:12px"></video>
+  <br />
+  <em>25 秒 · 从实时打章到离线验证（演示视频 · 无音频）</em>
+</p>
 > 当一切都可以被伪造，真实反而成了奢侈品。**检测器在猜，真迹在证明。**
 
 真迹（RealTrace）是一套**人类创作在场认证系统**：它用密码学签名链证明一份内容「确实是人类实时写出来的」——不是 AI 生成的、不是事后粘贴的、不是被改过的。
@@ -176,7 +181,8 @@ npm test
 | 2026.06 | **首个完整实现落地**：链式打章 → 封章 → 离线验证 → 自包含证书全链路打通；同步完成 11 项发明专利布局，母案提交专利代理机构 |
 | 2026.07 | **模块化重构**：打章核心 `stamp.js` 独立成模块，密码学工具库 `rt-crypto.js` 分层，写作框 / 验证器 / 锚定服务解耦；正式更名 **RealTrace**；官方创世链锚定服务上线 |
 | 2026.08 | **开源 MVP v0.1.0 发布**（AGPL-3.0 + 商业双许可）；企业授权模式进入规划 |
-| 2026.08 | **v0.2.0 发布**：Merkle 选择性披露 + 生成披露证明、六语界面、链 ID 命名规则、创作模式选择、时间轴模块化 |
+| 2026.08 | **v0.2.0 发布**：Merkle 选择性披露 + 生成披露证明、六语界面、链 ID 命名规则、创作模式选择、时间轴模块化 |
+
 | 2026.08 | **v0.3.0 发布**：创世链锚定队列（离线排队 + 自动补传 + 签名防冒领），写作页集成六语上链队列面板 |
 | 2026.08 | **v0.4.0 发布**：身份模块（.rtkey 导出/导入、密码加密身份恢复、封章嵌入身份）、链格式 v3 合并语义（同密钥续链 / 跨密钥聚合容器）、跨浏览器验证器 |
 
