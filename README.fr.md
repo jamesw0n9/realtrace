@@ -184,7 +184,7 @@ npm test
 
 ## Ce que contient cette version (v0.4.0)
 
-Ce dépôt est une **construction MVP minimale** : il implémente la boucle complète « écrire → estampiller → sceller → vérifier » avec le moins de code possible. Cette version inclut :
+Ce dépôt est une **version open source complète** : il implémente la boucle complète « écrire → estampiller → sceller → vérifier → poursuite d'identité → fusion de chaînes ». Cette version inclut :
 
 - **Estampillage en temps réel** : des tampons de signature Ed25519 sont générés automatiquement pendant l'écriture, enregistrant rythme de frappe, pauses, volume de suppression et autres traits comportementaux ;
 - **Chaîne infalsifiable** : chaque tampon référence le hash de chaîne du précédent ; toute modification rétrospective est mathématiquement détectable ;

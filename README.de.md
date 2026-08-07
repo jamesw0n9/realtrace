@@ -184,7 +184,7 @@ npm test
 
 ## Was diese Version enthält (v0.4.0)
 
-Dieses Repository ist ein **minimaler MVP-Build**: Es implementiert den vollständigen Kreislauf „Schreiben → Stempeln → Besiegeln → Verifizieren" mit möglichst wenig Code. Diese Version enthält:
+Dieses Repository ist ein **vollständiger Open-Source-Build**: Es implementiert den vollständigen Kreislauf „Schreiben → Stempeln → Besiegeln → Verifizieren → Identitätsfortsetzung → Ketten-Merge". Diese Version enthält:
 
 - **Echtzeit-Stempeln**: Ed25519-Signaturstempel werden beim Schreiben automatisch erzeugt und erfassen Tipprhythmus, Pausen, Löschmenge und andere Verhaltensmerkmale;
 - **Manipulationssichere Kette**: jeder Stempel verweist auf den Ketten-Hash des vorherigen; jede nachträgliche Änderung ist mathematisch nachweisbar;

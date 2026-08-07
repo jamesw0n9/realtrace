@@ -184,7 +184,7 @@ npm test
 
 ## What's in this release (v0.4.0)
 
-This repository is an **MVP minimal build**: it implements the complete "write → stamp → seal → verify" loop with the least code. This release includes:
+This repository is a **complete open-source build**: it implements the full "write → stamp → seal → verify → identity continuation → chain merge" loop. This release includes:
 
 - **Real-time stamping**: Ed25519 signature stamps generated automatically during writing, recording keystroke rhythm, pauses, deletion volume and other behavioral traits;
 - **Tamper-proof chain**: each stamp references the chain hash of the previous stamp; any retrospective modification is mathematically detectable;
