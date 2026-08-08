@@ -16,6 +16,8 @@
 //   </script>
 //
 // 离线模式：不调用任何网络 API，链仍可本地验证（见 core/rt-verifier.js）。
+// 官方背书：配置 genesisPublicKey 后，query/genesisPath 的返回会做 Ed25519 签名校验
+//           （契约：signature 覆盖 signedData 字符串的 UTF-8 字节，与 RtCrypto.verify 一致）。
 // ========================================
 
 window.RtAnchor = (() => {
@@ -40,6 +42,14 @@ window.RtAnchor = (() => {
     var cfg = currentConfig();
     if (!cfg.enabled || !cfg.apiBase) return "";
     return cfg.apiBase.replace(/\/+$/, "") + path;
+  }
+
+  function hexToBytes(hex) {
+    if (!hex) return new Uint8Array(0);
+    if (hex.length % 2 !== 0) throw new Error('Odd length hex');
+    var out = new Uint8Array(hex.length / 2);
+    for (var i = 0; i < hex.length; i += 2) out[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+    return out;
   }
 
   async function post(path, body) {
@@ -72,6 +82,44 @@ window.RtAnchor = (() => {
     return json || { status: resp.status };
   }
 
+  // 官方创世签名校验（M-1）：
+  // 响应体 { ..., signature: "<hex>", signedData: "<string>" }，signature 覆盖 signedData 的 UTF-8 字节。
+  // 返回 { verified: true|false|null, reason }；null = 未配置 genesisPublicKey。
+  async function verifyGenesisData(payload) {
+    var cfg = currentConfig();
+    if (!cfg.genesisPublicKey) return { verified: null, reason: "genesisPublicKey 未配置" };
+    if (!payload || typeof payload !== "object") return { verified: false, reason: "响应无效" };
+    var sig = payload.signature || "";
+    var signedData = payload.signedData;
+    if (typeof signedData !== "string" || signedData.length === 0 || !sig) {
+      return { verified: false, reason: "缺少官方签名（signedData/signature）——该记录未被官方链背书" };
+    }
+    try {
+      var verifier = (typeof window !== "undefined" && window.RtCrypto && typeof window.RtCrypto.verify === "function")
+        ? window.RtCrypto.verify
+        : null;
+      var ok;
+      if (verifier) {
+        ok = await verifier(new TextEncoder().encode(signedData), sig, cfg.genesisPublicKey);
+      } else if (typeof nacl !== "undefined" && nacl.sign && nacl.sign.detached) {
+        ok = nacl.sign.detached.verify(new TextEncoder().encode(signedData), hexToBytes(sig), hexToBytes(cfg.genesisPublicKey));
+      } else {
+        return { verified: false, reason: "缺少验签模块（RtCrypto/tweetnacl）" };
+      }
+      return ok
+        ? { verified: true, reason: "" }
+        : { verified: false, reason: "官方签名无效——记录可能被篡改" };
+    } catch (e) {
+      return { verified: false, reason: "官方签名校验异常: " + e.message };
+    }
+  }
+
+  async function enrichWithGenesisVerify(data) {
+    if (!data || typeof data !== "object" || data.offline) return data;
+    var v = await verifyGenesisData(data);
+    return Object.assign({}, data, { genesisVerified: v.verified, genesisVerifyReason: v.reason });
+  }
+
   // 上报单个 stamp（增量预验签，可选；失败不阻塞写作）
   async function submitStamp(stamp) {
     var url = apiUrl("/stamp");
@@ -90,12 +138,12 @@ window.RtAnchor = (() => {
 
   // 查询证书（官方创世链可审计记录）
   async function query(certificateId) {
-    return await get("/certificate/" + encodeURIComponent(certificateId));
+    return await enrichWithGenesisVerify(await get("/certificate/" + encodeURIComponent(certificateId)));
   }
 
   // 查询从创世根到指定证书的完整路径（官方服务支持时）
   async function genesisPath(certificateId) {
-    return await get("/genesis/path/" + encodeURIComponent(certificateId));
+    return await enrichWithGenesisVerify(await get("/genesis/path/" + encodeURIComponent(certificateId)));
   }
 
   // 程序化配置（优先级低于 window.RT_CONFIG.anchor）
@@ -112,6 +160,7 @@ window.RtAnchor = (() => {
     seal: seal,
     query: query,
     genesisPath: genesisPath,
+    verifyGenesisData: verifyGenesisData,
     isEnabled: function() { return currentConfig().enabled && !!currentConfig().apiBase; }
   };
 })();
