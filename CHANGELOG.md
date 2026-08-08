@@ -1,5 +1,33 @@
 # Changelog / 变更记录
 
+## [v0.6.0] - 2026-08-08
+
+### Added
+- **Client-side genesis signature verification**: `anchor-client.js` verifies the official Ed25519 signature (`signature` over `signedData`) when `genesisPublicKey` is configured; `query` / `genesisPath` return `genesisVerified` markers. (Server must sign responses per this contract.)
+- **SECURITY.md**: private vulnerability reporting via GitHub + response SLA.
+
+### Changed
+- **Offline verification page hardening**: Content-Security-Policy (script hash, no inline handlers) + `addEventListener` / event delegation replace inline `onclick`.
+- **Anchor queue**: HTTP 429 is retryable (captures `Retry-After`); queue overflow is no longer silent — dropped count is persisted and surfaced in status.
+- **Concurrent lock**: `withLock` reseeds after a failure so one bad append no longer freezes the chain pipeline.
+- **Experimental TIC isolated**: renamed to `tic*` and marked not-for-main-chain use.
+
+### Tests
+- 29/29 passing; added H-1 cross-browser regression and M-1 genesis verification tests.
+
+### 新增
+- **客户端官方签名校验**：配置 `genesisPublicKey` 后，`anchor-client.js` 校验服务端 Ed25519 签名（`signature` 覆盖 `signedData`），`query`/`genesisPath` 返回 `genesisVerified` 标记（服务端需按此契约签名）。
+- **SECURITY.md**：GitHub 私有漏洞报告 + 响应 SLA。
+
+### 变更
+- **离线验证页加固**：CSP（脚本哈希、禁内联处理器），内联 `onclick` 改为 `addEventListener`/事件委托。
+- **锚定队列**：429 视为可重试（记录 `Retry-After`）；队列溢出不再静默——丢弃计数持久化并在状态中暴露。
+- **并发锁**：`withLock` 失败后自动 reseed，单次失败不再冻结打章管线。
+- **实验性 TIC 隔离**：改名 `tic*` 并标注勿用于主链。
+
+### 测试
+- 29/29 通过；新增 H-1 跨浏览器回归与 M-1 官方验签测试。
+
 ## [v0.5.0] - 2026-08-08
 
 ### Added

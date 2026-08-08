@@ -22,7 +22,7 @@
 > Dãy chữ ký Ed25519 · Ghi dấu thời gian thực · Không tải lên nội dung · Kiểm tra ngoại tuyến · Điểm dính chuỗi khởi đầu chính thức (miễn phí cho cá nhân)
 
 [![Giấy phép: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Phiên bản](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Phiên bản](https://img.shields.io/badge/version-v0.6.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Chào mừng](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">

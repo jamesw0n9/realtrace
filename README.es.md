@@ -23,7 +23,7 @@
 > Cadena de firmas Ed25519 · Sello en tiempo real · Sin carga de contenido · Verificación sin conexión · Anclaje oficial de la cadena de génesis (gratis para individuos)
 
 [![Licencia: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Versión](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Versión](https://img.shields.io/badge/version-v0.6.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
