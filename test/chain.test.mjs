@@ -57,8 +57,6 @@ test('mergeChains 展示视图不改写原链证据', async () => {
   // 展示视图不重写 index/chainHash → 原链证据保留
   assert.equal(merged.stamps[0].index, origA0.index);
   assert.equal(merged.stamps[0].chainHash, origA0.chainHash);
-  // displayOnly 链不要求连续性（未重签）
-  assert.ok(merged.stamps.some(function(s) { return s.index !== s.chainHash; }) || true);
 });
 
 test('mergeChainsVerified 同私钥连续合并可验证', async () => {
