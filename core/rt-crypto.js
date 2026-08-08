@@ -290,6 +290,8 @@ window.RtCrypto = (() => {
 
   // ═══════════════════════════════════════════════════════════
   // TIC: 时序互锁链 (Temporal Interlock Chain)
+  // ⚠ EXPERIMENTAL / 未启用：仅供研究预留，勿用于主链。主链验证请用 F2 标准
+  //   （computeChainHash/verifyChain 主链实现见 stamp.js + rt-verifier.js）。
   // λ-演算框架:
   //   signingKey_n = SHA-256(seed + chainHash_{n-1} + t_n + i_n + n_n + pubKey)
   //   chainHash_n  = SHA-256(chainHash_{n-1} + t_n + i_n + n_n + pubKey)
@@ -311,18 +313,18 @@ window.RtCrypto = (() => {
   }
 
   // 计算链哈希 (链式自指, 类 Y-组合子)
-  async function computeChainHash(chainHashPrev, timeStamp, interval, nonce, salt, pubKey) {
+  async function ticComputeChainHash(chainHashPrev, timeStamp, interval, nonce, salt, pubKey) {
     var input = chainHashPrev + String(timeStamp) + String(interval) + nonce + (salt || '') + pubKey;
     return await hash(input);
   }
 
   // 创建一章带时序互锁的 stamp (不暴露 signingKey)
-  async function createChainStamp(keypair, sessionSeed, chainHashPrev, timeStamp, interval, pubKey, salt) {
+  async function ticCreateChainStamp(keypair, sessionSeed, chainHashPrev, timeStamp, interval, pubKey, salt) {
     var nonceArr = new Uint8Array(16);
     crypto.getRandomValues(nonceArr);
     var nonce = b2h(nonceArr);
     var signingKey = await deriveSigningKey(sessionSeed, chainHashPrev, timeStamp, interval, nonce, salt || '', pubKey);
-    var newChainHash = await computeChainHash(chainHashPrev, timeStamp, interval, nonce, salt || '', pubKey);
+    var newChainHash = await ticComputeChainHash(chainHashPrev, timeStamp, interval, nonce, salt || '', pubKey);
     var msg = new TextEncoder().encode(newChainHash);
     var sig = await sign(msg, keypair.secretKey);
     return {
@@ -338,7 +340,7 @@ window.RtCrypto = (() => {
 
   // 验证完整的时序互锁链
   // chainData: { sessionSeed, pubKey, stamps: [...], finalContentHash }
-  async function verifyChain(chainData) {
+  async function ticVerifyChain(chainData) {
     if (!chainData || !chainData.stamps || chainData.stamps.length === 0) {
       return { valid: false, breakAt: -1, reason: 'no stamps', stampCount: 0 };
     }
@@ -346,7 +348,7 @@ window.RtCrypto = (() => {
       var s = chainData.stamps[i];
       var prev = (i === 0 ? chainData.sessionSeed : chainData.stamps[i-1].chainHash);
       // 1. 验证 chainHash 连续性
-      var expectedHash = await computeChainHash(prev, s.timeStamp, s.interval, s.nonce, s.salt || '', chainData.pubKey);
+      var expectedHash = await ticComputeChainHash(prev, s.timeStamp, s.interval, s.nonce, s.salt || '', chainData.pubKey);
       if (expectedHash !== s.chainHash) {
         return { valid: false, breakAt: i, reason: 'chainHash mismatch at stamp ' + i, stampCount: i };
       }
@@ -376,9 +378,9 @@ window.RtCrypto = (() => {
     verifyStandardizedSignature,
     hash, computePrevHash, hmac, encrypt, decrypt,
 
-    // TIC 时序互锁链
-    generateSessionSeed, deriveSigningKey, computeChainHash,
-    createChainStamp, verifyChain,
+    // TIC 时序互锁链（实验预留）
+    generateSessionSeed, deriveSigningKey, ticComputeChainHash,
+    ticCreateChainStamp, ticVerifyChain,
     b2b: b2h, h2b: h2b,
   }
 })()

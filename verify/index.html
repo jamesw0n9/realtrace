@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-gXyyYLNIWbHRfL2cDDQ1iVySEqgwW52hg3mWyQOy8bc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' data: blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'">
 <title>RealTrace · 离线链验证</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -99,7 +100,7 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
     <div style="font-size:13px;font-weight:700;color:#D4A017;margin-bottom:4px" data-i18n="discTitle">选择性披露验证</div>
     <div style="font-size:12px;color:#94A3B8;margin-bottom:10px" data-i18n="discHint">无需交出全文，出示一小段即可证明属于该链封章内容。先在上方验证 .rt 文件，再粘贴披露证明。</div>
     <textarea id="discInput" style="width:100%;min-height:80px;background:rgba(15,23,42,.6);color:#E2E8F0;border:1px solid #334155;border-radius:8px;padding:10px;font-family:Consolas,monospace;font-size:11px;box-sizing:border-box;resize:vertical" data-i18n-ph="discPlaceholder"></textarea>
-    <button onclick="handleDisclosure()" style="margin-top:10px;padding:8px 18px;border:none;border-radius:6px;background:#D4A017;color:#0F172A;font-size:12px;font-weight:600;cursor:pointer" data-i18n="discBtn">验证披露</button>
+    <button id="discBtn" style="margin-top:10px;padding:8px 18px;border:none;border-radius:6px;background:#D4A017;color:#0F172A;font-size:12px;font-weight:600;cursor:pointer" data-i18n="discBtn">验证披露</button>
     <div id="discResult" style="margin-top:10px"></div>
   </div>
 
@@ -110,16 +111,16 @@ h1{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
     <div class="gen-load-hint" id="genLoadHint"></div>
     <textarea id="genInput" data-i18n-ph="genPlaceholder" style="width:100%;min-height:110px;background:rgba(15,23,42,.6);color:#E2E8F0;border:1px solid #334155;border-radius:8px;padding:10px;font-family:Consolas,monospace;font-size:11px;box-sizing:border-box;resize:vertical"></textarea>
     <div class="gen-actions">
-      <button class="gen-analyze-btn" onclick="genAnalyze()" data-i18n="genAnalyzeBtn">分析段落</button>
+      <button class="gen-analyze-btn" id="genAnalyzeBtn" data-i18n="genAnalyzeBtn">分析段落</button>
       <span class="gen-analyze-hint" id="genAnalyzeHint"></span>
     </div>
     <div class="gen-blocks" id="genBlocks"></div>
     <div class="gen-sel-hint" id="genSelHint"></div>
     <div id="genViz"></div>
     <div class="gen-out-row" id="genOutRow">
-      <button class="gen-build-btn" onclick="genBuild()" data-i18n="genBuildBtn">生成证明 JSON</button>
+      <button class="gen-build-btn" id="genBuildBtn" data-i18n="genBuildBtn">生成证明 JSON</button>
       <textarea class="gen-out" id="genOut" readonly></textarea>
-      <button class="gen-copy-btn" onclick="genCopy()" data-i18n="genCopyBtn">复制证明</button>
+      <button class="gen-copy-btn" id="genCopyBtn" data-i18n="genCopyBtn">复制证明</button>
       <div class="gen-out-result" id="genOutResult"></div>
     </div>
   </div>
@@ -461,7 +462,7 @@ async function genAnalyze(){
     for (var i = 0; i < show; i++) {
       var b = blocks[i];
       var prev = b.length > 50 ? b.substring(0, 50) + '…' : b;
-      html += '<div class="gen-block" id="genBlock' + i + '" onclick="genSelect(' + i + ')"><span class="gen-block-idx">#' + i + '</span><span class="gen-block-prev">' + escapeHtml(prev) + '</span><span class="gen-block-len">' + b.length + '</span></div>';
+      html += '<div class="gen-block" data-idx="' + i + '"><span class="gen-block-idx">#' + i + '</span><span class="gen-block-prev">' + escapeHtml(prev) + '</span><span class="gen-block-len">' + b.length + '</span></div>';
     }
     if (blocks.length > maxShow) html += '<div class="gen-more">' + t('genBlockMore', { n: blocks.length }) + '</div>';
     box.innerHTML = html;
@@ -543,6 +544,23 @@ function genCopy(){
     navigator.clipboard.writeText(out.value).then(done).catch(function(){ out.select(); document.execCommand('copy'); done(); });
   } else { out.select(); document.execCommand('copy'); done(); }
 }
+// M-8: 事件监听替代内联 onclick（配合 CSP）
+function initInlineHandlers(){
+  var discBtn = document.getElementById('discBtn');
+  if (discBtn) discBtn.addEventListener('click', handleDisclosure);
+  var anaBtn = document.getElementById('genAnalyzeBtn');
+  if (anaBtn) anaBtn.addEventListener('click', genAnalyze);
+  var bldBtn = document.getElementById('genBuildBtn');
+  if (bldBtn) bldBtn.addEventListener('click', genBuild);
+  var cpyBtn = document.getElementById('genCopyBtn');
+  if (cpyBtn) cpyBtn.addEventListener('click', genCopy);
+  var blocksEl = document.getElementById('genBlocks');
+  if (blocksEl) blocksEl.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('.gen-block') : null;
+    if (b && b.dataset && b.dataset.idx !== undefined) genSelect(Number(b.dataset.idx));
+  });
+}
+initInlineHandlers();
 genInit();
 
 </script>

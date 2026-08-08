@@ -33,8 +33,10 @@ window.StampChain = (() => {
     return function() {
       var args = arguments;
       var self = this;
-      _lock = _lock.then(function() { return fn.apply(self, args); });
-      return _lock;
+      var run = _lock.then(function() { return fn.apply(self, args); });
+      // M-4: 单次失败不污染锁——吞掉 rejection 并 reseed，后续调用照常执行
+      _lock = run.then(function() { return undefined; }, function() { return undefined; });
+      return run;
     };
   }
 

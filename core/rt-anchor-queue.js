@@ -15,6 +15,7 @@ window.RtAnchorQueue = (function() {
   var QUEUE_KEY = 'rt_anchor_queue_v1';
   var AUTO_KEY = 'rt_anchor_auto_v1';
   var NOTIFIED_KEY = 'rt_anchor_notified_v1';
+  var DROPPED_KEY = 'rt_anchor_dropped_v1';
   var MAX_QUEUE = 100;
   var MAX_RETRIES = 5;
   var FLUSH_INTERVAL = 60000;
@@ -38,6 +39,12 @@ window.RtAnchorQueue = (function() {
 
   function wasNotified() { try { return !!localStorage.getItem(NOTIFIED_KEY); } catch(e) { return false; } }
   function markNotified() { try { localStorage.setItem(NOTIFIED_KEY, '1'); } catch(e) {} }
+  function readDropped() { try { return parseInt(localStorage.getItem(DROPPED_KEY), 10) || 0; } catch(e) { return 0; } }
+  function addDropped(n) {
+    var v = readDropped() + n;
+    try { localStorage.setItem(DROPPED_KEY, String(v)); } catch(e) {}
+    return v;
+  }
 
   // 封章后入队（无论在线离线；同 rootHash 只保留一条）
   function enqueue(entry) {
@@ -60,7 +67,14 @@ window.RtAnchorQueue = (function() {
       syncedAt: '',
       error: ''
     });
-    if (q.length > MAX_QUEUE) q = q.slice(q.length - MAX_QUEUE);
+    if (q.length > MAX_QUEUE) {
+      var dropN = q.length - MAX_QUEUE;
+      q = q.slice(dropN);
+      var totalDropped = addDropped(dropN);
+      if (typeof console !== 'undefined' && console.warn) {
+        console.warn('[RtAnchorQueue] 队列已满（>100），丢弃最早 ' + dropN + ' 条 pending；累计丢弃 ' + totalDropped + ' 条。请及时手动导出/清理。');
+      }
+    }
     writeQueue(q);
     notify();
     return q;
@@ -72,7 +86,8 @@ window.RtAnchorQueue = (function() {
       total: q.length,
       pending: q.filter(function(i) { return i.status === 'pending'; }).length,
       synced: q.filter(function(i) { return i.status === 'synced'; }).length,
-      failed: q.filter(function(i) { return i.status === 'failed'; }).length
+      failed: q.filter(function(i) { return i.status === 'failed'; }).length,
+      dropped: readDropped()
     };
   }
 
@@ -130,12 +145,13 @@ window.RtAnchorQueue = (function() {
           item.syncedAt = new Date().toISOString();
           item.error = '';
           synced++;
-        } else if (resp.status >= 400 && resp.status < 500) {
+        } else if (resp.status >= 400 && resp.status < 500 && resp.status !== 429) {
           item.status = 'failed';
           item.error = (data && data.error) || ('HTTP ' + resp.status);
         } else {
           item.retries++;
-          item.error = (data && data.error) || ('HTTP ' + resp.status);
+          item.retryAfter = (resp.headers && typeof resp.headers.get === 'function') ? (resp.headers.get('retry-after') || '') : '';
+          item.error = (data && data.error) || ('HTTP ' + resp.status + (resp.status === 429 ? ' (rate limited)' : ''));
           if (item.retries >= MAX_RETRIES) item.status = 'failed';
         }
       } catch(e) {
