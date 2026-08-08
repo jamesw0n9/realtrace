@@ -1,10 +1,19 @@
+<!-- Translated from the English source README.md — English is the single source of truth. See docs/i18n.md. -->
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="README.zh.md">简体中文</a> ·
+  <a href="README.zh-TW.md">繁體中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
-  <a href="README.fr.md">Français</a>
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.id.md">Bahasa Indonesia</a> ·
+  <a href="README.it.md">Italiano</a> ·
+  <a href="README.tr.md">Türkçe</a> ·
+  <a href="README.vi.md">Tiếng Việt</a>
 </p>
 # RealTrace
 
@@ -13,7 +22,7 @@
 > Chaîne de signatures Ed25519 · Estampillage en temps réel · Aucun upload de contenu · Vérification hors ligne · Ancrage à la chaîne de genèse officielle (gratuit pour les particuliers)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
@@ -187,6 +196,7 @@ npm test
 | 2026.08 | **v0.2.0 publié** : divulgation sélective Merkle + génération de preuve de divulgation, interface en six langues, règles de nommage des ID de chaîne, choix du mode de création, chronologie modulaire |
 | 2026.08 | **v0.3.0 publié** : file d'ancrage de la chaîne genèse (file d'attente hors ligne + nouvelle tentative automatique + signature anti-usurpation), panneau de file d'ancrage en six langues intégré à l'éditeur |
 | 2026.08 | **v0.4.0 publié** : module d'identité (export/import de .rtkey, récupération d'identité chiffrée par mot de passe, identité intégrée au scellement), sémantique de fusion v3 du format de chaîne (continuation à clé identique / conteneur d'agrégation multi-clés), vérificateur multi-navigateurs |
+| 2026.08 | **v0.5.0 publié** : README en 14 langues ; l'anglais est la seule source des traductions (docs/i18n.md) |
 
 ---
 
@@ -288,3 +298,4 @@ Le projet vous plaît ? Offrez-moi un café ☕ :
 **Votre création. Votre preuve de présence.**
 
 Dans une époque où l'IA peut tout imiter, la dignité de la création humaine mérite d'être défendue.
+

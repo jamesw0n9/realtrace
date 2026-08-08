@@ -1,10 +1,18 @@
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="README.zh.md">简体中文</a> ·
+  <a href="README.zh-TW.md">繁體中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
-  <a href="README.fr.md">Français</a>
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.id.md">Bahasa Indonesia</a> ·
+  <a href="README.it.md">Italiano</a> ·
+  <a href="README.tr.md">Türkçe</a> ·
+  <a href="README.vi.md">Tiếng Việt</a>
 </p>
 # RealTrace
 
@@ -13,7 +21,7 @@
 > Ed25519 signature chain · Real-time stamping · Zero content upload · Offline verification · Official genesis-chain anchoring (free for individuals)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
@@ -187,6 +195,7 @@ npm test
 | 2026.08 | **v0.2.0 released**: Merkle selective disclosure + disclosure proof generation, six-language UI, chain ID naming rules, creation-mode selection, modular timeline |
 | 2026.08 | **v0.3.0 released**: genesis anchor queue (offline queueing + auto-retry + signature anti-hijack), six-language anchor queue panel integrated into the writer |
 | 2026.08 | **v0.4.0 released**: identity module (.rtkey export/import, password-encrypted identity recovery, seal-embedded identity), chain format v3 merge semantics (same-key continuation / cross-key aggregate container), cross-browser verifier |
+| 2026.08 | **v0.5.0 released**: 14-language README; English is the single source of truth for translations (docs/i18n.md) |
 
 ---
 
@@ -288,3 +297,4 @@ Enjoy the project? Buy me a coffee ☕:
 **Your creation. Your proof of presence.**
 
 In an age where AI can imitate everything, the dignity of human creation deserves to be defended.
+

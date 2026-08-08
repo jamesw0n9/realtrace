@@ -1,10 +1,19 @@
+<!-- Translated from the English source README.md — English is the single source of truth. See docs/i18n.md. -->
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="README.zh.md">简体中文</a> ·
+  <a href="README.zh-TW.md">繁體中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
-  <a href="README.fr.md">Français</a>
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.id.md">Bahasa Indonesia</a> ·
+  <a href="README.it.md">Italiano</a> ·
+  <a href="README.tr.md">Türkçe</a> ·
+  <a href="README.vi.md">Tiếng Việt</a>
 </p>
 # RealTrace
 
@@ -13,7 +22,7 @@
 > Ed25519-Signaturkette · Echtzeit-Stempeln · Keine Inhalts-Uploads · Offline-Verifizierung · Offizielle Genesis-Ketten-Ankerung (für Einzelpersonen kostenlos)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
@@ -187,6 +196,7 @@ npm test
 | 2026.08 | **v0.2.0 veröffentlicht**: Merkle-selektive Offenlegung + Offenlegungsnachweis-Generierung, sechssprachige Oberfläche, Chain-ID-Namensregeln, Wahl des Schreibmodus, modulares Timeline |
 | 2026.08 | **v0.3.0 veröffentlicht**: Genesis-Anker-Warteschlange (Offline-Warteschlange + automatische Wiederholung + Signatur gegen Fälschung), sechssprachiges Anker-Panel in der Writer-Seite |
 | 2026.08 | **v0.4.0 veröffentlicht**: Identitätsmodul (.rtkey-Export/-Import, passwortverschlüsselte Identitätswiederherstellung, beim Siegeln eingebettete Identität), Chain-Format v3 mit Merge-Semantik (Fortsetzung mit gleichem Schlüssel / Aggregat-Container über Schlüssel hinweg), browserübergreifender Verifier |
+| 2026.08 | **v0.5.0 veröffentlicht**: README in 14 Sprachen; Englisch ist die einzige Quelle für Übersetzungen (docs/i18n.md) |
 
 ---
 
@@ -288,3 +298,4 @@ Gefällt Ihnen das Projekt? Laden Sie mich auf einen Kaffee ein ☕:
 **Deine Schöpfung. Dein Präsenz-Beweis.**
 
 In einer Zeit, in der KI alles imitieren kann, verdient die Würde menschlichen Schaffens verteidigt zu werden.
+

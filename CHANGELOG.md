@@ -1,5 +1,17 @@
 # Changelog / 变更记录
 
+## [v0.5.0] - 2026-08-08
+
+### Added
+- **14-language README**: added Español, Português (Brasil), Русский, Bahasa Indonesia, Italiano, Türkçe, Tiếng Việt, and 繁體中文 (zh-TW) — 14 languages in total.
+- **English is the single source of truth**: all README translations are derived from `README.md`; policy documented in [`docs/i18n.md`](docs/i18n.md); every translation carries a comment pointing to the English source.
+- **Demo media fix**: replaced `<video>` tags (stripped by GitHub's markdown sanitizer) with animated GIFs embedded via `<img>`, plus full MP4 download links.
+
+### 新增
+- **14 语言 README**：新增 Español、Português (Brasil)、Русский、Bahasa Indonesia、Italiano、Türkçe、Tiếng Việt、繁體中文（zh-TW），共 14 种语言。
+- **英文为唯一源版本**：所有 README 翻译均以 `README.md`（英文）为源派生；规范见 [`docs/i18n.md`](docs/i18n.md)；每个翻译文件顶部带源文件注释。
+- **演示媒体修复**：将被 GitHub markdown 过滤器剔除的 `<video>` 标签替换为 `<img>` 内联 GIF + MP4 完整版下载链接。
+
 ## [v0.4.0] - 2026-08-08
 
 ### Added

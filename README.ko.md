@@ -1,10 +1,19 @@
+<!-- Translated from the English source README.md — English is the single source of truth. See docs/i18n.md. -->
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="README.zh.md">简体中文</a> ·
+  <a href="README.zh-TW.md">繁體中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
-  <a href="README.fr.md">Français</a>
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.id.md">Bahasa Indonesia</a> ·
+  <a href="README.it.md">Italiano</a> ·
+  <a href="README.tr.md">Türkçe</a> ·
+  <a href="README.vi.md">Tiếng Việt</a>
 </p>
 # RealTrace
 
@@ -13,7 +22,7 @@
 > Ed25519 서명 체인 · 실시간 스탬프 · 콘텐츠 미업로드 · 오프라인 검증 · 공식 창세 체인 앵커링(개인 무료)
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
@@ -187,6 +196,7 @@ npm test
 | 2026.08 | **v0.2.0 출시**: Merkle 선택적 공개 + 공개 증명 생성, 6개 언어 UI, 체인 ID 명명 규칙, 작성 모드 선택, 타임라인 모듈화 |
 | 2026.08 | **v0.3.0 출시**: 창세 체인 앵커 큐(오프라인 큐 + 자동 재전송 + 서명 위조 방지), 작문 페이지에 6개 언어 앵커 큐 패널 통합 |
 | 2026.08 | **v0.4.0 출시**: 신원 모듈(.rtkey 내보내기/가져오기, 암호 암호화 신원 복구, 봉인 시 신원 내장), 체인 포맷 v3 병합 의미론(동일 키 연속 / 교차 키 집계 컨테이너), 크로스 브라우저 검증기 |
+| 2026.08 | **v0.5.0 출시**: 14개 언어 README; 번역의 단일 소스는 영어(docs/i18n.md) |
 
 ---
 
@@ -288,3 +298,4 @@ npm test
 **당신의 창작. 당신의 현장 증명.**
 
 AI가 모든 것을 모방할 수 있는 시대에, 인간 창작의 존엄은 지켜질 가치가 있다.
+

@@ -1,10 +1,19 @@
+<!-- Translated from the English source README.md — English is the single source of truth. See docs/i18n.md. -->
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="README.zh.md">简体中文</a> ·
+  <a href="README.zh-TW.md">繁體中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
-  <a href="README.fr.md">Français</a>
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.id.md">Bahasa Indonesia</a> ·
+  <a href="README.it.md">Italiano</a> ·
+  <a href="README.tr.md">Türkçe</a> ·
+  <a href="README.vi.md">Tiếng Việt</a>
 </p>
 # RealTrace
 
@@ -13,7 +22,7 @@
 > Ed25519 署名チェーン · リアルタイム打刻 · コンテンツ非アップロード · オフライン検証 · 公式創世チェーンへのアンカリング（個人無料）
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
@@ -187,6 +196,7 @@ npm test
 | 2026.08 | **v0.2.0 リリース**：Merkle 選択的開示 + 開示証明の生成、6言語UI、チェーンID命名規則、執筆モード選択、タイムラインのモジュール化 |
 | 2026.08 | **v0.3.0 リリース**：創世チェーン・アンカー・キュー（オフラインキュー + 自動再送 + 署名によるなりすまし防止）、執筆ページに6言語対応のアンカー・キュー・パネルを統合 |
 | 2026.08 | **v0.4.0 リリース**：本人確認モジュール（.rtkey エクスポート/インポート、パスワード暗号化による身元復元、封緘時の身元埋め込み）、チェーン形式 v3 のマージ意味論（同一キーでの継続 / クロスキー集約コンテナ）、クロスブラウザ検証器 |
+| 2026.08 | **v0.5.0 リリース**：14 言語の README；翻訳の唯一のソースは英語（docs/i18n.md） |
 
 ---
 
@@ -288,3 +298,4 @@ npm test
 **あなたの創作。あなたの実在証明。**
 
 AI がすべてを模倣できる時代に、人間の創作の尊厳は守られるべきだ。
+

@@ -1,10 +1,19 @@
+<!-- Translated from the English source README.md — English is the single source of truth. See docs/i18n.md. -->
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="README.zh.md">简体中文</a> ·
+  <a href="README.zh-TW.md">繁體中文</a> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.de.md">Deutsch</a> ·
-  <a href="README.fr.md">Français</a>
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.id.md">Bahasa Indonesia</a> ·
+  <a href="README.it.md">Italiano</a> ·
+  <a href="README.tr.md">Türkçe</a> ·
+  <a href="README.vi.md">Tiếng Việt</a>
 </p>
 # RealTrace · 真迹
 
@@ -13,7 +22,7 @@
 > Ed25519 签名链 · 实时打章 · 零内容上传 · 离线验证 · 官方创世链锚定（个人免费）
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.4.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
+[![Version](https://img.shields.io/badge/version-v0.5.0-orange.svg)](https://github.com/jamesw0n9/realtrace)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jamesw0n9/realtrace/pulls)
 
 <p align="center">
@@ -188,6 +197,7 @@ npm test
 
 | 2026.08 | **v0.3.0 发布**：创世链锚定队列（离线排队 + 自动补传 + 签名防冒领），写作页集成六语上链队列面板 |
 | 2026.08 | **v0.4.0 发布**：身份模块（.rtkey 导出/导入、密码加密身份恢复、封章嵌入身份）、链格式 v3 合并语义（同密钥续链 / 跨密钥聚合容器）、跨浏览器验证器 |
+| 2026.08 | **v0.5.0 发布**：14 语言 README；英文为翻译的唯一源版本（docs/i18n.md） |
 
 ---
 
@@ -289,3 +299,4 @@ npm test
 **你的创作，你的在场证明。**
 
 在 AI 可以模仿一切的时代，人类创作的尊严，值得被捍卫。
+
