@@ -32,3 +32,22 @@ test('最终内容摘要校验', async () => {
   const vres = await globalThis.RtVerifier.verifyChain(chain.stamps, content);
   assert.equal(vres.ok, false, '未绑定内容的 chainHash 应与最终内容摘要不匹配');
 });
+
+test('无 WebCrypto Ed25519 时仍可验签（H-1 回归：tweetnacl 路径）', async () => {
+  const { chain } = await buildTestChain('verify-test-h1', 3, 16);
+  const origImport = globalThis.crypto.subtle.importKey;
+  const origVerify = globalThis.crypto.subtle.verify;
+  globalThis.crypto.subtle.importKey = async function () {
+    throw new Error('WebCrypto Ed25519 unavailable');
+  };
+  globalThis.crypto.subtle.verify = async function () {
+    throw new Error('WebCrypto Ed25519 unavailable');
+  };
+  try {
+    const res = await globalThis.RtVerifier.verifyChain(chain.stamps);
+    assert.equal(res.ok, true, res.summary + ' ' + JSON.stringify((res.details || []).map(function (d) { return d.errors; })));
+  } finally {
+    globalThis.crypto.subtle.importKey = origImport;
+    globalThis.crypto.subtle.verify = origVerify;
+  }
+});
